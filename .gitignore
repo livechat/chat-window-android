@@ -35,6 +35,39 @@ captures/
 # Intellij
 *.iml
 .idea/workspace.xml
+.idea/libraries
 
 # Keystore files
 *.jks
+
+# External native build folder generated in Android Studio 2.2 and later
+.externalNativeBuild
+
+
+# macOS
+*.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Directories potentially created on remote AFP share
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
