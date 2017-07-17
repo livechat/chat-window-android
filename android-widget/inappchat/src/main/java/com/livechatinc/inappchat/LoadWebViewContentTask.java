@@ -1,6 +1,8 @@
 package com.livechatinc.inappchat;
 
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
@@ -17,22 +19,18 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Map;
 
 /**
  * Created by Łukasz Jerciński on 09/02/2017.
  */
 
-class LoadWebViewContentTask extends AsyncTask<String, Void, String> {
+class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String> {
     private static final String URL_STRING = "https://cdn.livechatinc.com/app/mobile/urls.json";
     private static final String JSON_CHAT_URL = "chat_url";
 
     private static final String PLACEHOLDER_LICENCE = "{%license%}";
     private static final String PLACEHOLDER_GROUP = "{%group%}";
-
-    private static final int INDEX_LICENCE_NUMBER = 0;
-    private static final int INDEX_GROUP_ID = 1;
-    private static final int INDEX_VISITOR_NAME = 2;
-    private static final int INDEX_VISITOR_EMAIL = 3;
 
     private final WebView mWebView;
     private final ProgressBar mProgressBar;
@@ -50,7 +48,7 @@ class LoadWebViewContentTask extends AsyncTask<String, Void, String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected String doInBackground(Map<String, String>... params) {
         HttpURLConnection urlConnection = null;
         try {
             URL urlObj = new URL(URL_STRING);
@@ -74,15 +72,21 @@ class LoadWebViewContentTask extends AsyncTask<String, Void, String> {
 
                 String chatUrl = jsonResponse.getString(JSON_CHAT_URL);
 
-                chatUrl = chatUrl.replace(PLACEHOLDER_LICENCE, params[INDEX_LICENCE_NUMBER]);
-                chatUrl = chatUrl.replace(PLACEHOLDER_GROUP, params[INDEX_GROUP_ID]);
+                chatUrl = chatUrl.replace(PLACEHOLDER_LICENCE, params[0].get(ChatWindowFragment.KEY_LICENCE_NUMBER));
+                chatUrl = chatUrl.replace(PLACEHOLDER_GROUP, params[0].get(ChatWindowFragment.KEY_GROUP_ID));
+                chatUrl = chatUrl + "&native_platform=android";
 
-                if (params[INDEX_VISITOR_NAME] != null) {
-                    chatUrl = chatUrl + "&name=" + URLEncoder.encode(params[INDEX_VISITOR_NAME], "UTF-8").replace("+", "%20");
+                if (params[0].get(ChatWindowFragment.KEY_VISITOR_NAME) != null) {
+                    chatUrl = chatUrl + "&name=" + URLEncoder.encode(params[0].get(ChatWindowFragment.KEY_VISITOR_NAME), "UTF-8").replace("+", "%20");
                 }
 
-                if (params[INDEX_VISITOR_EMAIL] != null) {
-                    chatUrl = chatUrl + "&email=" + URLEncoder.encode(params[INDEX_VISITOR_EMAIL], "UTF-8");
+                if (params[0].get(ChatWindowFragment.KEY_VISITOR_EMAIL) != null) {
+                    chatUrl = chatUrl + "&email=" + URLEncoder.encode(params[0].get(ChatWindowFragment.KEY_VISITOR_EMAIL), "UTF-8");
+                }
+
+                final String customParams = escapeCustomParams(params[0], chatUrl);
+                if (!TextUtils.isEmpty(customParams)) {
+                    chatUrl = chatUrl + "&params=" + customParams;
                 }
 
                 if (!chatUrl.startsWith("http")) {
@@ -111,6 +115,23 @@ class LoadWebViewContentTask extends AsyncTask<String, Void, String> {
         }
 
         return null;
+    }
+
+    private String escapeCustomParams(Map<String, String> param, String chatUrl) {
+        String params = "";
+        for (String key : param.keySet()) {
+            if (key.startsWith(ChatWindowFragment.CUSTOM_PARAM_PREFIX)) {
+                final String encodedKey = Uri.encode(key.replace(ChatWindowFragment.CUSTOM_PARAM_PREFIX, ""));
+                final String encodedValue = Uri.encode(param.get(key));
+
+                if (!TextUtils.isEmpty(params)) {
+                    params = params + "&";
+                }
+
+                params += encodedKey + "=" + encodedValue;
+            }
+        }
+        return Uri.encode(params);
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,19 +30,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.io.File;
+import java.util.HashMap;
 
 /**
  * Created by Łukasz Jerciński on 09/02/2017.
  */
 
 public final class ChatWindowFragment extends Fragment {
-    private static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER_FRAGMENT";
-    private static final String KEY_GROUP_ID = "KEY_GROUP_ID_FRAGMENT";
-    private static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME_FRAGMENT";
-    private static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL_FRAGMENT";
+    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER_FRAGMENT";
+    public static final String KEY_GROUP_ID = "KEY_GROUP_ID_FRAGMENT";
+    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME_FRAGMENT";
+    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL_FRAGMENT";
 
     private static final String DEFAULT_LICENCE_NUMBER = "-1";
     private static final String DEFAULT_GROUP_ID = "-1";
+    public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
 
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
 
@@ -55,28 +58,29 @@ public final class ChatWindowFragment extends Fragment {
     private ValueCallback<Uri> mUriUploadCallback;
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
 
-    private String mLicenceNumber = DEFAULT_LICENCE_NUMBER;
-    private String mGroupId = DEFAULT_GROUP_ID;
-    private String mVisitorName;
-    private String mVisitorEmail;
+    private HashMap<String, String> params = new HashMap<>();
 
     public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId) {
-        Bundle arguments = new Bundle();
-        arguments.putString(KEY_LICENCE_NUMBER, String.valueOf(licenceNumber));
-        arguments.putString(KEY_GROUP_ID, String.valueOf(groupId));
-
-        ChatWindowFragment chatWindowFragment = new ChatWindowFragment();
-        chatWindowFragment.setArguments(arguments);
-
-        return chatWindowFragment;
+        return newInstance(licenceNumber, groupId, null, null, null);
     }
 
-    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, String visitorName, String visitorEmail) {
+    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail) {
+        return newInstance(licenceNumber, groupId, visitorName, visitorEmail, null);
+    }
+
+    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail, @Nullable HashMap<String, String> customVariables) {
         Bundle arguments = new Bundle();
         arguments.putString(KEY_LICENCE_NUMBER, String.valueOf(licenceNumber));
         arguments.putString(KEY_GROUP_ID, String.valueOf(groupId));
-        arguments.putString(KEY_VISITOR_NAME, visitorName);
-        arguments.putString(KEY_VISITOR_EMAIL, visitorEmail);
+        if (visitorName != null)
+            arguments.putString(KEY_VISITOR_NAME, visitorName);
+        if (visitorEmail != null)
+            arguments.putString(KEY_VISITOR_EMAIL, visitorEmail);
+        if (customVariables != null) {
+            for (String key : customVariables.keySet()) {
+                arguments.putString(CUSTOM_PARAM_PREFIX + key, customVariables.get(key));
+            }
+        }
 
         ChatWindowFragment chatWindowFragment = new ChatWindowFragment();
         chatWindowFragment.setArguments(arguments);
@@ -89,10 +93,15 @@ public final class ChatWindowFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            mLicenceNumber = getArguments().getString(KEY_LICENCE_NUMBER);
-            mGroupId = getArguments().getString(KEY_GROUP_ID);
-            mVisitorName = getArguments().getString(KEY_VISITOR_NAME);
-            mVisitorEmail = getArguments().getString(KEY_VISITOR_EMAIL);
+            for (String key : getArguments().keySet()) {
+                params.put(key, String.valueOf(getArguments().get(key)));
+            }
+            if (!params.containsKey(KEY_LICENCE_NUMBER)) {
+                params.put(KEY_LICENCE_NUMBER, DEFAULT_LICENCE_NUMBER);
+            }
+            if (!params.containsKey(KEY_GROUP_ID)) {
+                params.put(KEY_GROUP_ID, DEFAULT_GROUP_ID);
+            }
         }
     }
 
@@ -161,7 +170,7 @@ public final class ChatWindowFragment extends Fragment {
 
         mContext = getActivity().getApplicationContext();
 
-        new LoadWebViewContentTask(mWebView, mProgressBar, mTextView).execute(mLicenceNumber, mGroupId, mVisitorName, mVisitorEmail);
+        new LoadWebViewContentTask(mWebView, mProgressBar, mTextView).execute(params);
     }
 
     @Override
@@ -196,7 +205,7 @@ public final class ChatWindowFragment extends Fragment {
     private void receiveUploadedUriArray(Intent data) {
         Uri[] uploadedUris;
         try {
-            uploadedUris = new Uri[] { Uri.parse(data.getDataString()) };
+            uploadedUris = new Uri[]{Uri.parse(data.getDataString())};
         } catch (Exception e) {
             uploadedUris = null;
         }
@@ -376,7 +385,7 @@ public final class ChatWindowFragment extends Fragment {
             mWebviewPopup.getSettings().setJavaScriptEnabled(true);
             mWebviewPopup.getSettings().setSavePassword(false);
             mWebviewPopup.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
+                    ViewGroup.LayoutParams.MATCH_PARENT));
             mContainer.addView(mWebviewPopup);
             WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
             transport.setWebView(mWebviewPopup);
