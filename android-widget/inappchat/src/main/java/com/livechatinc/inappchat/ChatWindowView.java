@@ -143,11 +143,17 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     @Override
     public void showChatWindow() {
         ChatWindowView.this.setVisibility(VISIBLE);
+        if (chatWindowListener != null) {
+            chatWindowListener.onChatWindowVisibilityChanged(true);
+        }
     }
 
     @Override
     public void hideChatWindow() {
         ChatWindowView.this.setVisibility(GONE);
+        if (chatWindowListener != null) {
+            chatWindowListener.onChatWindowVisibilityChanged(false);
+        }
     }
 
     public boolean onBackPressed() {
@@ -213,7 +219,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     }
 
     public void onNewMessageReceived(NewMessageModel newMessageModel) {
-        if(chatWindowListener != null){
+        if (chatWindowListener != null) {
             chatWindowListener.onNewMessage(newMessageModel, isShown());
         }
     }
@@ -355,14 +361,6 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         }
     }
 
-    public interface ChatWindowEventsListener {
-        void onChatWindowVisibilityChange(boolean visible);
-
-        void onNewMessage(NewMessageModel message, boolean windowVisible);
-
-        void onStartFilePickerActivity(Intent intent, int requestCode);
-    }
-
     private void receiveUploadedUriArray(Intent data) {
         Uri[] uploadedUris;
         try {
@@ -437,5 +435,14 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             Log.e("ChatWindowView", "You must provide a listener to handle file sharing");
             Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    public interface ChatWindowEventsListener {
+        void onChatWindowVisibilityChanged(boolean visible);
+
+        void onNewMessage(NewMessageModel message, boolean windowVisible);
+
+        void onStartFilePickerActivity(Intent intent, int requestCode);
     }
 }
