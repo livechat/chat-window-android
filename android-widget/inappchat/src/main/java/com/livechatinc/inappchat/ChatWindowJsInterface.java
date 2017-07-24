@@ -3,6 +3,9 @@ package com.livechatinc.inappchat;
 import android.util.Log;
 import android.webkit.JavascriptInterface;
 
+import com.google.gson.GsonBuilder;
+import com.livechatinc.inappchat.models.NewMessageModel;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,14 +31,14 @@ class ChatWindowJsInterface {
         try {
             JSONObject jsonObject = new JSONObject(messageJson);
             if(jsonObject != null && jsonObject.has(KEY_MESSAGE_TYPE)){
-                dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), jsonObject);
+                dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), messageJson);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void dispatchMessage(String messageType, JSONObject jsonObject) {
+    private void dispatchMessage(String messageType, String json) {
         switch (messageType){
             case TYPE_HIDE_CHAT_WINDOW:
                 view.onHideChatWindow();
@@ -44,7 +47,7 @@ class ChatWindowJsInterface {
                 view.onUiReady();
                 break;
             case TYPE_NEW_MESSAGE:
-                //TODO: json parsing here
+                view.onNewMessageReceived(new GsonBuilder().create().fromJson(json, NewMessageModel.class));
                 break;
 
         }

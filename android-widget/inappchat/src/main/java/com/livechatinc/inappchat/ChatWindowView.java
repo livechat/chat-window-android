@@ -29,6 +29,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.livechatinc.inappchat.models.NewMessageModel;
+
 import java.io.File;
 
 /**
@@ -210,6 +212,12 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
 
     }
 
+    public void onNewMessageReceived(NewMessageModel newMessageModel) {
+        if(chatWindowListener != null){
+            chatWindowListener.onNewMessage(newMessageModel, isShown());
+        }
+    }
+
     class LCWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
@@ -350,7 +358,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     public interface ChatWindowEventsListener {
         void onChatWindowVisibilityChange(boolean visible);
 
-        void onNewMessage(String message, boolean windowVisible);
+        void onNewMessage(NewMessageModel message, boolean windowVisible);
 
         void onStartFilePickerActivity(Intent intent, int requestCode);
     }
