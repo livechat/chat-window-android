@@ -93,9 +93,6 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
                     chatUrl = "https://" + chatUrl;
                 }
 
-                chatUrl = chatUrl.replace("secure.", "secure-labs.");
-                chatUrl = chatUrl + "&server=secure-labs.livechatinc.com";
-
                 return chatUrl;
             }
         } catch (MalformedURLException e) {
