@@ -50,11 +50,20 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private ChatWindowConfiguration config;
     private boolean initialized;
 
+    /*
+        Creates an instance of ChatWindowView an attaches to the provided activity.
+        ChatWindowView is hidden until it is initialized and shown.
+     */
     public static ChatWindowView createAndAttachChatWindowInstance(@NonNull Activity activity) {
         final ViewGroup contentView = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
         ChatWindowView chatWindowView = (ChatWindowView) LayoutInflater.from(activity).inflate(R.layout.view_chat_window, contentView, false);
         contentView.addView(chatWindowView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         return chatWindowView;
+    }
+
+    public ChatWindowView(@NonNull Context context) {
+        super(context);
+        initView(context);
     }
 
     public ChatWindowView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -115,6 +124,9 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         chatWindowListener = listener;
     }
 
+    /*
+    Checks the configuration and initializes ChatWindow, loading the view.
+     */
     public void initialize() {
         checkConfiguration();
         initialized = true;
@@ -138,7 +150,6 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             }
         });
     }
-
 
     @Override
     public void showChatWindow() {
