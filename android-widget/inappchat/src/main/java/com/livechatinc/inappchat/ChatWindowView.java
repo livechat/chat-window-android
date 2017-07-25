@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,7 +38,7 @@ import java.io.File;
  * Created by szymonjarosz on 19/07/2017.
  */
 
-public class ChatWindowView extends FrameLayout implements IChatWindowView {
+public class ChatWindowView extends CoordinatorLayout implements IChatWindowView {
     private WebView webView;
     private TextView statusText;
     private ProgressBar progressBar;
@@ -102,7 +103,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         webView.setWebChromeClient(new LCWebChromeClient());
 
         webView.requestFocus(View.FOCUS_DOWN);
-        webView.setVisibility(View.GONE);
+        webView.setVisibility(GONE);
 
         webView.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
@@ -225,7 +226,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     }
 
     private void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
+        progressBar.setVisibility(GONE);
 
     }
 
@@ -240,7 +241,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         public void onPageFinished(WebView view, String url) {
             if (url.startsWith("https://www.facebook.com/dialog/return/arbiter")) {
                 if (webViewPopup != null) {
-                    webViewPopup.setVisibility(View.GONE);
+                    webViewPopup.setVisibility(GONE);
                     removeView(webViewPopup);
                     webViewPopup = null;
                 }
@@ -254,8 +255,8 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    webView.setVisibility(View.GONE);
+                    progressBar.setVisibility(GONE);
+                    webView.setVisibility(GONE);
                     statusText.setVisibility(View.VISIBLE);
                 }
             });
@@ -269,8 +270,8 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(View.GONE);
-                    webView.setVisibility(View.GONE);
+                    progressBar.setVisibility(GONE);
+                    webView.setVisibility(GONE);
                     statusText.setVisibility(View.VISIBLE);
                 }
             });
@@ -301,7 +302,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
                 return false;
             } else {
                 if (webViewPopup != null) {
-                    webViewPopup.setVisibility(View.GONE);
+                    webViewPopup.setVisibility(GONE);
                     removeView(webViewPopup);
                     webViewPopup = null;
                 }
