@@ -54,4 +54,44 @@ public class ChatWindowConfiguration {
         }
         return params;
     }
+
+    public static class Builder {
+        private String licenceNumber;
+        private String groupId;
+        private String visitorName;
+        private String visitorEmail;
+        private HashMap<String, String> customParams;
+
+        public ChatWindowConfiguration build() {
+            if (TextUtils.isEmpty(licenceNumber))
+                throw new IllegalStateException("Licence Number cannot be null");
+            return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, customParams);
+        }
+
+        Builder setLicenceNumber(String licenceNr) {
+            this.licenceNumber = licenceNr;
+            return this;
+        }
+
+        Builder setGroupId(String groupId) {
+            this.groupId = groupId;
+            return this;
+        }
+
+        Builder setVisitorName(String visitorName) {
+            this.visitorName = visitorName;
+            return this;
+        }
+
+        Builder setVisitorEmail(String visitorEmail) {
+            this.visitorEmail = visitorEmail;
+            return this;
+        }
+
+        Builder setCustomParams(HashMap<String, String> customParams) {
+            this.customParams = customParams;
+            return this;
+        }
+    }
+
 }

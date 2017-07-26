@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +37,7 @@ import java.io.File;
  * Created by szymonjarosz on 19/07/2017.
  */
 
-public class ChatWindowView extends CoordinatorLayout implements IChatWindowView {
+public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private WebView webView;
     private TextView statusText;
     private ProgressBar progressBar;
@@ -156,7 +155,12 @@ public class ChatWindowView extends CoordinatorLayout implements IChatWindowView
     public void showChatWindow() {
         ChatWindowView.this.setVisibility(VISIBLE);
         if (chatWindowListener != null) {
-            chatWindowListener.onChatWindowVisibilityChanged(true);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    chatWindowListener.onChatWindowVisibilityChanged(true);
+                }
+            });
         }
     }
 
@@ -164,7 +168,12 @@ public class ChatWindowView extends CoordinatorLayout implements IChatWindowView
     public void hideChatWindow() {
         ChatWindowView.this.setVisibility(GONE);
         if (chatWindowListener != null) {
-            chatWindowListener.onChatWindowVisibilityChanged(false);
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    chatWindowListener.onChatWindowVisibilityChanged(false);
+                }
+            });
         }
     }
 
@@ -230,9 +239,14 @@ public class ChatWindowView extends CoordinatorLayout implements IChatWindowView
 
     }
 
-    public void onNewMessageReceived(NewMessageModel newMessageModel) {
+    public void onNewMessageReceived(final NewMessageModel newMessageModel) {
         if (chatWindowListener != null) {
-            chatWindowListener.onNewMessage(newMessageModel, isShown());
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    chatWindowListener.onNewMessage(newMessageModel, isShown());
+                }
+            });
         }
     }
 
