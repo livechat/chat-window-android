@@ -1,7 +1,9 @@
 chat-window-android
 ===============
 
-Embedding LiveChat mobile chat window in Android application: https://developers.livechatinc.com/mobile/android/
+Embedding mobile chat window in Android application for
+LiveChat: https://developers.livechatinc.com/mobile/android/ and
+Chat.io: https://chat.io/docs/
 
 # Installation
 
@@ -48,7 +50,7 @@ First, you need to configure your chat window
 
 ## Configuration
 
-Simply use ChatWindowConfiguration.java constructor. Note that LiveChat's licence number is mandatory.
+Simply use ChatWindowConfiguration.java constructor. Note that licence number is mandatory.
 
 ```configuration = new ChatWindowConfiguration("your_licence_number", "group_id", "Visitor name", "visitor@email.com", customParamsMap);```
 
@@ -158,7 +160,7 @@ In order to open a chat window in new Activity, you need to declare **ChatWindow
 
 <div class="clear"></div>
 
-Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object), your LiveChat license number (taken from the [tracking code](https://my.livechatinc.com/settings/code)) and, optionally, an ID of a group:
+Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object), your LiveChat or Chat.io license number (taken from the your app: [LiveChat](https://my.livechatinc.com/settings/code) or [Chat.io](https://app.chat.io/settings/installation) and, optionally, an ID of a group:
 
 ```java
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
@@ -178,7 +180,7 @@ intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, 
 
 ### Using Fragment
 
-In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number and group ID:
+In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat or Chat.io license number and group ID:
 
 ```java
 getFragmentManager()
