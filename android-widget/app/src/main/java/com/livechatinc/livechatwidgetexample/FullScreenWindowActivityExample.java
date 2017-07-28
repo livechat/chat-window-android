@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,7 +32,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         setSupportActionBar(toolbar);
         chatWindow = ChatWindowView.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
         chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
-//        chatWindow.setUpListener(this);
+        chatWindow.setUpListener(this);
         chatWindow.initialize();
         startChatBtn = (FloatingActionButton) findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(new View.OnClickListener() {
@@ -64,7 +63,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
 
     @Override
     public void onNewMessage(NewMessageModel message, boolean windowVisible) {
-        Log.i("FullScreenExample", "new messagE: " + message + ", windowVisible: " + windowVisible);
         if (!windowVisible) {
             badgeCounter++;
             chatBadgeTv.setVisibility(View.VISIBLE);
