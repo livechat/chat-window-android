@@ -276,7 +276,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             });
 
             super.onReceivedError(view, request, error);
-            Log.e("LiveChat Widget", "onReceivedError: " + error + " request: " + request);
+            Log.e("ChatWindow Widget", "onReceivedError: " + error + " request: " + request);
         }
 
         @Override
@@ -291,7 +291,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             });
 
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Log.e("LiveChat Widget", "onReceivedError: " + errorCode + " d: " + description + " url: " + failingUrl);
+            Log.e("ChatWindow Widget", "onReceivedError: " + errorCode + " d: " + description + " url: " + failingUrl);
         }
 
         @SuppressWarnings("deprecation")

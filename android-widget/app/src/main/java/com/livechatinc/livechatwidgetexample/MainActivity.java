@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ChatWindowActivity.class);
         intent.putExtra(ChatWindowActivity.KEY_GROUP_ID, "0");
         intent.putExtra(ChatWindowActivity.KEY_LICENCE_NUMBER, "100006050");
-        intent.putExtra(ChatWindowActivity.KEY_VISITOR_NAME, "LiveChat Widget Example Client");
+        intent.putExtra(ChatWindowActivity.KEY_VISITOR_NAME, "ChatWindow Example Client");
         intent.putExtra(ChatWindowActivity.KEY_VISITOR_EMAIL, "client@example.com");
         intent.putExtra("myParam", "Android Rules!");
         startActivity(intent);
