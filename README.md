@@ -2,8 +2,8 @@ chat-window-android
 ===============
 
 Embedding mobile chat window in Android application for
-LiveChat: https://developers.livechatinc.com/mobile/android/ and
-Chat.io: https://chat.io/docs/
+**LiveChat:(** https://developers.livechatinc.com/mobile/android/ and
+**Chat.io:** https://chat.io/docs/
 
 # Installation
 
