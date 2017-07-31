@@ -26,7 +26,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    compile 'com.github.livechat:chat-window-android:2.0.0'
+    compile 'com.github.livechat:chat-window-android:v2.0.0'
 }
 ```
 
