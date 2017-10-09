@@ -26,7 +26,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    compile 'com.github.livechat:chat-window-android:v2.0.0'
+    compile 'com.github.livechat:chat-window-android:v2.0.1'
 }
 ```
 
@@ -214,4 +214,5 @@ You can change or localize error messages, by defining your own string resources
 ```xml
 <string name="failed_to_load_chat">Couldn\'t load chat.</string>
 <string name="cant_share_files">File sharing is not configured for this app</string>
+<string name="reload_chat">Reload</string>
 ```
