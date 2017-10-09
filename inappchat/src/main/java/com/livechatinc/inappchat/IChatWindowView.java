@@ -1,6 +1,7 @@
 package com.livechatinc.inappchat;
 
 import android.content.Intent;
+import android.view.View;
 
 /**
  * Created by szymonjarosz on 20/07/2017.

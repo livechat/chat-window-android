@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -35,11 +36,13 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
     private final WebView mWebView;
     private final ProgressBar mProgressBar;
     private final TextView mTextView;
+    private final Button mReloadButton;
 
-    public LoadWebViewContentTask(WebView webView, ProgressBar progressBar, TextView textView) {
+    public LoadWebViewContentTask(WebView webView, ProgressBar progressBar, TextView textView, Button reloadButton) {
         mWebView = webView;
         mProgressBar = progressBar;
         mTextView = textView;
+        mReloadButton = reloadButton;
     }
 
     @Override
@@ -98,6 +101,7 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            Log.e("LiveChat Widget", e.getLocalizedMessage());
             e.printStackTrace();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -142,6 +146,7 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
         } else {
             mProgressBar.setVisibility(View.GONE);
             mTextView.setVisibility(View.VISIBLE);
+            mReloadButton.setVisibility(View.VISIBLE);
         }
     }
 }
