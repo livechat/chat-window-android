@@ -24,6 +24,7 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -37,11 +38,13 @@ import java.io.File;
  * Created by szymonjarosz on 19/07/2017.
  */
 
-public class ChatWindowView extends FrameLayout implements IChatWindowView {
+public class ChatWindowView extends FrameLayout implements IChatWindowView, View.OnClickListener {
     private WebView webView;
     private TextView statusText;
+    private Button reloadButton;
     private ProgressBar progressBar;
     private WebView webViewPopup;
+    private LoadWebViewContentTask loadWebViewContentTask;
     private ChatWindowEventsListener chatWindowListener;
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
 
@@ -78,6 +81,8 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         webView = (WebView) findViewById(R.id.chat_window_web_view);
         statusText = (TextView) findViewById(R.id.chat_window_status_text);
         progressBar = (ProgressBar) findViewById(R.id.chat_window_progress);
+        reloadButton = (Button) findViewById(R.id.chat_window_button);
+        reloadButton.setOnClickListener(this);
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -120,6 +125,19 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         webView.addJavascriptInterface(new ChatWindowJsInterface(this), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
     }
 
+    @Override
+    public void onClick(View view) {
+        loadWebViewContentTask.cancel(true);
+
+        webView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        statusText.setVisibility(View.GONE);
+        reloadButton.setVisibility(View.GONE);
+
+        initialized = false;
+        initialize();
+    }
+
     public void setUpListener(ChatWindowEventsListener listener) {
         chatWindowListener = listener;
     }
@@ -130,7 +148,8 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     public void initialize() {
         checkConfiguration();
         initialized = true;
-        new LoadWebViewContentTask(webView, progressBar, statusText).execute(config.getParams());
+        loadWebViewContentTask = new LoadWebViewContentTask(webView, progressBar, statusText, reloadButton);
+        loadWebViewContentTask.execute(config.getParams());
     }
 
     private void checkConfiguration() {

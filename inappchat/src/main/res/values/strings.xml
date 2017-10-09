@@ -2,4 +2,5 @@
 <resources>
     <string name="failed_to_load_chat">Couldn\'t load chat.</string>
     <string name="cant_share_files">File sharing is not configured for this app</string>
+    <string name="reload_chat">Reload</string>
 </resources>
