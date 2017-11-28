@@ -2,6 +2,7 @@ package com.livechatinc.inappchat;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -108,6 +109,11 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     @Override
     public void onNewMessage(NewMessageModel message, boolean windowVisible) {
 
+    }
+
+    @Override
+    public boolean handleUri(Uri uri) {
+        return false;
     }
 
     @Override

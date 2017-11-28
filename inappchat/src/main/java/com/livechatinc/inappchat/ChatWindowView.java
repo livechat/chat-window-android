@@ -345,8 +345,13 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
                 if (uriString.equals(originalUrl)) {
                     return false;
                 } else {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    getContext().startActivity(intent);
+                    if (chatWindowListener != null && chatWindowListener.handleUri(uri)) {
+
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        getContext().startActivity(intent);
+                    }
+
                     return true;
                 }
             }
@@ -489,5 +494,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         void onNewMessage(NewMessageModel message, boolean windowVisible);
 
         void onStartFilePickerActivity(Intent intent, int requestCode);
+
+        boolean handleUri(final Uri uri);
     }
 }
