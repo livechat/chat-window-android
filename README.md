@@ -116,8 +116,15 @@ public boolean onBackPressed() {
 }
 ```
 
+## ChatWindowEventsListener
 
-## File sharing
+This listener gives you opportunity to:
+* handle a case, when user wants to attach file in ChatWindow
+* get notified if new message arrived in chat. This gets handy if you want to show some kind of badge for a user to read new message.
+* react on visibility changes (user can hide the view on its own)
+* handle user selected links in a custom way
+
+### File sharing
 
 To provide your users capablity to send files, you need to set ChatWindowEventsListener on your ChatWindowView and give opportunity to the view to handle activity result, i.e.
 ```java
@@ -128,12 +135,16 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
-## ChatWindowEventsListener
+### Handling URL's
 
-This listener gives you opportunity to:
-* handle a case, when user wants to attach file in ChatWindow
-* get notified if new message arrived in chat. This gets handy if you want to show some kind of badge for a user to read new message.
-* react on visibility changes (user can hide the view on its own)
+You can disable chat widget's default behavior when user selects link by implementing `handleUri` method from ChatWindowEventsListener.
+```java
+@Override
+public boolean handleUri(Uri uri) {
+	// Handle uri here...
+	return true; // Return true to disable default behavior.
+}
+````
 
 ## Alternative usage with limited capabilities
 
