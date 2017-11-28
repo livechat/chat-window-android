@@ -495,6 +495,9 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
         void onStartFilePickerActivity(Intent intent, int requestCode);
 
+        /*
+            Return true to disable default uri handling.
+         */
         boolean handleUri(final Uri uri);
     }
 }
