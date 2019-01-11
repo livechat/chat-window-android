@@ -98,6 +98,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
+        webSettings.setDomStorageEnabled(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
