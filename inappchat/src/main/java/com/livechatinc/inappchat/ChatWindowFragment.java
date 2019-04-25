@@ -120,4 +120,8 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     public void onStartFilePickerActivity(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
     }
+
+    @Override
+    public void onError(int errorCode, String errorDescription) {
+    }
 }

@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -153,6 +154,11 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         loadWebViewContentTask.execute(config.getParams());
     }
 
+    public void reload() {
+        initialized = false;
+        initialize();
+    }
+
     private void checkConfiguration() {
         if (config == null) {
             throw new IllegalStateException("Config must be provide before initialization");
@@ -286,12 +292,13 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
         @Override
         public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && chatWindowListener != null) {
+                chatWindowListener.onError(error.getErrorCode(), String.valueOf(error.getDescription()));
+            }
             post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(GONE);
-                    webView.setVisibility(GONE);
-                    statusText.setVisibility(View.VISIBLE);
+                    onErrorDetected();
                 }
             });
 
@@ -301,12 +308,13 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
         @Override
         public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            if (chatWindowListener != null) {
+                chatWindowListener.onError(errorCode, description);
+            }
             post(new Runnable() {
                 @Override
                 public void run() {
-                    progressBar.setVisibility(GONE);
-                    webView.setVisibility(GONE);
-                    statusText.setVisibility(View.VISIBLE);
+                    onErrorDetected();
                 }
             });
 
@@ -359,6 +367,13 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         }
     }
 
+    private void onErrorDetected() {
+        progressBar.setVisibility(GONE);
+        webView.setVisibility(GONE);
+        statusText.setVisibility(View.VISIBLE);
+        reloadButton.setVisibility(config.isShowReloadBtnOnError() ? VISIBLE : GONE);
+    }
+
     class LCWebChromeClient extends WebChromeClient {
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog,
@@ -409,6 +424,21 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
             chooseUriArrayToUpload(uploadMsg);
             return true;
+        }
+
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR && chatWindowListener != null) {
+                chatWindowListener.onError(-1, consoleMessage.message());
+            }
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    onErrorDetected();
+                }
+            });
+            Log.i("ChatWindowView", "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
+            return super.onConsoleMessage(consoleMessage);
         }
     }
 
@@ -495,6 +525,8 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         void onNewMessage(NewMessageModel message, boolean windowVisible);
 
         void onStartFilePickerActivity(Intent intent, int requestCode);
+
+        void onError(int errorCode, String errorDescription);
 
         /*
             Return true to disable default uri handling.

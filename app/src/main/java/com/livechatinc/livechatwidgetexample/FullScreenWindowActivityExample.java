@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
@@ -79,6 +80,11 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public void onStartFilePickerActivity(Intent intent, int requestCode) {
         startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void onError(int errorCode, String errorDescription) {
+        Toast.makeText(FullScreenWindowActivityExample.this, errorDescription, Toast.LENGTH_SHORT).show();
     }
 
     @Override
