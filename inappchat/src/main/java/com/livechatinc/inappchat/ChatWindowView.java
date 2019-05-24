@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 /**
  * Created by szymonjarosz on 19/07/2017.
@@ -343,7 +344,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
                 String originalUrl = webView.getOriginalUrl();
 
-                if (uriString.equals(originalUrl)) {
+                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())){//uri.getHost().contains("secure-lc.livechatinc.com")) {
                     return false;
                 } else {
                     if (chatWindowListener != null && chatWindowListener.handleUri(uri)) {
@@ -357,6 +358,11 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
                 }
             }
         }
+    }
+
+
+    public static boolean isSecureLivechatIncDoamin(String host) {
+        return Pattern.compile("(secure-?(lc|dal|fra|)\\.livechatinc\\.com)").matcher(host).find();
     }
 
     class LCWebChromeClient extends WebChromeClient {
