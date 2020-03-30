@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.livechatinc.inappchat.ChatWindowErrorType;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
@@ -74,11 +75,13 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
         startActivityForResult(intent, requestCode);
     }
 
+
     @Override
-    public void onError(int errorCode, String errorDescription) {
+    public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         if (isAdded()) {
             Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
         }
+        return true;
     }
 
     @Override
