@@ -122,6 +122,7 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     }
 
     @Override
-    public void onError(int errorCode, String errorDescription) {
+    public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
+        return false;
     }
 }

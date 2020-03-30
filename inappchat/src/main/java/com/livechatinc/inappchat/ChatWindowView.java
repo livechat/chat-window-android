@@ -291,36 +291,32 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
             super.onPageFinished(view, url);
         }
 
+        @TargetApi(Build.VERSION_CODES.M)
         @Override
-        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && chatWindowListener != null) {
-                chatWindowListener.onError(error.getErrorCode(), String.valueOf(error.getDescription()));
-            }
+        public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
+            final boolean errorHandled = chatWindowListener != null && chatWindowListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
             post(new Runnable() {
                 @Override
                 public void run() {
-                    onErrorDetected();
+                    onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
                 }
             });
 
             super.onReceivedError(view, request, error);
-            Log.e("ChatWindow Widget", "onReceivedError: " + error + " request: " + request);
+            Log.e("ChatWindow Widget", "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
         }
 
         @Override
-        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
-            if (chatWindowListener != null) {
-                chatWindowListener.onError(errorCode, description);
-            }
+        public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
+            final boolean errorHandled = chatWindowListener != null && chatWindowListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
             post(new Runnable() {
                 @Override
                 public void run() {
-                    onErrorDetected();
+                    onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description);
                 }
             });
-
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Log.e("ChatWindow Widget", "onReceivedError: " + errorCode + " d: " + description + " url: " + failingUrl);
+            Log.e("ChatWindow Widget", "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
         }
 
         @SuppressWarnings("deprecation")
@@ -352,7 +348,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
                 String originalUrl = webView.getOriginalUrl();
 
-                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())){//uri.getHost().contains("secure-lc.livechatinc.com")) {
+                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())) {//uri.getHost().contains("secure-lc.livechatinc.com")) {
                     return false;
                 } else {
                     if (chatWindowListener != null && chatWindowListener.handleUri(uri)) {
@@ -368,11 +364,17 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         }
     }
 
-    private void onErrorDetected() {
+    private void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         progressBar.setVisibility(GONE);
-        webView.setVisibility(GONE);
-        statusText.setVisibility(View.VISIBLE);
-        reloadButton.setVisibility(config.isShowReloadBtnOnError() ? VISIBLE : GONE);
+        if (!errorHandled) {
+            if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
+                //Internet connection error. Connection issues handled in the chat window
+                return;
+            }
+            webView.setVisibility(GONE);
+            statusText.setVisibility(View.VISIBLE);
+            reloadButton.setVisibility(VISIBLE);
+        }
     }
 
 
@@ -433,16 +435,16 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         }
 
         @Override
-        public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR && chatWindowListener != null) {
-                chatWindowListener.onError(-1, consoleMessage.message());
+        public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
+            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
+                final boolean errorHandled = chatWindowListener != null && chatWindowListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
+                post(new Runnable() {
+                    @Override
+                    public void run() {
+                        onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message());
+                    }
+                });
             }
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    onErrorDetected();
-                }
-            });
             Log.i("ChatWindowView", "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
@@ -532,9 +534,21 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
         void onStartFilePickerActivity(Intent intent, int requestCode);
 
-        void onError(int errorCode, String errorDescription);
+        /**
+         * This method propagates errors and tells this window if error needs to be handled.
+         *
+         * @param errorType        Identifies the source of an error
+         * @param errorCode        Error code,
+         *                         for {@link ChatWindowErrorType#WebViewClient} see {@link WebViewClient https://developer.android.com/reference/android/webkit/WebViewClient}
+         *                         for {@link ChatWindowErrorType#Console} always -1
+         * @param errorDescription Description of the error
+         *                         for {@link ChatWindowErrorType#WebViewClient} see {@link WebViewClient https://developer.android.com/reference/android/webkit/WebViewClient}
+         *                         for {@link ChatWindowErrorType#Console} only Error level messages propagated. {@link WebChromeClient https://developer.android.com/reference/android/webkit/WebChromeClient}
+         * @return true if error handled. Returning false, means that library should handle error - show error view
+         */
+        boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription);
 
-        /*
+        /**
             Return true to disable default uri handling.
          */
         boolean handleUri(final Uri uri);

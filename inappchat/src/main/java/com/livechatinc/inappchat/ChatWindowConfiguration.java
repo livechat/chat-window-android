@@ -19,13 +19,11 @@ public class ChatWindowConfiguration {
 
     private static final String DEFAULT_GROUP_ID = "0";
     public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
-    public static final String KEY_SHOW_RELOAD_BTN_ON_ERROR = "KEY_SHOW_RELOAD_BTN_ON_ERROR";
 
     private String licenceNumber;
     private String groupId;
     private String visitorName;
     private String visitorEmail;
-    private boolean showReloadBtnOnError;
     private HashMap<String, String> customVariables;
 
     public ChatWindowConfiguration(
@@ -33,13 +31,11 @@ public class ChatWindowConfiguration {
             @Nullable String groupId,
             @Nullable String visitorName,
             @Nullable String visitorEmail,
-            boolean showReloadBtnOnError,
             @Nullable HashMap<String, String> customVariables) {
         this.licenceNumber = licenceNumber;
         this.groupId = groupId;
         this.visitorName = visitorName;
         this.visitorEmail = visitorEmail;
-        this.showReloadBtnOnError = showReloadBtnOnError;
         this.customVariables = customVariables;
     }
 
@@ -56,12 +52,7 @@ public class ChatWindowConfiguration {
                 params.put(CUSTOM_PARAM_PREFIX + key, customVariables.get(key));
             }
         }
-        params.put(KEY_SHOW_RELOAD_BTN_ON_ERROR, String.valueOf(showReloadBtnOnError));
         return params;
-    }
-
-    public boolean isShowReloadBtnOnError() {
-        return showReloadBtnOnError;
     }
 
     public static class Builder {
@@ -69,13 +60,12 @@ public class ChatWindowConfiguration {
         private String groupId;
         private String visitorName;
         private String visitorEmail;
-        private boolean showReloadBtnOnError = false;
         private HashMap<String, String> customParams;
 
         public ChatWindowConfiguration build() {
             if (TextUtils.isEmpty(licenceNumber))
                 throw new IllegalStateException("Licence Number cannot be null");
-            return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, showReloadBtnOnError, customParams);
+            return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, customParams);
         }
 
         Builder setLicenceNumber(String licenceNr) {
@@ -100,11 +90,6 @@ public class ChatWindowConfiguration {
 
         Builder setCustomParams(HashMap<String, String> customParams) {
             this.customParams = customParams;
-            return this;
-        }
-
-        Builder setShowReloadBtnOnError(boolean show) {
-            this.showReloadBtnOnError = show;
             return this;
         }
     }
