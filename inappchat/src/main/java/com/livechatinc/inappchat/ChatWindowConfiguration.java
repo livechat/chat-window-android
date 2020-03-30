@@ -77,27 +77,27 @@ public class ChatWindowConfiguration {
             return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, customParams);
         }
 
-        Builder setLicenceNumber(String licenceNr) {
+        public Builder setLicenceNumber(String licenceNr) {
             this.licenceNumber = licenceNr;
             return this;
         }
 
-        Builder setGroupId(String groupId) {
+        public Builder setGroupId(String groupId) {
             this.groupId = groupId;
             return this;
         }
 
-        Builder setVisitorName(String visitorName) {
+        public Builder setVisitorName(String visitorName) {
             this.visitorName = visitorName;
             return this;
         }
 
-        Builder setVisitorEmail(String visitorEmail) {
+        public Builder setVisitorEmail(String visitorEmail) {
             this.visitorEmail = visitorEmail;
             return this;
         }
 
-        Builder setCustomParams(HashMap<String, String> customParams) {
+        public Builder setCustomParams(HashMap<String, String> customParams) {
             this.customParams = customParams;
             return this;
         }
