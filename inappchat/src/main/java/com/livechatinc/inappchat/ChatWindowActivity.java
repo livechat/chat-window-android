@@ -16,18 +16,13 @@ import java.util.HashSet;
  */
 
 public final class ChatWindowActivity extends FragmentActivity {
-    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER";
-    public static final String KEY_GROUP_ID = "KEY_GROUP_ID";
-    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME";
-    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL";
-
-    private static final HashSet<String> DEFINED_KEYS = new HashSet<String>();
+    private static final HashSet<String> DEFINED_KEYS = new HashSet<>();
 
     static {
-        DEFINED_KEYS.add(KEY_LICENCE_NUMBER);
-        DEFINED_KEYS.add(KEY_GROUP_ID);
-        DEFINED_KEYS.add(KEY_VISITOR_NAME);
-        DEFINED_KEYS.add(KEY_VISITOR_EMAIL);
+        DEFINED_KEYS.add(ChatWindowConfiguration.KEY_LICENCE_NUMBER);
+        DEFINED_KEYS.add(ChatWindowConfiguration.KEY_GROUP_ID);
+        DEFINED_KEYS.add(ChatWindowConfiguration.KEY_VISITOR_NAME);
+        DEFINED_KEYS.add(ChatWindowConfiguration.KEY_VISITOR_EMAIL);
     }
 
     @Override
@@ -54,15 +49,15 @@ public final class ChatWindowActivity extends FragmentActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            licenceNumber = String.valueOf(extras.get(KEY_LICENCE_NUMBER));
-            groupId = String.valueOf(extras.get(KEY_GROUP_ID));
+            licenceNumber = String.valueOf(extras.get(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
+            groupId = String.valueOf(extras.get(ChatWindowConfiguration.KEY_GROUP_ID));
 
-            if (extras.containsKey(KEY_VISITOR_NAME)) {
-                visitorName = String.valueOf(extras.get(KEY_VISITOR_NAME));
+            if (extras.containsKey(ChatWindowConfiguration.KEY_VISITOR_NAME)) {
+                visitorName = String.valueOf(extras.get(ChatWindowConfiguration.KEY_VISITOR_NAME));
             }
 
-            if (extras.containsKey(KEY_VISITOR_EMAIL)) {
-                visitorEmail = String.valueOf(extras.get(KEY_VISITOR_EMAIL));
+            if (extras.containsKey(ChatWindowConfiguration.KEY_VISITOR_EMAIL)) {
+                visitorEmail = String.valueOf(extras.get(ChatWindowConfiguration.KEY_VISITOR_EMAIL));
             }
             for (String key : extras.keySet()) {
                 if (!DEFINED_KEYS.contains(key)) {

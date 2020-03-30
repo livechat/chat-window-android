@@ -1,5 +1,6 @@
 package com.livechatinc.inappchat;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,12 +13,12 @@ import java.util.Map;
  */
 
 public class ChatWindowConfiguration {
-    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER_FRAGMENT";
-    public static final String KEY_GROUP_ID = "KEY_GROUP_ID_FRAGMENT";
-    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME_FRAGMENT";
-    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL_FRAGMENT";
+    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER";
+    public static final String KEY_GROUP_ID = "KEY_GROUP_ID";
+    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME";
+    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL";
 
-    private static final String DEFAULT_GROUP_ID = "-1";
+    private static final String DEFAULT_GROUP_ID = "0";
     public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
 
     private String licenceNumber;
@@ -39,7 +40,7 @@ public class ChatWindowConfiguration {
         this.customVariables = customVariables;
     }
 
-    Map<String, String> getParams() {
+    public Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
         params.put(KEY_LICENCE_NUMBER, String.valueOf(licenceNumber));
         params.put(KEY_GROUP_ID, groupId != null ? String.valueOf(groupId) : DEFAULT_GROUP_ID);
@@ -55,6 +56,14 @@ public class ChatWindowConfiguration {
         return params;
     }
 
+    public Bundle asBundle() {
+        Bundle bundle = new Bundle();
+        for (Map.Entry<String, String> entry : getParams().entrySet()) {
+            bundle.putString(entry.getKey(), entry.getValue());
+        }
+        return bundle;
+    }
+
     public static class Builder {
         private String licenceNumber;
         private String groupId;
@@ -68,27 +77,27 @@ public class ChatWindowConfiguration {
             return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, customParams);
         }
 
-        Builder setLicenceNumber(String licenceNr) {
+        public Builder setLicenceNumber(String licenceNr) {
             this.licenceNumber = licenceNr;
             return this;
         }
 
-        Builder setGroupId(String groupId) {
+        public Builder setGroupId(String groupId) {
             this.groupId = groupId;
             return this;
         }
 
-        Builder setVisitorName(String visitorName) {
+        public Builder setVisitorName(String visitorName) {
             this.visitorName = visitorName;
             return this;
         }
 
-        Builder setVisitorEmail(String visitorEmail) {
+        public Builder setVisitorEmail(String visitorEmail) {
             this.visitorEmail = visitorEmail;
             return this;
         }
 
-        Builder setCustomParams(HashMap<String, String> customParams) {
+        public Builder setCustomParams(HashMap<String, String> customParams) {
             this.customParams = customParams;
             return this;
         }

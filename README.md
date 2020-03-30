@@ -3,9 +3,7 @@ chat-window-android
 
 Embedding mobile chat window in Android application for
 
-**LiveChat:** https://developers.livechatinc.com/mobile/android/ and
-
-**Chat.io:** https://chat.io/docs/
+**LiveChat:** https://developers.livechatinc.com/mobile/android/
 
 # Installation
 
@@ -26,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    compile 'com.github.livechat:chat-window-android:v2.0.4'
+    implementation 'com.github.livechat:chat-window-android:v2.1.0'
 }
 ```
 
@@ -123,6 +121,7 @@ This listener gives you opportunity to:
 * get notified if new message arrived in chat. This gets handy if you want to show some kind of badge for a user to read new message.
 * react on visibility changes (user can hide the view on its own)
 * handle user selected links in a custom way
+* react and handle errors coming from chat window
 
 ### File sharing
 
@@ -173,13 +172,18 @@ In order to open a chat window in new Activity, you need to declare **ChatWindow
 
 <div class="clear"></div>
 
-Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object), your LiveChat or Chat.io license number (taken from the your app: [LiveChat](https://my.livechatinc.com/settings/code) or [Chat.io](https://app.chat.io/settings/installation) and, optionally, an ID of a group:
+Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object), your LiveChat license number (taken from the your app: [LiveChat](https://my.livechatinc.com/settings/code) and, optionally, an ID of a group:
 
 ```java
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_GROUP_ID, "your_group_id");
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_LICENCE_NUMBER, "your_license_number");
-context.startActivity(intent);
+Bundle config = new ChatWindowConfiguration.Builder()
+	.setLicenceNumber("<your_license_number>")
+	.setGroupId("<your_group_id>")
+	.build()
+	.asBundle();
+
+intent.putExtras(config);
+startActivity(intent);
 ```
 
 <div class="clear"></div>
@@ -187,13 +191,13 @@ context.startActivity(intent);
 It’s also possibile to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
 
 ```java
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_NAME, "your_name");
-intent.putExtra(com.livechatinc.inappchat.ChatWindowActivity.KEY_VISITOR_EMAIL, "your_email");
+intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_NAME, "your_name");
+intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_EMAIL, "your_email");
 ```
 
 ### Using Fragment
 
-In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat or Chat.io license number and group ID:
+In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number and group ID:
 
 ```java
 getFragmentManager()
