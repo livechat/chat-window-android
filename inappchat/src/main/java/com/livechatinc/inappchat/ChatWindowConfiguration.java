@@ -1,5 +1,6 @@
 package com.livechatinc.inappchat;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -12,10 +13,10 @@ import java.util.Map;
  */
 
 public class ChatWindowConfiguration {
-    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER_FRAGMENT";
-    public static final String KEY_GROUP_ID = "KEY_GROUP_ID_FRAGMENT";
-    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME_FRAGMENT";
-    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL_FRAGMENT";
+    public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER";
+    public static final String KEY_GROUP_ID = "KEY_GROUP_ID";
+    public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME";
+    public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL";
 
     private static final String DEFAULT_GROUP_ID = "0";
     public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
@@ -39,7 +40,7 @@ public class ChatWindowConfiguration {
         this.customVariables = customVariables;
     }
 
-    Map<String, String> getParams() {
+    public Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
         params.put(KEY_LICENCE_NUMBER, String.valueOf(licenceNumber));
         params.put(KEY_GROUP_ID, groupId != null ? String.valueOf(groupId) : DEFAULT_GROUP_ID);
@@ -53,6 +54,14 @@ public class ChatWindowConfiguration {
             }
         }
         return params;
+    }
+
+    public Bundle asBundle() {
+        Bundle bundle = new Bundle();
+        for (Map.Entry<String, String> entry : getParams().entrySet()) {
+            bundle.putString(entry.getKey(), entry.getValue());
+        }
+        return bundle;
     }
 
     public static class Builder {

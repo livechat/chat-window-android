@@ -8,11 +8,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.livechatinc.inappchat.ChatWindowActivity;
+import com.livechatinc.inappchat.ChatWindowConfiguration;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final String LIVECHAT_SUPPORT_LICENCE_NR = "1520";
-    public static final String CHATIO_SUPPORT_LICENCE_NR = "8928139";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startChatActivity() {
         Intent intent = new Intent(this, ChatWindowActivity.class);
-        intent.putExtra(ChatWindowActivity.KEY_GROUP_ID, "0");
-        intent.putExtra(ChatWindowActivity.KEY_LICENCE_NUMBER, LIVECHAT_SUPPORT_LICENCE_NR);
-        intent.putExtra(ChatWindowActivity.KEY_VISITOR_NAME, "ChatWindow Example Client");
-        intent.putExtra(ChatWindowActivity.KEY_VISITOR_EMAIL, "client@example.com");
-        intent.putExtra("myParam", "Android Rules!");
+        final ChatWindowConfiguration config = BaseApplication.getChatWindowConfiguration();
+        intent.putExtras(config.asBundle());
         startActivity(intent);
     }
 

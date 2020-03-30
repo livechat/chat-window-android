@@ -75,16 +75,16 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
 
                 String chatUrl = jsonResponse.getString(JSON_CHAT_URL);
 
-                chatUrl = chatUrl.replace(PLACEHOLDER_LICENCE, params[0].get(ChatWindowFragment.KEY_LICENCE_NUMBER));
-                chatUrl = chatUrl.replace(PLACEHOLDER_GROUP, params[0].get(ChatWindowFragment.KEY_GROUP_ID));
+                chatUrl = chatUrl.replace(PLACEHOLDER_LICENCE, params[0].get(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
+                chatUrl = chatUrl.replace(PLACEHOLDER_GROUP, params[0].get(ChatWindowConfiguration.KEY_GROUP_ID));
                 chatUrl = chatUrl + "&native_platform=android";
 
-                if (params[0].get(ChatWindowFragment.KEY_VISITOR_NAME) != null) {
-                    chatUrl = chatUrl + "&name=" + URLEncoder.encode(params[0].get(ChatWindowFragment.KEY_VISITOR_NAME), "UTF-8").replace("+", "%20");
+                if (params[0].get(ChatWindowConfiguration.KEY_VISITOR_NAME) != null) {
+                    chatUrl = chatUrl + "&name=" + URLEncoder.encode(params[0].get(ChatWindowConfiguration.KEY_VISITOR_NAME), "UTF-8").replace("+", "%20");
                 }
 
-                if (params[0].get(ChatWindowFragment.KEY_VISITOR_EMAIL) != null) {
-                    chatUrl = chatUrl + "&email=" + URLEncoder.encode(params[0].get(ChatWindowFragment.KEY_VISITOR_EMAIL), "UTF-8");
+                if (params[0].get(ChatWindowConfiguration.KEY_VISITOR_EMAIL) != null) {
+                    chatUrl = chatUrl + "&email=" + URLEncoder.encode(params[0].get(ChatWindowConfiguration.KEY_VISITOR_EMAIL), "UTF-8");
                 }
 
                 final String customParams = escapeCustomParams(params[0], chatUrl);
@@ -124,8 +124,8 @@ class LoadWebViewContentTask extends AsyncTask<Map<String, String>, Void, String
     private String escapeCustomParams(Map<String, String> param, String chatUrl) {
         String params = "";
         for (String key : param.keySet()) {
-            if (key.startsWith(ChatWindowFragment.CUSTOM_PARAM_PREFIX)) {
-                final String encodedKey = Uri.encode(key.replace(ChatWindowFragment.CUSTOM_PARAM_PREFIX, ""));
+            if (key.startsWith(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX)) {
+                final String encodedKey = Uri.encode(key.replace(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX, ""));
                 final String encodedValue = Uri.encode(param.get(key));
 
                 if (!TextUtils.isEmpty(params)) {
