@@ -348,7 +348,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
                 String originalUrl = webView.getOriginalUrl();
 
-                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())) {//uri.getHost().contains("secure-lc.livechatinc.com")) {
+                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())) {
                     return false;
                 } else {
                     if (chatWindowListener != null && chatWindowListener.handleUri(uri)) {
@@ -379,7 +379,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
 
     public static boolean isSecureLivechatIncDoamin(String host) {
-        return Pattern.compile("(secure-?(lc|dal|fra|)\\.livechatinc\\.com)").matcher(host).find();
+        return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
     }
 
     class LCWebChromeClient extends WebChromeClient {
@@ -549,7 +549,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription);
 
         /**
-            Return true to disable default uri handling.
+         * Return true to disable default uri handling.
          */
         boolean handleUri(final Uri uri);
     }
