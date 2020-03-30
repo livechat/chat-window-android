@@ -7,7 +7,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        minSdkVersion 16
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 11
         versionName VERSION_NAME
