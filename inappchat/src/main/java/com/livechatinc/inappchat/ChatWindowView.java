@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -31,9 +32,21 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -46,7 +59,6 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
     private Button reloadButton;
     private ProgressBar progressBar;
     private WebView webViewPopup;
-    private LoadWebViewContentTask loadWebViewContentTask;
     private ChatWindowEventsListener chatWindowListener;
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
 
@@ -55,9 +67,9 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
     private ChatWindowConfiguration config;
     private boolean initialized;
 
-    /*
-        Creates an instance of ChatWindowView an attaches to the provided activity.
-        ChatWindowView is hidden until it is initialized and shown.
+    /**
+     * Creates an instance of ChatWindowView an attaches to the provided activity.
+     * ChatWindowView is hidden until it is initialized and shown.
      */
     public static ChatWindowView createAndAttachChatWindowInstance(@NonNull Activity activity) {
         final ViewGroup contentView = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
@@ -130,8 +142,6 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
 
     @Override
     public void onClick(View view) {
-        loadWebViewContentTask.cancel(true);
-
         webView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         statusText.setVisibility(View.GONE);
@@ -145,14 +155,87 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         chatWindowListener = listener;
     }
 
-    /*
-    Checks the configuration and initializes ChatWindow, loading the view.
+    /**
+     * Checks the configuration and initializes ChatWindow, loading the view.
      */
     public void initialize() {
         checkConfiguration();
         initialized = true;
-        loadWebViewContentTask = new LoadWebViewContentTask(webView, progressBar, statusText, reloadButton);
-        loadWebViewContentTask.execute(config.getParams());
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://cdn.livechatinc.com/app/mobile/urls.json",
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("ChatWindowView", "Response: " + response);
+                        String chatUrl = constructChatUrl(response);
+                        if (chatUrl != null && getContext() != null) {
+                            webView.loadUrl(chatUrl);
+                            webView.setVisibility(VISIBLE);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("ChatWindowView", "Error response: " + error);
+                        final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
+                        final boolean errorHandled = chatWindowListener != null && chatWindowListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+                        if (getContext() != null) {
+                            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+                        }
+                    }
+                });
+        queue.add(stringRequest);
+    }
+
+    private String constructChatUrl(JSONObject jsonResponse) {
+        String chatUrl = null;
+        try {
+            chatUrl = jsonResponse.getString("chat_url");
+
+            chatUrl = chatUrl.replace("{%license%}", config.getParams().get(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
+            chatUrl = chatUrl.replace("{%group%}", config.getParams().get(ChatWindowConfiguration.KEY_GROUP_ID));
+            chatUrl = chatUrl + "&native_platform=android";
+
+            if (config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_NAME) != null) {
+                chatUrl = chatUrl + "&name=" + URLEncoder.encode(config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_NAME), "UTF-8").replace("+", "%20");
+            }
+
+            if (config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_EMAIL) != null) {
+                chatUrl = chatUrl + "&email=" + URLEncoder.encode(config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_EMAIL), "UTF-8");
+            }
+
+            final String customParams = escapeCustomParams(config.getParams(), chatUrl);
+            if (!TextUtils.isEmpty(customParams)) {
+                chatUrl = chatUrl + "&params=" + customParams;
+            }
+
+            if (!chatUrl.startsWith("http")) {
+                chatUrl = "https://" + chatUrl;
+            }
+        } catch (JSONException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return chatUrl;
+    }
+
+    private String escapeCustomParams(Map<String, String> param, String chatUrl) {
+        String params = "";
+        for (String key : param.keySet()) {
+            if (key.startsWith(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX)) {
+                final String encodedKey = Uri.encode(key.replace(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX, ""));
+                final String encodedValue = Uri.encode(param.get(key));
+
+                if (!TextUtils.isEmpty(params)) {
+                    params = params + "&";
+                }
+
+                params += encodedKey + "=" + encodedValue;
+            }
+        }
+        return Uri.encode(params);
     }
 
     public void reload() {
