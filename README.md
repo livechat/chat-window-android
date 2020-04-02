@@ -52,7 +52,14 @@ First, you need to configure your chat window
 
 Simply use ChatWindowConfiguration.java constructor. Note that licence number is mandatory.
 
-```configuration = new ChatWindowConfiguration("your_licence_number", "group_id", "Visitor name", "visitor@email.com", customParamsMap);```
+```java
+configuration = new ChatWindowConfiguration(
+    "your_licence_number",
+    "group_id",
+    "Visitor name",
+    "visitor@email.com",
+    customParamsMap);
+```
 
 ## Chat Window View
 
