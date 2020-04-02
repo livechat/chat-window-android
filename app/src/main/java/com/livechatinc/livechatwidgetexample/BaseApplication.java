@@ -22,6 +22,6 @@ public class BaseApplication extends Application {
     }
 
     public static ChatWindowConfiguration getChatWindowConfiguration() {
-        return new ChatWindowConfiguration(LIVECHAT_SUPPORT_LICENCE_NR, null, "Earl", null, null);
+        return new ChatWindowConfiguration(LIVECHAT_SUPPORT_LICENCE_NR, "77", "Android Widget Example", null, null);
     }
 }
