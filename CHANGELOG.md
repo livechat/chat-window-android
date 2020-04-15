@@ -1,5 +1,12 @@
 # Android ChangeLog
 
+## Version 2.1.2 - April 15, 2020
+Handle case where chat window configuration failed
+
+### Changes
+- Expose reload and isChatLoaded methods
+- Handle case where chat window configuration failed
+
 ## Version 2.1.1 - April 2, 2020
 Get rid of problematic AsyncTask for obtaining configuration and use volley for that.
 This should result in quicker and more reliable initial widget configuration.

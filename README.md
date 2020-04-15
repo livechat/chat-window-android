@@ -24,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.1.1'
+    implementation 'com.github.livechat:chat-window-android:v2.1.2'
 }
 ```
 
@@ -151,6 +151,29 @@ public boolean handleUri(Uri uri) {
 	return true; // Return true to disable default behavior.
 }
 ````
+
+### Error handling
+
+You might want to customize user experience when encountering errors, such as problems with internet connection.
+By returning `true` in `onError` callback method you're taking responsibility to handle errors coming from the chat window.
+
+Please keep in mind that chat window, once it's loaded, can handle connection issues by sporadically trying to reconnect.
+This case can be detected by implementing following condition in onError callback method.
+
+```java
+@Override
+public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
+    if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
+        //Chat window can handle reconnection. You might want to delegate this to chat window
+        return false;
+    } else {
+        reloadChatBtn.setVisibility(View.VISIBLE);
+    }
+    Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
+    return true;
+}
+````
+
 
 ## Alternative usage with limited capabilities
 
