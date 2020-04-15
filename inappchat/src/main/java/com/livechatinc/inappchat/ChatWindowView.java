@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  * Created by szymonjarosz on 19/07/2017.
  */
 
-public class ChatWindowView extends FrameLayout implements IChatWindowView, View.OnClickListener {
+public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private WebView webView;
     private TextView statusText;
     private Button reloadButton;
@@ -66,6 +66,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ChatWindowConfiguration config;
     private boolean initialized;
+    private boolean chatUiReady = false;
 
     /**
      * Creates an instance of ChatWindowView an attaches to the provided activity.
@@ -96,7 +97,12 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         statusText = (TextView) findViewById(R.id.chat_window_status_text);
         progressBar = (ProgressBar) findViewById(R.id.chat_window_progress);
         reloadButton = (Button) findViewById(R.id.chat_window_button);
-        reloadButton.setOnClickListener(this);
+        reloadButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reload();
+            }
+        });
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -140,17 +146,6 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         webView.addJavascriptInterface(new ChatWindowJsInterface(this), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
     }
 
-    @Override
-    public void onClick(View view) {
-        webView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        statusText.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
-
-        initialized = false;
-        initialize();
-    }
-
     public void setUpListener(ChatWindowEventsListener listener) {
         chatWindowListener = listener;
     }
@@ -169,6 +164,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
                     public void onResponse(JSONObject response) {
                         Log.d("ChatWindowView", "Response: " + response);
                         String chatUrl = constructChatUrl(response);
+                        initialized = true;
                         if (chatUrl != null && getContext() != null) {
                             webView.loadUrl(chatUrl);
                             webView.setVisibility(VISIBLE);
@@ -179,6 +175,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("ChatWindowView", "Error response: " + error);
+                        initialized = false;
                         final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
                         final boolean errorHandled = chatWindowListener != null && chatWindowListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
                         if (getContext() != null) {
@@ -187,6 +184,25 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
                     }
                 });
         queue.add(stringRequest);
+    }
+
+    public void reload() {
+        if (initialized) {
+            chatUiReady = false;
+            webView.reload();
+        } else {
+            reinitialize();
+        }
+    }
+
+    private void reinitialize() {
+        webView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        statusText.setVisibility(View.GONE);
+        reloadButton.setVisibility(View.GONE);
+
+        initialized = false;
+        initialize();
     }
 
     private String constructChatUrl(JSONObject jsonResponse) {
@@ -238,14 +254,9 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         return Uri.encode(params);
     }
 
-    public void reload() {
-        initialized = false;
-        initialize();
-    }
-
     private void checkConfiguration() {
         if (config == null) {
-            throw new IllegalStateException("Config must be provide before initialization");
+            throw new IllegalStateException("Config must be provided before initialization");
         }
         if (initialized) {
             throw new IllegalStateException("Chat Window already initialized");
@@ -331,11 +342,17 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
         return initialized;
     }
 
+    @Override
+    public boolean isChatLoaded() {
+        return chatUiReady;
+    }
+
     public void setUpWindow(ChatWindowConfiguration configuration) {
         this.config = configuration;
     }
 
     public void onUiReady() {
+        chatUiReady = true;
         post(new Runnable() {
             @Override
             public void run() {
@@ -450,7 +467,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView, View
     private void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         progressBar.setVisibility(GONE);
         if (!errorHandled) {
-            if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
+            if (chatUiReady && errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
                 //Internet connection error. Connection issues handled in the chat window
                 return;
             }
