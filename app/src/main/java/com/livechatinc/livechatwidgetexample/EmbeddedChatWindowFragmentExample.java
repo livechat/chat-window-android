@@ -21,8 +21,9 @@ import com.livechatinc.inappchat.models.NewMessageModel;
 
 public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatWindowView.ChatWindowEventsListener,
         MainActivity.OnBackPressedListener {
-    private static final String START_CHAT_TEXT = "Chat with support";
+    private static final String START_CHAT_TEXT = "Show chat";
     private Button startChatBtn;
+    private Button reloadChatBtn;
     private ChatWindowView chatWindow;
     private int counter;
 
@@ -40,6 +41,14 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
             @Override
             public void onClick(View view) {
                 chatWindow.showChatWindow();
+            }
+        });
+        reloadChatBtn = (Button) view.findViewById(R.id.embedded_reload_chat);
+        reloadChatBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                view.setVisibility(View.GONE);
+                chatWindow.reload();
             }
         });
         chatWindow = (ChatWindowView) view.findViewById(R.id.embedded_chat_window);
@@ -79,6 +88,12 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         if (isAdded()) {
+            if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
+                //Chat window can handle reconnection. You might want to delegate this to chat window
+                return false;
+            } else {
+                reloadChatBtn.setVisibility(View.VISIBLE);
+            }
             Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
         }
         return true;
