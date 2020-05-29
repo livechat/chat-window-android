@@ -77,6 +77,16 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+
+        if(chatWindow.alertDialog != null) {
+            chatWindow.alertDialog.dismiss();;
+            chatWindow.alertDialog = null;
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         chatWindow = (ChatWindowView) inflater.inflate(R.layout.view_chat_window, container, false);
 

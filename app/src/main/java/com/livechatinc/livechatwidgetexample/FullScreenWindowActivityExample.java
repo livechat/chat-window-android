@@ -33,14 +33,18 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         setContentView(R.layout.chat_window_launcher);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        chatWindow = ChatWindowView.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
-        chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
-        chatWindow.setUpListener(this);
-        chatWindow.initialize();
+
         startChatBtn = (FloatingActionButton) findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (chatWindow == null || !chatWindow.isInitialized()) {
+                    chatWindow = null;
+                    chatWindow = ChatWindowView.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
+                    chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
+                    chatWindow.setUpListener(FullScreenWindowActivityExample.this);
+                    chatWindow.initialize();
+                }
                 showChatWindow();
             }
         });
