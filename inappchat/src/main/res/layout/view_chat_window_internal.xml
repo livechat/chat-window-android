@@ -21,27 +21,5 @@
         android:layout_height="match_parent"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/chat_window_status_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/chat_window_status_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/failed_to_load_chat"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/chat_window_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/reload_chat"
-            android:visibility="gone" />
-    </LinearLayout>
-
 
 </merge>

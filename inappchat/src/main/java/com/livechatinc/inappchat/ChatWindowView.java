@@ -2,7 +2,9 @@ package com.livechatinc.inappchat;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -55,13 +57,11 @@ import java.util.regex.Pattern;
 
 public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private WebView webView;
-    private TextView statusText;
-    private Button reloadButton;
     private ProgressBar progressBar;
     private WebView webViewPopup;
     private ChatWindowEventsListener chatWindowListener;
+    public AlertDialog alertDialog;
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
-
     private ValueCallback<Uri> mUriUploadCallback;
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ChatWindowConfiguration config;
@@ -94,15 +94,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         setVisibility(GONE);
         LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
         webView = (WebView) findViewById(R.id.chat_window_web_view);
-        statusText = (TextView) findViewById(R.id.chat_window_status_text);
         progressBar = (ProgressBar) findViewById(R.id.chat_window_progress);
-        reloadButton = (Button) findViewById(R.id.chat_window_button);
-        reloadButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                reload();
-            }
-        });
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -198,8 +190,11 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private void reinitialize() {
         webView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
-        statusText.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
+
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+            alertDialog = null;
+        }
 
         initialized = false;
         initialize();
@@ -472,11 +467,53 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
                 return;
             }
             webView.setVisibility(GONE);
-            statusText.setVisibility(View.VISIBLE);
-            reloadButton.setVisibility(VISIBLE);
+
+        }
+
+        if (alertDialog == null || !alertDialog.isShowing()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                    .setMessage("Couldn't load chat.")
+                    .setPositiveButton("Reload", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            reload();
+                        }
+                    })
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            initialized = false;
+                            dialogInterface.dismiss();
+                        }
+                    }).setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialogInterface) {
+                            initialized = false;
+                            alertDialog.dismiss();
+                        }
+                    });
+
+            alertDialog = builder.create();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+
+                builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialogInterface) {
+                        initialized = false;
+                        alertDialog.dismiss();
+                    }
+                });
+
+            } else {
+                alertDialog.setCancelable(false);
+            }
+
+            // completely closes 'Own Activity' on error if called,
+            // requires 2 back presses on error when launched from 'Full Screen Launched From Activity' if not called
+            onHideChatWindow();
+            alertDialog.show();
         }
     }
-
 
     public static boolean isSecureLivechatIncDoamin(String host) {
         return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
