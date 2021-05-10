@@ -132,7 +132,19 @@ This listener gives you opportunity to:
 
 ### File sharing
 
-To provide your users capablity to send files, you need to set ChatWindowEventsListener on your ChatWindowView and give opportunity to the view to handle activity result, i.e.
+To provide your users capablity to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
+
+Your listener should override `onStartFilePickerActivity` method and start activity for result with provided intent and request code.
+
+```java
+    @Override
+    public void onStartFilePickerActivity(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode);
+    }
+```
+
+and then give opportunity to the view to handle activity result, i.e.
+
 ```java
 @Override
 public void onActivityResult(int requestCode, int resultCode, Intent data) {
