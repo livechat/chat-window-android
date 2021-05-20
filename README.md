@@ -24,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.1.3'
+    implementation 'com.github.livechat:chat-window-android:v2.1.4'
 }
 ```
 
@@ -186,6 +186,12 @@ public boolean onError(ChatWindowErrorType errorType, int errorCode, String erro
 }
 ````
 
+### Clear chat session
+
+After your user signs out of the app, you might want to clear the chat session.
+You can do that by invoking static method on `ChatWindowView.clearSession(Context)` from anywhere in the app.
+In case your `ChatWindowView` is attached in course of the log out flow, you also going to need to reload it by calling
+`chatWindow.reload()` after clearSession code. See [FullScreenWindowActivityExample.java](https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java)
 
 ## Alternative usage with limited capabilities
 

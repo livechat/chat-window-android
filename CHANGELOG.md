@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.1.4 - May 20, 2021
+Provide convenience method for clearing chat session
+
 ## Version 2.1.3 - May 20, 2021
 Migrate to androidx support libraries, update gradle, build tools and dependencies
 

@@ -45,6 +45,15 @@
             android:textSize="8dp"
             android:visibility="gone"
             tools:text="1" />
+
+        <Button
+            style="@style/ExampleButton"
+            android:id="@+id/clear_session_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:text="Clear session"/>
     </FrameLayout>
 
 </LinearLayout>

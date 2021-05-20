@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
+import com.livechatinc.inappchat.ChatWindowView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
 
     public void startOwnActivityExample(View view) {
         startChatActivity();
+    }
+
+    public void clearChatSession(View view) {
+        ChatWindowView.clearSession(view.getContext());
     }
 
     public interface OnBackPressedListener {

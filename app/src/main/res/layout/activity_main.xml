@@ -53,6 +53,17 @@
                 android:onClick="startOwnActivityExample"
                 android:text="Own Activity" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+
+            <Button
+                style="@style/ExampleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="clearChatSession"
+                android:text="Clear chat session" />
+
         </LinearLayout>
 
         <FrameLayout

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,6 +27,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     private FloatingActionButton startChatBtn;
     private ChatWindowView chatWindow;
     private TextView chatBadgeTv;
+    private Button clearSessionBtn;
     private int badgeCounter;
 
     @Override
@@ -46,6 +48,14 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
             }
         });
         chatBadgeTv = findViewById(R.id.chat_badge);
+        clearSessionBtn = findViewById(R.id.clear_session_btn);
+        clearSessionBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ChatWindowView.clearSession(view.getContext());
+                chatWindow.reload();
+            }
+        });
     }
 
     private void showChatWindow() {
@@ -56,6 +66,8 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     public void onChatWindowVisibilityChanged(boolean visible) {
         if (visible) {
             discardBadge();
+        } else {
+            clearSessionBtn.setVisibility(View.VISIBLE);
         }
     }
 
@@ -87,7 +99,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         Toast.makeText(FullScreenWindowActivityExample.this, errorDescription, Toast.LENGTH_SHORT).show();
-        return false;
+        return true;
     }
 
     @Override
