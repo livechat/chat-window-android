@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.1.3 - May 20, 2021
+Migrate to androidx support libraries, update gradle, build tools and dependencies
+
 ## Version 2.1.2 - April 15, 2020
 Handle case where chat window configuration failed
 

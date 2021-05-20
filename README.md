@@ -24,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.1.2'
+    implementation 'com.github.livechat:chat-window-android:v2.1.4'
 }
 ```
 
@@ -132,7 +132,7 @@ This listener gives you opportunity to:
 
 ### File sharing
 
-To provide your users capablity to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
+To provide your users capability to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
 
 Your listener should override `onStartFilePickerActivity` method and start activity for result with provided intent and request code.
 
