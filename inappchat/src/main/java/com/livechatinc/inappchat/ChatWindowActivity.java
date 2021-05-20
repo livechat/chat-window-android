@@ -2,11 +2,12 @@ package com.livechatinc.inappchat;
 
 import android.app.FragmentTransaction;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.HashMap;
 import java.util.HashSet;

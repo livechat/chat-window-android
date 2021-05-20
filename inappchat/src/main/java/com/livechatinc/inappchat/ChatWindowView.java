@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,6 +29,9 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -93,10 +94,10 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         setFitsSystemWindows(true);
         setVisibility(GONE);
         LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
-        webView = (WebView) findViewById(R.id.chat_window_web_view);
-        statusText = (TextView) findViewById(R.id.chat_window_status_text);
-        progressBar = (ProgressBar) findViewById(R.id.chat_window_progress);
-        reloadButton = (Button) findViewById(R.id.chat_window_button);
+        webView = findViewById(R.id.chat_window_web_view);
+        statusText = findViewById(R.id.chat_window_status_text);
+        progressBar = findViewById(R.id.chat_window_progress);
+        reloadButton = findViewById(R.id.chat_window_button);
         reloadButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -130,7 +131,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setVisibility(GONE);
 
-        webView.setOnTouchListener(new View.OnTouchListener() {
+        webView.setOnTouchListener(new OnTouchListener() {
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:

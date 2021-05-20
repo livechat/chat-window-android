@@ -3,13 +3,14 @@ package com.livechatinc.livechatwidgetexample;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.livechatinc.inappchat.ChatWindowErrorType;
 import com.livechatinc.inappchat.ChatWindowView;
@@ -36,14 +37,14 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        startChatBtn = (Button) view.findViewById(R.id.embedded_start_chat);
+        startChatBtn = view.findViewById(R.id.embedded_start_chat);
         startChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 chatWindow.showChatWindow();
             }
         });
-        reloadChatBtn = (Button) view.findViewById(R.id.embedded_reload_chat);
+        reloadChatBtn = view.findViewById(R.id.embedded_reload_chat);
         reloadChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,7 +52,7 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
                 chatWindow.reload();
             }
         });
-        chatWindow = (ChatWindowView) view.findViewById(R.id.embedded_chat_window);
+        chatWindow = view.findViewById(R.id.embedded_chat_window);
         chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
         chatWindow.setUpListener(this);
         chatWindow.initialize();

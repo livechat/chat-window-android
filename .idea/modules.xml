@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/chat-window-android.iml" filepath="$PROJECT_DIR$/chat-window-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/inappchat/inappchat.iml" filepath="$PROJECT_DIR$/inappchat/inappchat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chat-window-android.iml" filepath="$PROJECT_DIR$/.idea/modules/chat-window-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/chat-window-android.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/chat-window-android.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/inappchat/chat-window-android.inappchat.iml" filepath="$PROJECT_DIR$/.idea/modules/inappchat/chat-window-android.inappchat.iml" />
     </modules>
   </component>
 </project>
