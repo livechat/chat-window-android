@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.1.5 - May 21, 2021
+Fix NoClassFound error
+
 ## Version 2.1.4 - May 20, 2021
 Provide convenience method for clearing chat session
 
