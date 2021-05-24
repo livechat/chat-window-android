@@ -76,7 +76,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
      * ChatWindowView is hidden until it is initialized and shown.
      */
     public static ChatWindowView createAndAttachChatWindowInstance(@NonNull Activity activity) {
-        final ViewGroup contentView = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        final ViewGroup contentView = ((ViewGroup) ((ViewGroup) activity.getWindow().findViewById(android.R.id.content)).getChildAt(0));
         ChatWindowView chatWindowView = (ChatWindowView) LayoutInflater.from(activity).inflate(R.layout.view_chat_window, contentView, false);
         contentView.addView(chatWindowView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         return chatWindowView;
