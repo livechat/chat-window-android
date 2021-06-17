@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 2.1.6 - June 17, 2021
+Handling keyboard overlapping chat input field in full screen activities
+Update android compile and target sdk version to 30
+
 ## Version 2.1.5 - May 21, 2021
 Fix NoClassFound error
 
