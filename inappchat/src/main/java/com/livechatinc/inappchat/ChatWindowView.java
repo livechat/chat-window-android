@@ -3,17 +3,21 @@ package com.livechatinc.inappchat;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
@@ -70,6 +74,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     private ChatWindowConfiguration config;
     private boolean initialized;
     private boolean chatUiReady = false;
+    private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
     /**
      * Creates an instance of ChatWindowView an attaches to the provided activity.
@@ -147,6 +152,75 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
             }
         });
         webView.addJavascriptInterface(new ChatWindowJsInterface(this), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
+        adjustResizeOnGlobalLayout(webView, getActivity());
+    }
+
+    private Activity getActivity() {
+        Context context = getContext();
+        while (context instanceof ContextWrapper) {
+            if (context instanceof Activity) {
+                return (Activity) context;
+            }
+            context = ((ContextWrapper) context).getBaseContext();
+        }
+        return null;
+    }
+
+    public void adjustResizeOnGlobalLayout(final WebView webView, final Activity activity) {
+        if (!shouldAdjustLayout(getActivity())) return;
+        final View decorView = activity.getWindow().getDecorView();
+        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
+            public void onGlobalLayout() {
+                final View decorView = getActivity().getWindow().getDecorView();
+                final ViewGroup viewGroup = ChatWindowView.this;
+
+                DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+                Rect rect = new Rect();
+                decorView.getWindowVisibleDisplayFrame(rect);
+                int paddingBottom = displayMetrics.heightPixels - rect.bottom;
+
+                if (viewGroup.getPaddingBottom() != paddingBottom) {
+                    // showing/hiding the soft keyboard
+                    viewGroup.setPadding(viewGroup.getPaddingLeft(), viewGroup.getPaddingTop(), viewGroup.getPaddingRight(), paddingBottom);
+                } else {
+                    // soft keyboard shown/hidden and padding changed
+                    if (paddingBottom != 0) {
+                        // soft keyboard shown, scroll active element into view in case it is blocked by the soft keyboard
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            webView.evaluateJavascript("if (document.activeElement) { document.activeElement.scrollIntoView({behavior: \"smooth\", block: \"center\", inline: \"nearest\"}); }", null);
+                        }
+                    }
+                }
+            }
+        };
+
+        decorView.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        removeLayoutListener();
+        webView.destroy();
+        super.onDetachedFromWindow();
+    }
+
+    private void removeLayoutListener() {
+        if (layoutListener == null) return;
+        final View decorView = getActivity().getWindow().getDecorView();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            decorView.getViewTreeObserver().removeOnGlobalLayoutListener(layoutListener);
+        } else {
+            decorView.getViewTreeObserver().removeGlobalOnLayoutListener(layoutListener);
+        }
+    }
+
+    private boolean shouldAdjustLayout(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            return false;
+        }
+        final int flags = activity.getWindow().getAttributes().flags;
+        final boolean isFullScreen = (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
+        return isFullScreen;
     }
 
     public void setUpListener(ChatWindowEventsListener listener) {
@@ -485,7 +559,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
         return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
     }
 
-    public static void clearSession(Context context){
+    public static void clearSession(Context context) {
         WebStorage.getInstance().deleteAllData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             CookieManager.getInstance().removeAllCookies(null);
