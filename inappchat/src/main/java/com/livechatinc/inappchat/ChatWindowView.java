@@ -525,7 +525,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
 
                 String originalUrl = webView.getOriginalUrl();
 
-                if (uriString.equals(originalUrl) || isSecureLivechatIncDoamin(uri.getHost())) {
+                if (uriString.equals(originalUrl) || isSecureLivechatIncDomain(uri.getHost())) {
                     return false;
                 } else {
                     if (chatWindowListener != null && chatWindowListener.handleUri(uri)) {
@@ -555,7 +555,7 @@ public class ChatWindowView extends FrameLayout implements IChatWindowView {
     }
 
 
-    public static boolean isSecureLivechatIncDoamin(String host) {
+    public static boolean isSecureLivechatIncDomain(String host) {
         return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
     }
 
