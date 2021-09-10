@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.livechatinc.inappchat.ChatWindowConfiguration;
 import com.livechatinc.inappchat.ChatWindowErrorType;
 import com.livechatinc.inappchat.ChatWindowEventsListener;
 import com.livechatinc.inappchat.ChatWindowView;
@@ -54,7 +55,8 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
             }
         });
         chatWindow = view.findViewById(R.id.embedded_chat_window);
-        chatWindow.setConfiguration(BaseApplication.getChatWindowConfiguration());
+
+        chatWindow.setConfiguration(ChatWindowConfiguration.fromBundle(getArguments()));
         chatWindow.setEventsListener(this);
         chatWindow.initialize();
     }

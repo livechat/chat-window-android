@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,7 @@ import java.util.Map;
  * Created by szymonjarosz on 20/07/2017.
  */
 
-public class ChatWindowConfiguration {
+public class ChatWindowConfiguration implements Serializable {
     public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER";
     public static final String KEY_GROUP_ID = "KEY_GROUP_ID";
     public static final String KEY_VISITOR_NAME = "KEY_VISITOR_NAME";
@@ -22,11 +23,11 @@ public class ChatWindowConfiguration {
     private static final String DEFAULT_GROUP_ID = "0";
     public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
 
-    private final String licenceNumber;
-    private final String groupId;
-    private final String visitorName;
-    private final String visitorEmail;
-    private final HashMap<String, String> customVariables;
+    public final String licenceNumber;
+    public final String groupId;
+    public final String visitorName;
+    public final String visitorEmail;
+    public final HashMap<String, String> customVariables;
 
     public ChatWindowConfiguration(
             @NonNull String licenceNumber,
@@ -39,6 +40,21 @@ public class ChatWindowConfiguration {
         this.visitorName = visitorName;
         this.visitorEmail = visitorEmail;
         this.customVariables = customVariables;
+    }
+
+    public static ChatWindowConfiguration fromBundle(Bundle arguments) {
+        HashMap<String, String> customParams = new HashMap();
+        for (String key : arguments.keySet()) {
+            if (key.startsWith(CUSTOM_PARAM_PREFIX)) {
+                customParams.put(key.replaceFirst(CUSTOM_PARAM_PREFIX, ""), arguments.getString(key));
+            }
+        }
+        return new ChatWindowConfiguration.Builder()
+                .setLicenceNumber(arguments.getString(KEY_LICENCE_NUMBER))
+                .setGroupId(arguments.getString(KEY_GROUP_ID))
+                .setVisitorName(arguments.getString(KEY_VISITOR_NAME))
+                .setVisitorEmail(arguments.getString(KEY_VISITOR_EMAIL))
+                .setCustomParams(customParams).build();
     }
 
     public Map<String, String> getParams() {
@@ -89,6 +105,16 @@ public class ChatWindowConfiguration {
         result = 31 * result + (visitorEmail != null ? visitorEmail.hashCode() : 0);
         result = 31 * result + (customVariables != null ? customVariables.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "licenceNumber='" + licenceNumber + "'\n" +
+                        "groupId='" + groupId + "'\n" +
+                        "visitorName='" + visitorName + "'\n" +
+                        "visitorEmail='" + visitorEmail + "'\n" +
+                        "customVariables=" + customVariables;
     }
 
     public static class Builder {

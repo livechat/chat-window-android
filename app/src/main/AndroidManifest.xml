@@ -23,6 +23,8 @@
 
         <activity android:name=".FullScreenWindowActivityExample" />
 
+        <activity android:name=".EditConfigurationActivity" />
+
         <activity
             android:name="com.livechatinc.inappchat.ChatWindowActivity"
             android:configChanges="orientation|screenSize" />

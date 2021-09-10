@@ -3,10 +3,8 @@ package com.livechatinc.livechatwidgetexample;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +21,6 @@ import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import static android.view.View.GONE;
-import static com.livechatinc.livechatwidgetexample.MainActivity.LIVECHAT_SUPPORT_LICENCE_NR;
 
 /**
  * Created by szymonjarosz on 26/07/2017.
@@ -33,9 +30,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     private FloatingActionButton startChatBtn;
     private ChatWindowView chatWindow;
     private TextView chatBadgeTv;
-    private EditText editText;
     private Button clearSessionBtn;
-    private Button setVisitorName;
     private int badgeCounter;
 
     @Override
@@ -45,7 +40,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
-        chatWindow.setConfiguration(BaseApplication.getChatWindowConfiguration());
+        chatWindow.setConfiguration((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
         chatWindow.setEventsListener(this);
         chatWindow.initialize();
         startChatBtn = findViewById(R.id.start_chat);
@@ -57,19 +52,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         });
         chatBadgeTv = findViewById(R.id.chat_badge);
         clearSessionBtn = findViewById(R.id.clear_session_btn);
-        setVisitorName = findViewById(R.id.set_visitor_name);
-        setVisitorName.setOnClickListener(new View.OnClickListener() {
-                                              @Override
-                                              public void onClick(View v) {
-                                                  boolean changed = chatWindow.setConfiguration(getNewConfig());
-                                                  Log.i("TAG", "config changed: " + changed);
-                                                  if (changed) {
-                                                      chatWindow.reload(true);
-                                                  }
-                                              }
-                                          }
-
-        );
         clearSessionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,11 +59,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
                 chatWindow.reload(false);
             }
         });
-        editText = findViewById(R.id.visitor_name);
-    }
-
-    public ChatWindowConfiguration getNewConfig() {
-        return new ChatWindowConfiguration(LIVECHAT_SUPPORT_LICENCE_NR, "0", editText.getText().toString(), null, null);
     }
 
     private void showChatWindow() {
