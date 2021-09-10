@@ -14,14 +14,14 @@ import org.json.JSONObject;
  */
 
 class ChatWindowJsInterface {
-    private final ChatWindowView view;
-    public static final String BRIDGE_OBJECT_NAME= "androidMobileWidget";
+    private final ChatWindowViewImpl view;
+    public static final String BRIDGE_OBJECT_NAME = "androidMobileWidget";
     private static final String KEY_MESSAGE_TYPE = "messageType";
     private static final String TYPE_UI_READY = "uiReady";
     private static final String TYPE_HIDE_CHAT_WINDOW = "hideChatWindow";
     private static final String TYPE_NEW_MESSAGE = "newMessage";
 
-    public ChatWindowJsInterface(ChatWindowView view) {
+    public ChatWindowJsInterface(ChatWindowViewImpl view) {
         this.view = view;
     }
 
@@ -30,7 +30,7 @@ class ChatWindowJsInterface {
         Log.i("Interface", "postMessage: " + messageJson);
         try {
             JSONObject jsonObject = new JSONObject(messageJson);
-            if(jsonObject != null && jsonObject.has(KEY_MESSAGE_TYPE)){
+            if (jsonObject != null && jsonObject.has(KEY_MESSAGE_TYPE)) {
                 dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), messageJson);
             }
         } catch (JSONException e) {
@@ -39,7 +39,7 @@ class ChatWindowJsInterface {
     }
 
     private void dispatchMessage(String messageType, String json) {
-        switch (messageType){
+        switch (messageType) {
             case TYPE_HIDE_CHAT_WINDOW:
                 view.onHideChatWindow();
                 break;
