@@ -92,6 +92,10 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
         startActivityForResult(intent, requestCode);
     }
 
+    @Override
+    public void onRequestAudioPermissions(String[] permissions, int requestCode) {
+    }
+
 
     @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {

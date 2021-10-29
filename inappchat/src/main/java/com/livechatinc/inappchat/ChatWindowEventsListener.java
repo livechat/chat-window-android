@@ -28,6 +28,11 @@ public interface ChatWindowEventsListener {
     void onStartFilePickerActivity(Intent intent, int requestCode);
 
     /**
+     * Needed for requesting AUDIO and CAMERA permissions for SnapCall integration
+     */
+    void onRequestAudioPermissions(String[] permissions, int requestCode);
+
+    /**
      * This method propagates errors and tells this window if error needs to be handled.
      *
      * @param errorType        Identifies the source of an error
