@@ -131,6 +131,7 @@ This listener gives you opportunity to:
 * react on visibility changes (user can hide the view on its own)
 * handle user selected links in a custom way
 * react and handle errors coming from chat window
+* allow users to use SnapCall integration
 
 ### File sharing
 
@@ -291,3 +292,31 @@ You can change or localize error messages, by defining your own string resources
 * `ChatWindowView.clearSession(Context)` is moved to `ChatWindowUtils.clearSession(Context)`
 * `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())``
 
+# SnapCall integration
+
+SnapCall integration requires AUDIO and VIDEO permissions. In order to allow your users to use SnapCall integration you need to:
+1. Set up your ChatWindowView Event listener, check [ChatWindowEventsListener](#ChatWindowEventsListener)
+2. Add following permissions to you app `AndroidManifest.xml` file
+```xml
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+```
+3. Override `void onRequestAudioPermissions(String[] permissions, int requestCode)` to ask user for permissions, like so:
+```java
+@Override
+public void onRequestAudioPermissions(String[] permissions, int requestCode) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        this.requestPermissions(permissions, requestCode);
+    }
+}
+```
+4. Override your activity `void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)` to pass result to `ChatWindowView`
+```java
+if (!chatWindow.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+}
+```
+
+For reference, check `FullScreenWindowActivityExample.java`

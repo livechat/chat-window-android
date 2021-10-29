@@ -2,12 +2,14 @@ package com.livechatinc.livechatwidgetexample;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -105,6 +107,13 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     }
 
     @Override
+    public void onRequestAudioPermissions(String[] permissions, int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.requestPermissions(permissions, requestCode);
+        }
+    }
+
+    @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         Toast.makeText(FullScreenWindowActivityExample.this, errorDescription, Toast.LENGTH_SHORT).show();
         return true;
@@ -118,7 +127,15 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        chatWindow.onActivityResult(requestCode, resultCode, data);
+        if (!chatWindow.onActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (!chatWindow.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
     }
 }

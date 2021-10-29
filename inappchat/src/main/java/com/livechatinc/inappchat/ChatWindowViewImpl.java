@@ -1,5 +1,6 @@
 package com.livechatinc.inappchat;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +22,7 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -36,6 +38,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -66,6 +69,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private WebView webViewPopup;
     private ChatWindowEventsListener eventsListener;
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
+    private static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
     private ValueCallback<Uri> mUriUploadCallback;
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
@@ -73,6 +77,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private boolean initialized;
     private boolean chatUiReady = false;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
+    private PermissionRequest webRequestPermissions;
 
 
     public ChatWindowViewImpl(@NonNull Context context) {
@@ -115,6 +120,9 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
         webSettings.setDomStorageEnabled(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            webSettings.setMediaPlaybackRequiresUserGesture(false);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             cookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
@@ -326,6 +334,23 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     @Override
     public boolean isChatLoaded() {
         return chatUiReady;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
+    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_CODE_AUDIO_PERMISSIONS && webRequestPermissions != null) {
+            String[] PERMISSIONS = {
+                    PermissionRequest.RESOURCE_AUDIO_CAPTURE,
+                    PermissionRequest.RESOURCE_VIDEO_CAPTURE
+            };
+            webRequestPermissions.grant(PERMISSIONS);
+            webRequestPermissions = null;
+
+            return true;
+
+        }
+        return false;
     }
 
     @Override
@@ -609,6 +634,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
             chooseUriArrayToUpload(uploadMsg);
             return true;
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+        @Override
+        public void onPermissionRequest(final PermissionRequest request) {
+            webRequestPermissions = request;
+            String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+            eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
         }
 
         @Override

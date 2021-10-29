@@ -31,4 +31,6 @@ public interface ChatWindowView {
     void hideChatWindow();
 
     boolean isChatLoaded();
+
+    boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
 }
