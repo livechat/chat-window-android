@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             .setLicenceNumber(licenceNumber)
             .build();
     TextView licenceInfoTv;
-    ActivityResultLauncher<Intent> someActivityResultLauncher;
+    ActivityResultLauncher<Intent> editConfigActivityResultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         licenceInfoTv = findViewById(R.id.licence_info);
         licenceInfoTv.setText(windowConfig.toString());
 
-        someActivityResultLauncher = registerForActivityResult(
+        editConfigActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
                     @Override
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     public void editConfiguration(View view) {
         final Intent intent = new Intent(this, EditConfigurationActivity.class);
         intent.putExtra("config", windowConfig);
-        someActivityResultLauncher.launch(intent);
+        editConfigActivityResultLauncher.launch(intent);
     }
 
     public void startOwnActivityExample(View view) {

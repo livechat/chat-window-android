@@ -24,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.2.0rc1'
+    implementation 'com.github.livechat:chat-window-android:v2.2.0'
 }
 ```
 
@@ -61,7 +61,7 @@ configuration = new ChatWindowConfiguration(
     customParamsMap);
 ```
 
-You could also use `new ChatWindowConfiguration.Builder()` for cleaner code.
+You could also use `new ChatWindowConfiguration.Builder()`.
 
 ## Chat Window View
 
