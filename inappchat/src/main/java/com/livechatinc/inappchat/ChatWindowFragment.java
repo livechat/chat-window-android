@@ -121,6 +121,10 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
     }
 
     @Override
+    public void onRequestAudioPermissions(String[] permissions, int requestCode) {
+    }
+
+    @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         return false;
     }

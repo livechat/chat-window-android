@@ -1,6 +1,9 @@
 # Android ChangeLog
 
 ## Version 2.2.0 - December 3rd, 2021
+Add possibility to use SnapCall
+
+## Version 2.2.0 - December 3rd, 2021
 Small redesign for better readability
 Allows for easier chat configuration change #64
 
