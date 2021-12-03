@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 2.2.0 - December 3rd, 2021
+Small redesign for better readability
+Allows for easier chat configuration change #64
+
 ## Version 2.1.6 - June 17, 2021
 Handling keyboard overlapping chat input field in full screen activities
 Update android compile and target sdk version to 30
