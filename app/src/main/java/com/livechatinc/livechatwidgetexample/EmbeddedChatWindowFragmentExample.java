@@ -12,7 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.livechatinc.inappchat.ChatWindowConfiguration;
 import com.livechatinc.inappchat.ChatWindowErrorType;
+import com.livechatinc.inappchat.ChatWindowEventsListener;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
@@ -20,7 +22,7 @@ import com.livechatinc.inappchat.models.NewMessageModel;
  * Created by szymonjarosz on 26/07/2017.
  */
 
-public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatWindowView.ChatWindowEventsListener,
+public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatWindowEventsListener,
         MainActivity.OnBackPressedListener {
     private static final String START_CHAT_TEXT = "Show chat";
     private Button startChatBtn;
@@ -49,12 +51,13 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
             @Override
             public void onClick(View view) {
                 view.setVisibility(View.GONE);
-                chatWindow.reload();
+                chatWindow.reload(false);
             }
         });
         chatWindow = view.findViewById(R.id.embedded_chat_window);
-        chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
-        chatWindow.setUpListener(this);
+
+        chatWindow.setConfiguration(ChatWindowConfiguration.fromBundle(getArguments()));
+        chatWindow.setEventsListener(this);
         chatWindow.initialize();
     }
 
@@ -78,6 +81,10 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     @Override
     public boolean handleUri(Uri uri) {
         return false;
+    }
+
+    @Override
+    public void onWindowInitialized() {
     }
 
     @Override

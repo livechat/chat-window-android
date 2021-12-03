@@ -18,7 +18,7 @@ import java.util.HashMap;
  * Created by Łukasz Jerciński on 09/02/2017.
  */
 
-public final class ChatWindowFragment extends Fragment implements ChatWindowView.ChatWindowEventsListener {
+public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
     private ChatWindowConfiguration configuration;
     private ChatWindowView chatWindow;
 
@@ -81,11 +81,11 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         chatWindow = (ChatWindowView) inflater.inflate(R.layout.view_chat_window, container, false);
 
-        chatWindow.setUpWindow(configuration);
-        chatWindow.setUpListener(this);
+        chatWindow.setConfiguration(configuration);
+        chatWindow.setEventsListener(this);
         chatWindow.initialize();
         chatWindow.showChatWindow();
-        return chatWindow;
+        return (View) chatWindow;
     }
 
     @Override
@@ -108,6 +108,11 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowView
     @Override
     public boolean handleUri(Uri uri) {
         return false;
+    }
+
+    @Override
+    public void onWindowInitialized() {
+
     }
 
     @Override

@@ -24,7 +24,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.1.6'
+    implementation 'com.github.livechat:chat-window-android:v2.2.0'
 }
 ```
 
@@ -61,6 +61,8 @@ configuration = new ChatWindowConfiguration(
     customParamsMap);
 ```
 
+You could also use `new ChatWindowConfiguration.Builder()`.
+
 ## Chat Window View
 
 There are two recommended ways to use ChatWindow.
@@ -74,9 +76,9 @@ All you need to do is to create, attach and initialize chat window. Something in
 ```java
 public void startFullScreenChat() {
     if (fullScreenChatWindow == null) {
-        fullScreenChatWindow = ChatWindowView.createAndAttachChatWindowInstance(getActivity());
-        fullScreenChatWindow.setUpWindow(configuration);
-        fullScreenChatWindow.setUpListener(this);
+        fullScreenChatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(getActivity());
+        fullScreenChatWindow.setConfiguration(configuration);
+        fullScreenChatWindow.setEventsListener(this);
         fullScreenChatWindow.initialize();
     }
     fullScreenChatWindow.showChatWindow();
@@ -87,22 +89,22 @@ public void startFullScreenChat() {
 
 If you like to control the place and size of the ChatWindowView, you might want to add it to your app either by inlucidng a view in XML
 ```xml
-<com.livechatinc.inappchat.ChatWindowView
+<com.livechatinc.inappchat.ChatWindowViewImpl
     android:id="@+id/embedded_chat_window"
     android:layout_width="match_parent"
     android:layout_height="400dp"/>
 ```
 or inflating the view directly
 ```java
-ChatWindowView chatWindowView = new ChatWindowView(MainActivity.this);
+ChatWindowViewImpl chatWindowView = new ChatWindowViewImpl(MainActivity.this);
 ```
 
 and then initializing ChatWindow like with full screen window approach:
 ```java
 public void startEmmbeddedChat(View view) {
     if (!emmbeddedChatWindow.isInitialized()) {
-        emmbeddedChatWindow.setUpWindow(configuration);
-        emmbeddedChatWindow.setUpListener(this);
+        emmbeddedChatWindow.setConfiguration(configuration);
+        emmbeddedChatWindow.setEventsListener(this);
         emmbeddedChatWindow.initialize();
     }
     emmbeddedChatWindow.showChatWindow();
@@ -189,9 +191,11 @@ public boolean onError(ChatWindowErrorType errorType, int errorCode, String erro
 ### Clear chat session
 
 After your user signs out of the app, you might want to clear the chat session.
-You can do that by invoking static method on `ChatWindowView.clearSession(Context)` from anywhere in the app.
+You can do that by invoking static method on `ChatWindowUtils.clearSession(Context)` from anywhere in the app.
 In case your `ChatWindowView` is attached in course of the log out flow, you also going to need to reload it by calling
-`chatWindow.reload()` after clearSession code. See [FullScreenWindowActivityExample.java](https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java)
+`chatWindow.reload(false)` after clearSession code. See [FullScreenWindowActivityExample.java](https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java)
+
+In case your ChatWindow isn't recreated when ChatWindowConfiguration changes (i.e. VisitorName), you might want to full reload chat window by invoking `chatWindow.reload(true)`
 
 ## Alternative usage with limited capabilities
 
@@ -279,3 +283,11 @@ You can change or localize error messages, by defining your own string resources
 <string name="cant_share_files">File sharing is not configured for this app</string>
 <string name="reload_chat">Reload</string>
 ```
+
+### Migrating to version >= 2.2.0
+* ChatWindowView is now interface that can be casted to View
+* `setUpWindow(configuration);` is replaced by `setConfiguration(configuration);`
+* `setUpListener(listener)` is replaced by `setEventsListener(listener)`
+* `ChatWindowView.clearSession(Context)` is moved to `ChatWindowUtils.clearSession(Context)`
+* `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())``
+

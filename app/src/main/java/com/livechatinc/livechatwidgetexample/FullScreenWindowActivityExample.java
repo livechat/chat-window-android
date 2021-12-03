@@ -13,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.livechatinc.inappchat.ChatWindowConfiguration;
 import com.livechatinc.inappchat.ChatWindowErrorType;
+import com.livechatinc.inappchat.ChatWindowEventsListener;
+import com.livechatinc.inappchat.ChatWindowUtils;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
@@ -23,7 +26,7 @@ import static android.view.View.GONE;
  * Created by szymonjarosz on 26/07/2017.
  */
 
-public class FullScreenWindowActivityExample extends AppCompatActivity implements ChatWindowView.ChatWindowEventsListener {
+public class FullScreenWindowActivityExample extends AppCompatActivity implements ChatWindowEventsListener {
     private FloatingActionButton startChatBtn;
     private ChatWindowView chatWindow;
     private TextView chatBadgeTv;
@@ -36,9 +39,9 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         setContentView(R.layout.chat_window_launcher);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        chatWindow = ChatWindowView.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
-        chatWindow.setUpWindow(BaseApplication.getChatWindowConfiguration());
-        chatWindow.setUpListener(this);
+        chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
+        chatWindow.setConfiguration((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
+        chatWindow.setEventsListener(this);
         chatWindow.initialize();
         startChatBtn = findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(new View.OnClickListener() {
@@ -52,8 +55,8 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         clearSessionBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ChatWindowView.clearSession(view.getContext());
-                chatWindow.reload();
+                ChatWindowUtils.clearSession(view.getContext());
+                chatWindow.reload(false);
             }
         });
     }
@@ -89,6 +92,11 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public boolean handleUri(Uri uri) {
         return false;
+    }
+
+    @Override
+    public void onWindowInitialized() {
+
     }
 
     @Override
