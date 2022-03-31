@@ -7,25 +7,22 @@ Embedding mobile chat window in Android application for
 
 # Installation
 
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#livechat/chat-window-android)
-
-https://jitpack.io/#livechat/chat-window-android
+[![Release](https://jitpack.io/v/livechat/chat-window-android.svg)](https://jitpack.io/#livechat/chat-window-android)
 
 To get a project into your build:
 
-Step 1. Add the JitPack repository to your build file
+**Step 1.** Add the JitPack repository to your build file \
 Add it in your root build.gradle at the end of repositories:
 ```groovy
 allprojects {
      repositories {
-         ...
+         // ...
          maven { url 'https://jitpack.io' }
      }
  }
 ```
-Step 2. Add the dependency
-```
+**Step 2.** Add the dependency
+```groovy
 dependencies {
     implementation 'com.github.livechat:chat-window-android:v2.2.1'
 }
@@ -38,7 +35,7 @@ Your application will need a permission to use the Internet. Add the following l
 ```
 <div class="clear"></div>
 
-If you want to allow users to upload files from their external storage using chat window, a permission is also needed:
+If you want to allow users to upload files from their external storage using chat window, this permission is also needed:
 
 ```xml
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
