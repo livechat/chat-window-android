@@ -7,8 +7,7 @@ Embedding mobile chat window in Android application for
 
 # Installation
 
-[![Release](https://jitpack.io/v/livechat/chat-window-android.svg)]
-(https://jitpack.io/#livechat/chat-window-android)
+[![Release](https://jitpack.io/v/livechat/chat-window-android.svg)](https://jitpack.io/#livechat/chat-window-android)
 
 
 To get a project into your build:
