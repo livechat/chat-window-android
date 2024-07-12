@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.livechatinc.livechatwidgetexample">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -16,7 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,13 +30,18 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".FullScreenWindowActivityExample" />
+        <activity
+            android:name=".FullScreenWindowActivityExample"
+            android:exported="false" />
 
-        <activity android:name=".EditConfigurationActivity" />
+        <activity
+            android:name=".EditConfigurationActivity"
+            android:exported="false" />
 
         <activity
             android:name="com.livechatinc.inappchat.ChatWindowActivity"
-            android:configChanges="orientation|screenSize" />
+            android:configChanges="orientation|screenSize"
+            android:exported="false" />
     </application>
 
 </manifest>
