@@ -116,7 +116,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         webView.setFocusable(true);
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setSupportMultipleWindows(true);
         webSettings.setDomStorageEnabled(true);

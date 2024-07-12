@@ -4,11 +4,11 @@ apply plugin: 'maven'
 group='com.github.livechat'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
     buildToolsVersion "28.0.3"
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 11
         versionName VERSION_NAME
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
