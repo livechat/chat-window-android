@@ -6,6 +6,7 @@ plugins {
 group = 'com.github.livechat'
 
 android {
+    namespace 'com.livechatinc.inappchat'
     compileSdk 33
     defaultConfig {
         minSdkVersion 15
@@ -27,7 +28,6 @@ android {
             }
         }
     }
-    namespace 'com.livechatinc.inappchat'
 }
 
 dependencies {
