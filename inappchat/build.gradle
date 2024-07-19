@@ -1,15 +1,15 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 group = 'com.github.livechat'
 
 android {
-    compileSdkVersion 33
+    compileSdk 33
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 33
-        versionCode 11
-        versionName VERSION_NAME
     }
     buildTypes {
         release {
@@ -38,11 +38,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-task clearJar(type: Delete) {
+tasks.register('clearJar', Delete) {
     delete 'build/libs/' + LC_ARTIFACT_ID + '_' + VERSION_NAME + '.jar'
 }
 
-task makeJar(type: Copy) {
+tasks.register('makeJar', Copy) {
     from('build/intermediates/bundles/release/')
     into('release/')
     include('classes.jar')
