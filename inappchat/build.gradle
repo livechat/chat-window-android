@@ -27,6 +27,7 @@ android {
             }
         }
     }
+    namespace 'com.livechatinc.inappchat'
 }
 
 dependencies {
