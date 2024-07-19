@@ -7,10 +7,8 @@ Embedding mobile chat window in Android application for
 
 # Installation
 
-[![Release](https://jitpack.io/v/User/Repo.svg)]
-(https://jitpack.io/#livechat/chat-window-android)
+[![Release](https://jitpack.io/v/livechat/chat-window-android.svg)](https://jitpack.io/#livechat/chat-window-android)
 
-https://jitpack.io/#livechat/chat-window-android
 
 To get a project into your build:
 
@@ -27,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.2.1'
+    implementation 'com.github.livechat:chat-window-android:v2.3.0'
 }
 ```
 
@@ -35,13 +33,6 @@ Your application will need a permission to use the Internet. Add the following l
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
-```
-<div class="clear"></div>
-
-If you want to allow users to upload files from their external storage using chat window, a permission is also needed:
-
-```xml
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```
 <div class="clear"></div>
 
@@ -223,7 +214,11 @@ There are two ways to open the chat window – using Activity or Fragment.
 In order to open a chat window in new Activity, you need to declare **ChatWindowActivity** in your manifest. Add the following line to **AndroidManifest.xml**, between `<application></application>` tags:
 
 ```xml
-<activity android:name="com.livechatinc.inappchat.ChatWindowActivity" android:configChanges="orientation|screenSize" />
+<activity 
+    android:name="com.livechatinc.inappchat.ChatWindowActivity" 
+    android:configChanges="orientation|screenSize" 
+    android:exported="false" 
+/>
 ```
 
 <div class="clear"></div>
@@ -294,6 +289,9 @@ You can change or localize error messages, by defining your own string resources
 * `setUpListener(listener)` is replaced by `setEventsListener(listener)`
 * `ChatWindowView.clearSession(Context)` is moved to `ChatWindowUtils.clearSession(Context)`
 * `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())``
+
+### Migrating to versions >=2.3.x
+* You no longer need to specify `android.permission.READ_EXTERNAL_STORAGE` permission in your AndroidManifest.xml 
 
 # SnapCall integration
 

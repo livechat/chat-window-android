@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.3.0 - July 12th, 2024
+Targeting Android 13 (API 33)
+
 ## Version 2.2.0 - December 3rd, 2021
 Add possibility to use SnapCall
 
