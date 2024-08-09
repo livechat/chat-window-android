@@ -48,16 +48,3 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     testImplementation 'junit:junit:4.13.2'
 }
-
-tasks.register('clearJar', Delete) {
-    delete 'build/libs/' + LC_ARTIFACT_ID + '_' + VERSION_NAME + '.jar'
-}
-
-tasks.register('makeJar', Copy) {
-    from('build/intermediates/bundles/release/')
-    into('release/')
-    include('classes.jar')
-    rename('classes.jar', LC_ARTIFACT_ID + '_' + VERSION_NAME + '.jar')
-}
-
-makeJar.dependsOn(clearJar, build)
