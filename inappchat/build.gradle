@@ -1,15 +1,16 @@
-apply plugin: 'com.android.library'
-apply plugin: 'maven'
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
 
 group = 'com.github.livechat'
 
 android {
-    compileSdkVersion 33
+    namespace 'com.livechatinc.inappchat'
+    compileSdk 33
     defaultConfig {
         minSdkVersion 15
         targetSdkVersion 33
-        versionCode 11
-        versionName VERSION_NAME
     }
     buildTypes {
         release {
@@ -29,24 +30,21 @@ android {
     }
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation('androidx.annotation:annotation:1.2.0')
-    implementation 'androidx.appcompat:appcompat:1.3.0'
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.android.volley:volley:1.2.0'
-    testImplementation 'junit:junit:4.12'
+    implementation('androidx.annotation:annotation:1.8.0')
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'com.android.volley:volley:1.2.1'
+    testImplementation 'junit:junit:4.13.2'
 }
-
-task clearJar(type: Delete) {
-    delete 'build/libs/' + LC_ARTIFACT_ID + '_' + VERSION_NAME + '.jar'
-}
-
-task makeJar(type: Copy) {
-    from('build/intermediates/bundles/release/')
-    into('release/')
-    include('classes.jar')
-    rename('classes.jar', LC_ARTIFACT_ID + '_' + VERSION_NAME + '.jar')
-}
-
-makeJar.dependsOn(clearJar, build)
