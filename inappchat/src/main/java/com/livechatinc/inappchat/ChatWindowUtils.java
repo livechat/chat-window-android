@@ -19,7 +19,7 @@ public class ChatWindowUtils {
      * ChatWindowView is hidden until it is initialized and shown.
      */
     public static ChatWindowView createAndAttachChatWindowInstance(@NonNull Activity activity) {
-        final ViewGroup contentView = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        final ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         ChatWindowViewImpl chatWindowView = (ChatWindowViewImpl) LayoutInflater.from(activity).inflate(R.layout.view_chat_window, contentView, false);
         contentView.addView(chatWindowView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
         return chatWindowView;
@@ -29,7 +29,7 @@ public class ChatWindowUtils {
      * Convenience method for removing the view from activity window
      */
     public static void detachChatWindowInstance(@NonNull Activity activity, @NonNull View view) {
-        final ViewGroup contentView = (ViewGroup) activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        final ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         contentView.removeView(view);
     }
 

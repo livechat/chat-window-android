@@ -205,8 +205,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             return false;
         }
         final int flags = activity.getWindow().getAttributes().flags;
-        final boolean isFullScreen = (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
-        return isFullScreen;
+        return (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
     }
 
     private void reload() {
