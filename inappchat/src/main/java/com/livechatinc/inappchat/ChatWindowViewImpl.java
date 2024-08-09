@@ -42,6 +42,7 @@ import androidx.annotation.RequiresApi;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.livechatinc.inappchat.models.NewMessageModel;
@@ -348,31 +349,38 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         checkConfiguration();
         initialized = true;
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://cdn.livechatinc.com/app/mobile/urls.json",
+        JsonObjectRequest initializationRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                "https://cdn.livechatinc.com/app/mobile/urls.json",
                 null,
-                response -> {
-                    Log.d(TAG, "Response: " + response);
-                    String chatUrl = constructChatUrl(response);
-                    Log.d(TAG, "constructed url: " + chatUrl);
-                    initialized = true;
-                    if (chatUrl != null && getContext() != null) {
-                        webView.loadUrl(chatUrl);
-                        webView.setVisibility(VISIBLE);
-                    }
-                    if (eventsListener != null) {
-                        eventsListener.onWindowInitialized();
-                    }
-                },
-                error -> {
-                    Log.d(TAG, "Error response: " + error);
-                    initialized = false;
-                    final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
-                    final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-                    if (getContext() != null) {
-                        onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-                    }
-                });
-        queue.add(stringRequest);
+                this::onWindowInitialized,
+                this::onWindowInitializationError
+        );
+        queue.add(initializationRequest);
+    }
+
+    private void onWindowInitialized(JSONObject response) {
+        Log.d(TAG, "Response: " + response);
+        String chatUrl = constructChatUrl(response);
+        Log.d(TAG, "constructed url: " + chatUrl);
+        initialized = true;
+        if (chatUrl != null && getContext() != null) {
+            webView.loadUrl(chatUrl);
+            webView.setVisibility(VISIBLE);
+        }
+        if (eventsListener != null) {
+            eventsListener.onWindowInitialized();
+        }
+    }
+
+    private void onWindowInitializationError(VolleyError error) {
+        Log.d(TAG, "Error response: " + error);
+        initialized = false;
+        final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
+        final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+        if (getContext() != null) {
+            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+        }
     }
 
     @Override
@@ -455,7 +463,13 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         @Override
         public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
             final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
-            post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription())));
+
+            post(() -> onErrorDetected(
+                    errorHandled,
+                    ChatWindowErrorType.WebViewClient,
+                    error.getErrorCode(),
+                    String.valueOf(error.getDescription())
+            ));
 
             super.onReceivedError(view, request, error);
             Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
@@ -533,8 +547,12 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     class LCWebChromeClient extends WebChromeClient {
         @Override
-        public boolean onCreateWindow(WebView view, boolean isDialog,
-                                      boolean isUserGesture, Message resultMsg) {
+        public boolean onCreateWindow(
+                WebView view,
+                boolean isDialog,
+                boolean isUserGesture,
+                Message resultMsg
+        ) {
             webViewPopup = new WebView(getContext());
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
