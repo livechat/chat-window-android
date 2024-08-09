@@ -1,6 +1,6 @@
 # Android ChangeLog
 
-## Version 2.3.1 - July 19th, 2024
+## Version 2.3.1 - Aug 9th, 2024
 Upgrade Android Gradle Plugin to 7.4.2
 
 ## Version 2.3.0 - July 12th, 2024
