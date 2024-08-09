@@ -118,7 +118,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            cookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
+            CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         }
 
         webView.setWebViewClient(new LCWebViewClient());
@@ -286,7 +286,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     protected void onHideChatWindow() {
-        post(() -> hideChatWindow());
+        post(this::hideChatWindow);
     }
 
     @Override
@@ -423,7 +423,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     protected void onUiReady() {
         chatUiReady = true;
-        post(() -> hideProgressBar());
+        post(this::hideProgressBar);
     }
 
     protected void hideProgressBar() {
@@ -464,17 +464,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         @Override
         public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
             final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description);
-                }
-            });
+            post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description));
             super.onReceivedError(view, errorCode, description, failingUrl);
             Log.e(TAG, "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
         }
 
-        @SuppressWarnings("deprecation")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             final Uri uri = Uri.parse(url);
@@ -543,9 +537,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                                       boolean isUserGesture, Message resultMsg) {
             webViewPopup = new WebView(getContext());
 
-            CookieManager cookieManager = CookieManager.getInstance();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                cookieManager.getInstance().setAcceptThirdPartyCookies(webViewPopup, true);
+                CookieManager.getInstance().setAcceptThirdPartyCookies(webViewPopup, true);
             }
 
             webViewPopup.setVerticalScrollBarEnabled(false);
