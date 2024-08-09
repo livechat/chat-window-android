@@ -42,8 +42,6 @@ import androidx.annotation.RequiresApi;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.livechatinc.inappchat.models.NewMessageModel;
@@ -99,12 +97,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         statusText = findViewById(R.id.chat_window_status_text);
         progressBar = findViewById(R.id.chat_window_progress);
         reloadButton = findViewById(R.id.chat_window_button);
-        reloadButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                reload();
-            }
-        });
+        reloadButton.setOnClickListener(view -> reload());
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -134,18 +127,16 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setVisibility(GONE);
 
-        webView.setOnTouchListener(new OnTouchListener() {
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_UP:
-                        if (!v.hasFocus()) {
-                            v.requestFocus();
-                        }
-                        break;
-                }
-                return false;
+        webView.setOnTouchListener((view, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                case MotionEvent.ACTION_UP:
+                    if (!view.hasFocus()) {
+                        view.requestFocus();
+                    }
+                    break;
             }
+            return false;
         });
         webView.addJavascriptInterface(new ChatWindowJsInterface(this), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
         adjustResizeOnGlobalLayout(webView, getActivity());
@@ -165,26 +156,24 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private void adjustResizeOnGlobalLayout(final WebView webView, final Activity activity) {
         if (!shouldAdjustLayout(getActivity())) return;
         final View decorView = activity.getWindow().getDecorView();
-        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
-            public void onGlobalLayout() {
-                final View decorView = getActivity().getWindow().getDecorView();
-                final ViewGroup viewGroup = ChatWindowViewImpl.this;
+        layoutListener = () -> {
+            final View decorView1 = getActivity().getWindow().getDecorView();
+            final ViewGroup viewGroup = ChatWindowViewImpl.this;
 
-                DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-                Rect rect = new Rect();
-                decorView.getWindowVisibleDisplayFrame(rect);
-                int paddingBottom = displayMetrics.heightPixels - rect.bottom;
+            DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+            Rect rect = new Rect();
+            decorView1.getWindowVisibleDisplayFrame(rect);
+            int paddingBottom = displayMetrics.heightPixels - rect.bottom;
 
-                if (viewGroup.getPaddingBottom() != paddingBottom) {
-                    // showing/hiding the soft keyboard
-                    viewGroup.setPadding(viewGroup.getPaddingLeft(), viewGroup.getPaddingTop(), viewGroup.getPaddingRight(), paddingBottom);
-                } else {
-                    // soft keyboard shown/hidden and padding changed
-                    if (paddingBottom != 0) {
-                        // soft keyboard shown, scroll active element into view in case it is blocked by the soft keyboard
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                            webView.evaluateJavascript("if (document.activeElement) { document.activeElement.scrollIntoView({behavior: \"smooth\", block: \"center\", inline: \"nearest\"}); }", null);
-                        }
+            if (viewGroup.getPaddingBottom() != paddingBottom) {
+                // showing/hiding the soft keyboard
+                viewGroup.setPadding(viewGroup.getPaddingLeft(), viewGroup.getPaddingTop(), viewGroup.getPaddingRight(), paddingBottom);
+            } else {
+                // soft keyboard shown/hidden and padding changed
+                if (paddingBottom != 0) {
+                    // soft keyboard shown, scroll active element into view in case it is blocked by the soft keyboard
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        webView.evaluateJavascript("if (document.activeElement) { document.activeElement.scrollIntoView({behavior: \"smooth\", block: \"center\", inline: \"nearest\"}); }", null);
                     }
                 }
             }
@@ -297,24 +286,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     protected void onHideChatWindow() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                hideChatWindow();
-            }
-        });
+        post(() -> hideChatWindow());
     }
 
     @Override
     public void showChatWindow() {
         ChatWindowViewImpl.this.setVisibility(VISIBLE);
         if (eventsListener != null) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    eventsListener.onChatWindowVisibilityChanged(true);
-                }
-            });
+            post(() -> eventsListener.onChatWindowVisibilityChanged(true));
         }
     }
 
@@ -322,12 +301,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     public void hideChatWindow() {
         ChatWindowViewImpl.this.setVisibility(GONE);
         if (eventsListener != null) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    eventsListener.onChatWindowVisibilityChanged(false);
-                }
-            });
+            post(() -> eventsListener.onChatWindowVisibilityChanged(false));
         }
     }
 
@@ -376,32 +350,26 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.GET, "https://cdn.livechatinc.com/app/mobile/urls.json",
                 null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(TAG, "Response: " + response);
-                        String chatUrl = constructChatUrl(response);
-                        Log.d(TAG, "constructed url: " + chatUrl);
-                        initialized = true;
-                        if (chatUrl != null && getContext() != null) {
-                            webView.loadUrl(chatUrl);
-                            webView.setVisibility(VISIBLE);
-                        }
-                        if (eventsListener != null) {
-                            eventsListener.onWindowInitialized();
-                        }
+                response -> {
+                    Log.d(TAG, "Response: " + response);
+                    String chatUrl = constructChatUrl(response);
+                    Log.d(TAG, "constructed url: " + chatUrl);
+                    initialized = true;
+                    if (chatUrl != null && getContext() != null) {
+                        webView.loadUrl(chatUrl);
+                        webView.setVisibility(VISIBLE);
+                    }
+                    if (eventsListener != null) {
+                        eventsListener.onWindowInitialized();
                     }
                 },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d(TAG, "Error response: " + error);
-                        initialized = false;
-                        final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
-                        final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-                        if (getContext() != null) {
-                            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-                        }
+                error -> {
+                    Log.d(TAG, "Error response: " + error);
+                    initialized = false;
+                    final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
+                    final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+                    if (getContext() != null) {
+                        onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
                     }
                 });
         queue.add(stringRequest);
@@ -455,12 +423,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     protected void onUiReady() {
         chatUiReady = true;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                hideProgressBar();
-            }
-        });
+        post(() -> hideProgressBar());
     }
 
     protected void hideProgressBar() {
@@ -470,12 +433,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     protected void onNewMessageReceived(final NewMessageModel newMessageModel) {
         if (eventsListener != null) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    eventsListener.onNewMessage(newMessageModel, isShown());
-                }
-            });
+            post(() -> eventsListener.onNewMessage(newMessageModel, isShown()));
         }
     }
 
@@ -497,12 +455,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         @Override
         public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
             final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
-                }
-            });
+            post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription())));
 
             super.onReceivedError(view, request, error);
             Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
@@ -648,12 +601,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
             if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
                 final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
-                post(new Runnable() {
-                    @Override
-                    public void run() {
-                        onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message());
-                    }
-                });
+                post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message()));
             }
             Log.i(TAG, "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
