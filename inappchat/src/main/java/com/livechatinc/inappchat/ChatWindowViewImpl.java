@@ -79,6 +79,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     private PermissionRequest webRequestPermissions;
 
+    private final String TAG = "ChatWindowView";
 
     public ChatWindowViewImpl(@NonNull Context context) {
         super(context);
@@ -378,9 +379,9 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("ChatWindowView", "Response: " + response);
+                        Log.d(TAG, "Response: " + response);
                         String chatUrl = constructChatUrl(response);
-                        Log.d("ChatWindowView", "constructed url: " + chatUrl);
+                        Log.d(TAG, "constructed url: " + chatUrl);
                         initialized = true;
                         if (chatUrl != null && getContext() != null) {
                             webView.loadUrl(chatUrl);
@@ -394,7 +395,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("ChatWindowView", "Error response: " + error);
+                        Log.d(TAG, "Error response: " + error);
                         initialized = false;
                         final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
                         final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
@@ -504,7 +505,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             });
 
             super.onReceivedError(view, request, error);
-            Log.e("ChatWindow Widget", "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
+            Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
         }
 
         @Override
@@ -517,7 +518,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                 }
             });
             super.onReceivedError(view, errorCode, description, failingUrl);
-            Log.e("ChatWindow Widget", "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
+            Log.e(TAG, "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
         }
 
         @SuppressWarnings("deprecation")
@@ -536,7 +537,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
         private boolean handleUri(WebView webView, final Uri uri) {
             String uriString = uri.toString();
-            Log.i("ChatWindowView", "handle url: " + uriString);
+            Log.i(TAG, "handle url: " + uriString);
             boolean facebookLogin = uriString.matches("https://.+facebook.+(/dialog/oauth\\?|/login\\.php\\?|/dialog/return/arbiter\\?).+");
 
             if (facebookLogin) {
@@ -611,7 +612,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
         @Override
         public void onCloseWindow(WebView window) {
-            Log.d("onCloseWindow", "called");
+            Log.d(TAG, "onCloseWindow");
         }
 
         @SuppressWarnings("unused")
@@ -654,7 +655,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                     }
                 });
             }
-            Log.i("ChatWindowView", "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
+            Log.i(TAG, "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
             return super.onConsoleMessage(consoleMessage);
         }
     }
@@ -730,7 +731,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             intent.setType("*/*");
             eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
         } else {
-            Log.e("ChatWindowView", "You must provide a listener to handle file sharing");
+            Log.e(TAG, "You must provide a listener to handle file sharing");
             Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
         }
     }
