@@ -73,7 +73,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private ValueCallback<Uri> mUriUploadCallback;
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ChatWindowConfiguration config;
-    private boolean initialized;
     private boolean chatUiReady = false;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     private PermissionRequest webRequestPermissions;
@@ -98,7 +97,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         statusText = findViewById(R.id.chat_window_status_text);
         progressBar = findViewById(R.id.chat_window_progress);
         reloadButton = findViewById(R.id.chat_window_button);
-        reloadButton.setOnClickListener(view -> reload());
+        reloadButton.setOnClickListener(view -> reload(true));
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -208,23 +207,59 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         return (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
     }
 
-    private void reload() {
-        if (initialized) {
-            chatUiReady = false;
-            webView.reload();
-        } else {
-            reinitialize();
+    @Override
+    public void initialize() {
+        checkConfiguration();
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest initializationRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                "https://cdn.livechatinc.com/app/mobile/urls.json",
+                null,
+                this::onWindowInitialized,
+                this::onWindowInitializationError
+        );
+        queue.add(initializationRequest);
+    }
+
+    private void onWindowInitialized(JSONObject response) {
+        Log.d(TAG, "Response: " + response);
+        String chatUrl = constructChatUrl(response);
+        Log.d(TAG, "constructed url: " + chatUrl);
+        if (chatUrl != null && getContext() != null) {
+            webView.loadUrl(chatUrl);
+        }
+        if (eventsListener != null) {
+            eventsListener.onWindowInitialized();
         }
     }
 
-    private void reinitialize() {
-        webView.setVisibility(View.GONE);
-        progressBar.setVisibility(View.VISIBLE);
-        statusText.setVisibility(View.GONE);
-        reloadButton.setVisibility(View.GONE);
+    private void onWindowInitializationError(VolleyError error) {
+        Log.d(TAG, "Error response: " + error);
+        final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
+        final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+        if (getContext() != null) {
+            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+        }
+    }
 
-        initialized = false;
+    @Override
+    public void reload(Boolean fullReload) {
+        reinitialize();
+    }
+
+    private void reinitialize() {
+        showProgress();
+
+        chatUiReady = false;
         initialize();
+    }
+
+    private void showProgress() {
+        progressBar.setVisibility(VISIBLE);
+
+        webView.setVisibility(GONE);
+        statusText.setVisibility(GONE);
+        reloadButton.setVisibility(GONE);
     }
 
     private String constructChatUrl(JSONObject jsonResponse) {
@@ -279,9 +314,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private void checkConfiguration() {
         if (config == null) {
             throw new IllegalStateException("Config must be provided before initialization");
-        }
-        if (initialized) {
-            throw new IllegalStateException("Chat Window already initialized");
         }
     }
 
@@ -343,44 +375,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         return !isEqualConfig;
     }
 
-    @Override
-    public void initialize() {
-        checkConfiguration();
-        initialized = true;
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        JsonObjectRequest initializationRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                "https://cdn.livechatinc.com/app/mobile/urls.json",
-                null,
-                this::onWindowInitialized,
-                this::onWindowInitializationError
-        );
-        queue.add(initializationRequest);
-    }
-
-    private void onWindowInitialized(JSONObject response) {
-        Log.d(TAG, "Response: " + response);
-        String chatUrl = constructChatUrl(response);
-        Log.d(TAG, "constructed url: " + chatUrl);
-        initialized = true;
-        if (chatUrl != null && getContext() != null) {
-            webView.loadUrl(chatUrl);
-            webView.setVisibility(VISIBLE);
-        }
-        if (eventsListener != null) {
-            eventsListener.onWindowInitialized();
-        }
-    }
-
-    private void onWindowInitializationError(VolleyError error) {
-        Log.d(TAG, "Error response: " + error);
-        initialized = false;
-        final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
-        final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-        if (getContext() != null) {
-            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-        }
-    }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -398,16 +392,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     @Override
     public void setEventsListener(ChatWindowEventsListener listener) {
         eventsListener = listener;
-    }
-
-    @Override
-    public void reload(Boolean fullReload) {
-        if (fullReload) {
-            reinitialize();
-        } else {
-            chatUiReady = false;
-            webView.reload();
-        }
     }
 
     private void receiveUploadedData(Intent data) {
@@ -448,6 +432,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                     webViewPopup = null;
                 }
             }
+
+            webView.setVisibility(VISIBLE);
 
             super.onPageFinished(view, url);
         }
@@ -527,12 +513,15 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
                 //Internet connection error. Connection issues handled in the chat window
                 return;
             }
-            webView.setVisibility(GONE);
-            statusText.setVisibility(View.VISIBLE);
-            reloadButton.setVisibility(VISIBLE);
+            showErrorView();
         }
     }
 
+    private void showErrorView() {
+        webView.setVisibility(GONE);
+        statusText.setVisibility(VISIBLE);
+        reloadButton.setVisibility(VISIBLE);
+    }
 
     private static boolean isSecureLivechatIncDomain(String host) {
         return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
