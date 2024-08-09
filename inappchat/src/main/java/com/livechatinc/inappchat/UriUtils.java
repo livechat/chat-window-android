@@ -92,7 +92,7 @@ public class UriUtils {
         Uri contentUri = getUriForContentType(uriContentType);
 
         String selection = "_id=?";
-        String[] selectionArgs = new String[] { uriId };
+        String[] selectionArgs = new String[]{uriId};
 
         return getDataColumnForContentUri(context, contentUri, selection, selectionArgs);
     }
@@ -112,7 +112,7 @@ public class UriUtils {
 
     public static String getDataColumnForContentUri(Context context, Uri uri, String selection, String[] selectionArgs) {
         String column = "_data";
-        String[] projection = { column };
+        String[] projection = {column};
 
         Cursor cursor = null;
         try {
