@@ -300,18 +300,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         webView.loadUrl(chatUrl);
     }
 
-
-    private void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
-        progressBar.setVisibility(GONE);
-        if (!errorHandled) {
-            if (viewModel.chatUiReady && errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
-                //Internet connection error. Connection issues handled in the chat window
-                return;
-            }
-            showErrorView();
-        }
-    }
-
     protected void showErrorView() {
         webView.setVisibility(GONE);
         statusText.setVisibility(VISIBLE);
