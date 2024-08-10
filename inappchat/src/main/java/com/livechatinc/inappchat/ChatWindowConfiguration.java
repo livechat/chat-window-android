@@ -40,7 +40,7 @@ public class ChatWindowConfiguration implements Serializable {
             @Nullable String visitorEmail,
             @Nullable HashMap<String, String> customVariables) {
         this.licenceNumber = licenceNumber;
-        this.groupId = groupId;
+        this.groupId = groupId != null ? groupId : DEFAULT_GROUP_ID;
         this.visitorName = visitorName;
         this.visitorEmail = visitorEmail;
         this.customVariables = customVariables;
@@ -64,7 +64,7 @@ public class ChatWindowConfiguration implements Serializable {
     public Map<String, String> getParams() {
         Map<String, String> params = new HashMap<>();
         params.put(KEY_LICENCE_NUMBER, licenceNumber);
-        params.put(KEY_GROUP_ID, groupId != null ? groupId : DEFAULT_GROUP_ID);
+        params.put(KEY_GROUP_ID, groupId);
         if (!TextUtils.isEmpty(visitorName))
             params.put(KEY_VISITOR_NAME, visitorName);
         if (!TextUtils.isEmpty(visitorEmail))
@@ -117,7 +117,7 @@ public class ChatWindowConfiguration implements Serializable {
     }
 
     private String replaceParameter(String url, String key, String value) {
-        return url.replace("{" + key + "}", value);
+        return url.replace("{%" + key + "%}", value);
     }
 
     private String escapeCustomParams(Map<String, String> param, String chatUrl) {
@@ -147,7 +147,7 @@ public class ChatWindowConfiguration implements Serializable {
         ChatWindowConfiguration that = (ChatWindowConfiguration) o;
 
         if (!licenceNumber.equals(that.licenceNumber)) return false;
-        if (!Objects.equals(groupId, that.groupId)) return false;
+        if (!groupId.equals(that.groupId)) return false;
         if (!Objects.equals(visitorName, that.visitorName))
             return false;
         if (!Objects.equals(visitorEmail, that.visitorEmail))
@@ -158,7 +158,7 @@ public class ChatWindowConfiguration implements Serializable {
     @Override
     public int hashCode() {
         int result = licenceNumber.hashCode();
-        result = 31 * result + (groupId != null ? groupId.hashCode() : 0);
+        result = 31 * result + groupId.hashCode();
         result = 31 * result + (visitorName != null ? visitorName.hashCode() : 0);
         result = 31 * result + (visitorEmail != null ? visitorEmail.hashCode() : 0);
         result = 31 * result + (customVariables != null ? customVariables.hashCode() : 0);
