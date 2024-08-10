@@ -45,7 +45,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private Button reloadButton;
     private ProgressBar progressBar;
     protected WebView webViewPopup;
-    private ChatWindowEventsListener eventsListener;
     protected static final int REQUEST_CODE_FILE_UPLOAD = 21354;
     protected static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
@@ -55,7 +54,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     protected PermissionRequest webRequestPermissions;
     private ChatWindowViewModel viewModel;
 
-    private final String TAG = "ChatWindowView";
+    private final static String TAG = "ChatWindowView";
 
     public ChatWindowViewImpl(@NonNull Context context) {
         super(context);
@@ -186,9 +185,16 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         return (flags & WindowManager.LayoutParams.FLAG_FULLSCREEN) != 0;
     }
 
+    // ChatWindowView interface
+
     @Override
     public boolean setConfiguration(@NonNull ChatWindowConfiguration config) {
         return viewModel.setConfig(config);
+    }
+
+    @Override
+    public void setEventsListener(ChatWindowEventsListener listener) {
+        viewModel.setEventsListener(listener);
     }
 
     @Override
@@ -201,31 +207,20 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         viewModel.reinitialize();
     }
 
-    protected void showProgress() {
-        progressBar.setVisibility(VISIBLE);
-
-        webView.setVisibility(GONE);
-        statusText.setVisibility(GONE);
-        reloadButton.setVisibility(GONE);
-    }
-
-    protected void onHideChatWindow() {
-        post(this::hideChatWindow);
-    }
 
     @Override
     public void showChatWindow() {
         ChatWindowViewImpl.this.setVisibility(VISIBLE);
-        if (eventsListener != null) {
-            post(() -> eventsListener.onChatWindowVisibilityChanged(true));
+        if (viewModel.eventsListener != null) {
+            post(() -> viewModel.eventsListener.onChatWindowVisibilityChanged(true));
         }
     }
 
     @Override
     public void hideChatWindow() {
         ChatWindowViewImpl.this.setVisibility(GONE);
-        if (eventsListener != null) {
-            post(() -> eventsListener.onChatWindowVisibilityChanged(false));
+        if (viewModel.eventsListener != null) {
+            post(() -> viewModel.eventsListener.onChatWindowVisibilityChanged(false));
         }
     }
 
@@ -255,8 +250,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     public boolean onBackPressed() {
         if (ChatWindowViewImpl.this.isShown()) {
             onHideChatWindow();
+            
             return true;
         }
+
         return false;
     }
 
@@ -269,15 +266,39 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             } else {
                 resetAllUploadCallbacks();
             }
+
             return true;
         }
+
         return false;
     }
 
-    @Override
-    public void setEventsListener(ChatWindowEventsListener listener) {
-        eventsListener = listener;
-        viewModel.setEventsListener(listener);
+    // End of ChatWindowView interface
+
+    public void loadUrl(String chatUrl) {
+        webView.loadUrl(chatUrl);
+    }
+
+    protected void showProgress() {
+        progressBar.setVisibility(VISIBLE);
+
+        webView.setVisibility(GONE);
+        statusText.setVisibility(GONE);
+        reloadButton.setVisibility(GONE);
+    }
+
+    protected void showErrorView() {
+        webView.setVisibility(GONE);
+        statusText.setVisibility(VISIBLE);
+        reloadButton.setVisibility(VISIBLE);
+    }
+
+    protected void hideProgressBar() {
+        progressBar.setVisibility(GONE);
+    }
+
+    protected void onHideChatWindow() {
+        post(this::hideChatWindow);
     }
 
     private void receiveUploadedData(Intent data) {
@@ -290,20 +311,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     private boolean isUriArrayUpload() {
         return mUriArrayUploadCallback != null;
-    }
-
-    protected void hideProgressBar() {
-        progressBar.setVisibility(GONE);
-    }
-
-    public void loadUrl(String chatUrl) {
-        webView.loadUrl(chatUrl);
-    }
-
-    protected void showErrorView() {
-        webView.setVisibility(GONE);
-        statusText.setVisibility(VISIBLE);
-        reloadButton.setVisibility(VISIBLE);
     }
 
     private void receiveUploadedUriArray(Intent data) {
@@ -364,11 +371,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     private void startFileChooserActivity() {
-        if (eventsListener != null) {
+        if (viewModel.eventsListener != null) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
-            eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
+            viewModel.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
         } else {
             Log.e(TAG, "You must provide a listener to handle file sharing");
             Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
