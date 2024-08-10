@@ -1,6 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -8,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,11 +16,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -50,13 +46,13 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private ProgressBar progressBar;
     protected WebView webViewPopup;
     private ChatWindowEventsListener eventsListener;
-    private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
-    private static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
+    protected static final int REQUEST_CODE_FILE_UPLOAD = 21354;
+    protected static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
     private ValueCallback<Uri> mUriUploadCallback;
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
-    private PermissionRequest webRequestPermissions;
+    protected PermissionRequest webRequestPermissions;
     private ChatWindowViewModel viewModel;
 
     private final String TAG = "ChatWindowView";
@@ -105,7 +101,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         }
 
         webView.setWebViewClient(new LCWebViewClient(this, viewModel));
-        webView.setWebChromeClient(new LCWebChromeClient());
+        webView.setWebChromeClient(new LCWebChromeClient(this, viewModel));
 
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setVisibility(GONE);
@@ -322,80 +318,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         reloadButton.setVisibility(VISIBLE);
     }
 
-    class LCWebChromeClient extends WebChromeClient {
-        @Override
-        public boolean onCreateWindow(
-                WebView view,
-                boolean isDialog,
-                boolean isUserGesture,
-                Message resultMsg
-        ) {
-            webViewPopup = new WebView(getContext());
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                CookieManager.getInstance().setAcceptThirdPartyCookies(webViewPopup, true);
-            }
-
-            webViewPopup.setVerticalScrollBarEnabled(false);
-            webViewPopup.setHorizontalScrollBarEnabled(false);
-            webViewPopup.setWebViewClient(new LCWebViewClient(ChatWindowViewImpl.this, viewModel));
-            webViewPopup.getSettings().setJavaScriptEnabled(true);
-            webViewPopup.getSettings().setSavePassword(false);
-            webViewPopup.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            addView(webViewPopup);
-            WebView.WebViewTransport transport = (WebView.WebViewTransport) resultMsg.obj;
-            transport.setWebView(webViewPopup);
-            resultMsg.sendToTarget();
-
-            return true;
-        }
-
-        @Override
-        public void onCloseWindow(WebView window) {
-            Log.d(TAG, "onCloseWindow");
-        }
-
-        @SuppressWarnings("unused")
-        public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-            chooseUriToUpload(uploadMsg);
-        }
-
-        @SuppressWarnings("unused")
-        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-            chooseUriToUpload(uploadMsg);
-        }
-
-        @SuppressWarnings("unused")
-        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-            chooseUriToUpload(uploadMsg);
-        }
-
-        @Override
-        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
-            chooseUriArrayToUpload(uploadMsg);
-            return true;
-        }
-
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-        @Override
-        public void onPermissionRequest(final PermissionRequest request) {
-            webRequestPermissions = request;
-            String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
-            eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
-        }
-
-        @Override
-        public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-            if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-                final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
-                post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message()));
-            }
-            Log.i(TAG, "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
-            return super.onConsoleMessage(consoleMessage);
-        }
-    }
-
     private void receiveUploadedUriArray(Intent data) {
         Uri[] uploadedUris;
         try {
@@ -441,13 +363,13 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         }
     }
 
-    private void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
+    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
         resetAllUploadCallbacks();
         mUriUploadCallback = uriValueCallback;
         startFileChooserActivity();
     }
 
-    private void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback) {
+    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback) {
         resetAllUploadCallbacks();
         mUriArrayUploadCallback = uriArrayValueCallback;
         startFileChooserActivity();
