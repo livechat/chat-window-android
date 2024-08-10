@@ -15,6 +15,8 @@ import com.livechatinc.inappchat.models.NewMessageModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Pattern;
+
 class ChatWindowViewModel extends ViewModel {
 
     ChatWindowViewModel(ChatWindowViewImpl chatWindowView, RequestQueue queue) {
@@ -27,7 +29,7 @@ class ChatWindowViewModel extends ViewModel {
 
     private ChatWindowConfiguration config;
 
-    private ChatWindowEventsListener eventsListener;
+    protected ChatWindowEventsListener eventsListener;
     protected boolean chatUiReady = false;
 
     public void setEventsListener(ChatWindowEventsListener eventsListener) {
@@ -125,5 +127,9 @@ class ChatWindowViewModel extends ViewModel {
         if (eventsListener != null) {
             chatWindowView.post(() -> eventsListener.onNewMessage(newMessageModel, chatWindowView.isShown()));
         }
+    }
+
+    protected static boolean isSecureLivechatIncDomain(String host) {
+        return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
     }
 }

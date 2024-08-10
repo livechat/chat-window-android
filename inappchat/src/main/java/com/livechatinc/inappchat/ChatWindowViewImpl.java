@@ -1,7 +1,6 @@
 package com.livechatinc.inappchat;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -24,11 +23,8 @@ import android.webkit.CookieManager;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -42,7 +38,6 @@ import androidx.annotation.RequiresApi;
 import com.android.volley.toolbox.Volley;
 
 import java.io.File;
-import java.util.regex.Pattern;
 
 /**
  * Created by szymonjarosz on 19/07/2017.
@@ -53,7 +48,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private TextView statusText;
     private Button reloadButton;
     private ProgressBar progressBar;
-    private WebView webViewPopup;
+    protected WebView webViewPopup;
     private ChatWindowEventsListener eventsListener;
     private static final int REQUEST_CODE_FILE_UPLOAD = 21354;
     private static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
@@ -109,7 +104,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         }
 
-        webView.setWebViewClient(new LCWebViewClient());
+        webView.setWebViewClient(new LCWebViewClient(this, viewModel));
         webView.setWebChromeClient(new LCWebChromeClient());
 
         webView.requestFocus(View.FOCUS_DOWN);
@@ -309,89 +304,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         webView.loadUrl(chatUrl);
     }
 
-    class LCWebViewClient extends WebViewClient {
-        @Override
-        public void onPageFinished(WebView view, String url) {
-            if (url.startsWith("https://www.facebook.com/dialog/return/arbiter")) {
-                if (webViewPopup != null) {
-                    webViewPopup.setVisibility(GONE);
-                    removeView(webViewPopup);
-                    webViewPopup = null;
-                }
-            }
-
-            webView.setVisibility(VISIBLE);
-
-            super.onPageFinished(view, url);
-        }
-
-        @TargetApi(Build.VERSION_CODES.M)
-        @Override
-        public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
-            final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
-
-            post(() -> onErrorDetected(
-                    errorHandled,
-                    ChatWindowErrorType.WebViewClient,
-                    error.getErrorCode(),
-                    String.valueOf(error.getDescription())
-            ));
-
-            super.onReceivedError(view, request, error);
-            Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
-        }
-
-        @Override
-        public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
-            final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
-            post(() -> onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description));
-            super.onReceivedError(view, errorCode, description, failingUrl);
-            Log.e(TAG, "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
-        }
-
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            final Uri uri = Uri.parse(url);
-            return handleUri(view, uri);
-        }
-
-        @TargetApi(Build.VERSION_CODES.N)
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-            final Uri uri = request.getUrl();
-            return handleUri(view, uri);
-        }
-
-        private boolean handleUri(WebView webView, final Uri uri) {
-            String uriString = uri.toString();
-            Log.i(TAG, "handle url: " + uriString);
-            boolean facebookLogin = uriString.matches("https://.+facebook.+(/dialog/oauth\\?|/login\\.php\\?|/dialog/return/arbiter\\?).+");
-
-            if (facebookLogin) {
-                return false;
-            } else {
-                if (webViewPopup != null) {
-                    webViewPopup.setVisibility(GONE);
-                    removeView(webViewPopup);
-                    webViewPopup = null;
-                }
-
-                String originalUrl = webView.getOriginalUrl();
-                if (uriString.equals(originalUrl) || isSecureLivechatIncDomain(uri.getHost())) {
-                    return false;
-                } else {
-                    if (eventsListener != null && eventsListener.handleUri(uri)) {
-
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        getContext().startActivity(intent);
-                    }
-
-                    return true;
-                }
-            }
-        }
-    }
 
     private void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         progressBar.setVisibility(GONE);
@@ -410,10 +322,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         reloadButton.setVisibility(VISIBLE);
     }
 
-    private static boolean isSecureLivechatIncDomain(String host) {
-        return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
-    }
-
     class LCWebChromeClient extends WebChromeClient {
         @Override
         public boolean onCreateWindow(
@@ -430,7 +338,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
             webViewPopup.setVerticalScrollBarEnabled(false);
             webViewPopup.setHorizontalScrollBarEnabled(false);
-            webViewPopup.setWebViewClient(new LCWebViewClient());
+            webViewPopup.setWebViewClient(new LCWebViewClient(ChatWindowViewImpl.this, viewModel));
             webViewPopup.getSettings().setJavaScriptEnabled(true);
             webViewPopup.getSettings().setSavePassword(false);
             webViewPopup.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
