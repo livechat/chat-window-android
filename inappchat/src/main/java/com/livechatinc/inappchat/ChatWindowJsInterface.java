@@ -14,16 +14,17 @@ import org.json.JSONObject;
  */
 
 class ChatWindowJsInterface {
-    private final ChatWindowViewImpl view;
+    public ChatWindowJsInterface(ChatWindowViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
+
+    private final ChatWindowViewModel viewModel;
+
     public static final String BRIDGE_OBJECT_NAME = "androidMobileWidget";
     private static final String KEY_MESSAGE_TYPE = "messageType";
     private static final String TYPE_UI_READY = "uiReady";
     private static final String TYPE_HIDE_CHAT_WINDOW = "hideChatWindow";
     private static final String TYPE_NEW_MESSAGE = "newMessage";
-
-    public ChatWindowJsInterface(ChatWindowViewImpl view) {
-        this.view = view;
-    }
 
     @JavascriptInterface
     public void postMessage(String messageJson) {
@@ -41,13 +42,13 @@ class ChatWindowJsInterface {
     private void dispatchMessage(String messageType, String json) {
         switch (messageType) {
             case TYPE_HIDE_CHAT_WINDOW:
-                view.onHideChatWindow();
+                viewModel.onHideChatWindow();
                 break;
             case TYPE_UI_READY:
-                view.onUiReady();
+                viewModel.onUiReady();
                 break;
             case TYPE_NEW_MESSAGE:
-                view.onNewMessageReceived(new GsonBuilder().create().fromJson(json, NewMessageModel.class));
+                viewModel.onNewMessageReceived(new GsonBuilder().create().fromJson(json, NewMessageModel.class));
                 break;
 
         }
