@@ -1,5 +1,6 @@
 package com.livechatinc.inappchat;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -7,8 +8,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Created by szymonjarosz on 20/07/2017.
@@ -81,6 +85,60 @@ public class ChatWindowConfiguration implements Serializable {
         return bundle;
     }
 
+    public String addParamsToChatWindowUrl(String chatUrl) {
+        try {
+            chatUrl = replaceParameter(chatUrl, "license", licenceNumber);
+            chatUrl = replaceParameter(chatUrl, "group", groupId);
+
+            chatUrl = chatUrl + "&native_platform=android";
+
+            if (visitorName != null) {
+                chatUrl = chatUrl + "&name=" + URLEncoder.encode(visitorName, "UTF-8").replace("+", "%20");
+            }
+
+            if (visitorEmail != null) {
+                chatUrl = chatUrl + "&email=" + URLEncoder.encode(visitorEmail, "UTF-8");
+            }
+
+            final String customParams = escapeCustomParams(getParams(), chatUrl);
+
+            if (!TextUtils.isEmpty(customParams)) {
+                chatUrl = chatUrl + "&params=" + customParams;
+            }
+
+            if (!chatUrl.startsWith("http")) {
+                chatUrl = "https://" + chatUrl;
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return chatUrl;
+    }
+
+    private String replaceParameter(String url, String key, String value) {
+        return url.replace("{" + key + "}", value);
+    }
+
+    private String escapeCustomParams(Map<String, String> param, String chatUrl) {
+        String params = "";
+
+        for (String key : param.keySet()) {
+            if (key.startsWith(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX)) {
+                final String encodedKey = Uri.encode(key.replace(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX, ""));
+                final String encodedValue = Uri.encode(param.get(key));
+
+                if (!TextUtils.isEmpty(params)) {
+                    params = params + "&";
+                }
+
+                params += encodedKey + "=" + encodedValue;
+            }
+        }
+
+        return Uri.encode(params);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,12 +147,12 @@ public class ChatWindowConfiguration implements Serializable {
         ChatWindowConfiguration that = (ChatWindowConfiguration) o;
 
         if (!licenceNumber.equals(that.licenceNumber)) return false;
-        if (groupId != null ? !groupId.equals(that.groupId) : that.groupId != null) return false;
-        if (visitorName != null ? !visitorName.equals(that.visitorName) : that.visitorName != null)
+        if (!Objects.equals(groupId, that.groupId)) return false;
+        if (!Objects.equals(visitorName, that.visitorName))
             return false;
-        if (visitorEmail != null ? !visitorEmail.equals(that.visitorEmail) : that.visitorEmail != null)
+        if (!Objects.equals(visitorEmail, that.visitorEmail))
             return false;
-        return customVariables != null ? customVariables.equals(that.customVariables) : that.customVariables == null;
+        return Objects.equals(customVariables, that.customVariables);
     }
 
     @Override

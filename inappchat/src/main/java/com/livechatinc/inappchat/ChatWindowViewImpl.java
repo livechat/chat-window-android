@@ -10,7 +10,6 @@ import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -51,9 +50,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -266,50 +262,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         String chatUrl = null;
         try {
             chatUrl = jsonResponse.getString("chat_url");
-
-            chatUrl = chatUrl.replace("{%license%}", config.getParams().get(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
-            chatUrl = chatUrl.replace("{%group%}", config.getParams().get(ChatWindowConfiguration.KEY_GROUP_ID));
-            chatUrl = chatUrl + "&native_platform=android";
-
-            if (config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_NAME) != null) {
-                chatUrl = chatUrl + "&name=" + URLEncoder.encode(config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_NAME), "UTF-8").replace("+", "%20");
-            }
-
-            if (config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_EMAIL) != null) {
-                chatUrl = chatUrl + "&email=" + URLEncoder.encode(config.getParams().get(ChatWindowConfiguration.KEY_VISITOR_EMAIL), "UTF-8");
-            }
-
-            final String customParams = escapeCustomParams(config.getParams(), chatUrl);
-            if (!TextUtils.isEmpty(customParams)) {
-                chatUrl = chatUrl + "&params=" + customParams;
-            }
-
-            if (!chatUrl.startsWith("http")) {
-                chatUrl = "https://" + chatUrl;
-            }
-        } catch (JSONException | UnsupportedEncodingException e) {
+            chatUrl = config.addParamsToChatWindowUrl(chatUrl);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
 
         return chatUrl;
     }
 
-    private String escapeCustomParams(Map<String, String> param, String chatUrl) {
-        String params = "";
-        for (String key : param.keySet()) {
-            if (key.startsWith(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX)) {
-                final String encodedKey = Uri.encode(key.replace(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX, ""));
-                final String encodedValue = Uri.encode(param.get(key));
-
-                if (!TextUtils.isEmpty(params)) {
-                    params = params + "&";
-                }
-
-                params += encodedKey + "=" + encodedValue;
-            }
-        }
-        return Uri.encode(params);
-    }
 
     private void checkConfiguration() {
         if (config == null) {
