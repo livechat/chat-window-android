@@ -16,13 +16,13 @@ import android.webkit.WebViewClient;
 
 class LCWebViewClient extends WebViewClient {
 
-    LCWebViewClient(ChatWindowViewImpl view, ChatWindowViewModel viewModel) {
+    LCWebViewClient(ChatWindowViewImpl view, ChatWindowController controller) {
         this.view = view;
-        this.viewModel = viewModel;
+        this.controller = controller;
     }
 
     final ChatWindowViewImpl view;
-    final ChatWindowViewModel viewModel;
+    final ChatWindowController controller;
 
     final String TAG = WebViewClient.class.getSimpleName();
 
@@ -48,9 +48,9 @@ class LCWebViewClient extends WebViewClient {
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
-        final boolean errorHandled = viewModel.eventsListener != null && viewModel.eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
+        final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
 
-        view.post(() -> viewModel.onErrorDetected(
+        view.post(() -> controller.onErrorDetected(
                 errorHandled,
                 ChatWindowErrorType.WebViewClient,
                 error.getErrorCode(),
@@ -63,8 +63,8 @@ class LCWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
-        final boolean errorHandled = viewModel.eventsListener != null && viewModel.eventsListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
-        view.post(() -> viewModel.onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description));
+        final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
+        view.post(() -> controller.onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description));
         super.onReceivedError(view, errorCode, description, failingUrl);
         Log.e(TAG, "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
     }
@@ -93,10 +93,10 @@ class LCWebViewClient extends WebViewClient {
             hideWebViewPopup();
 
             String originalUrl = webView.getOriginalUrl();
-            if (uriString.equals(originalUrl) || ChatWindowViewModel.isSecureLivechatIncDomain(uri.getHost())) {
+            if (uriString.equals(originalUrl) || ChatWindowController.isSecureLivechatIncDomain(uri.getHost())) {
                 return false;
             } else {
-                if (viewModel.eventsListener != null && viewModel.eventsListener.handleUri(uri)) {
+                if (controller.eventsListener != null && controller.eventsListener.handleUri(uri)) {
 
                 } else {
                     Intent intent = new Intent(Intent.ACTION_VIEW, uri);

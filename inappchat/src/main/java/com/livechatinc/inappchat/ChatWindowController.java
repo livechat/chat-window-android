@@ -2,8 +2,6 @@ package com.livechatinc.inappchat;
 
 import android.util.Log;
 
-import androidx.lifecycle.ViewModel;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -15,14 +13,14 @@ import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
-class ChatWindowViewModel extends ViewModel {
+class ChatWindowController {
 
-    ChatWindowViewModel(ChatWindowViewImpl chatWindowView, RequestQueue queue) {
+    ChatWindowController(ChatWindowViewImpl chatWindowView, RequestQueue queue) {
         this.chatWindowView = chatWindowView;
         this.queue = queue;
     }
 
-    final String TAG = ChatWindowViewModel.class.getSimpleName();
+    final String TAG = ChatWindowController.class.getSimpleName();
 
     final ChatWindowViewImpl chatWindowView;
     final RequestQueue queue;

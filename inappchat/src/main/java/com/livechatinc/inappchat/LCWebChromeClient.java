@@ -22,13 +22,13 @@ import androidx.annotation.RequiresApi;
 
 class LCWebChromeClient extends WebChromeClient {
 
-    LCWebChromeClient(ChatWindowViewImpl view, ChatWindowViewModel viewModel) {
+    LCWebChromeClient(ChatWindowViewImpl view, ChatWindowController controller) {
         this.view = view;
-        this.viewModel = viewModel;
+        this.controller = controller;
     }
 
     final ChatWindowViewImpl view;
-    final ChatWindowViewModel viewModel;
+    final ChatWindowController controller;
 
     private static final String TAG = WebChromeClient.class.getSimpleName();
 
@@ -47,7 +47,7 @@ class LCWebChromeClient extends WebChromeClient {
 
         view.webViewPopup.setVerticalScrollBarEnabled(false);
         view.webViewPopup.setHorizontalScrollBarEnabled(false);
-        view.webViewPopup.setWebViewClient(new LCWebViewClient(view, viewModel));
+        view.webViewPopup.setWebViewClient(new LCWebViewClient(view, controller));
         view.webViewPopup.getSettings().setJavaScriptEnabled(true);
         view.webViewPopup.getSettings().setSavePassword(false);
         view.webViewPopup.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -91,14 +91,14 @@ class LCWebChromeClient extends WebChromeClient {
     public void onPermissionRequest(final PermissionRequest request) {
         view.webRequestPermissions = request;
         String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
-        viewModel.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
+        controller.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
     }
 
     @Override
     public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
         if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-            final boolean errorHandled = viewModel.eventsListener != null && viewModel.eventsListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
-            view.post(() -> viewModel.onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message()));
+            final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
+            view.post(() -> controller.onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message()));
         }
         Log.i(TAG, "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
         return super.onConsoleMessage(consoleMessage);

@@ -52,7 +52,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     protected PermissionRequest webRequestPermissions;
-    private ChatWindowViewModel viewModel;
+    private ChatWindowController controller;
 
     private final static String TAG = "ChatWindowView";
 
@@ -67,6 +67,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     private void initView(Context context) {
+        Log.i(TAG, "Initializing ChatWindowViewImpl");
         setFitsSystemWindows(true);
         setVisibility(GONE);
         LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
@@ -75,7 +76,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
         progressBar = findViewById(R.id.chat_window_progress);
         reloadButton = findViewById(R.id.chat_window_button);
         reloadButton.setOnClickListener(view -> reload(true));
-        viewModel = new ChatWindowViewModel(this, Volley.newRequestQueue(context));
+        controller = new ChatWindowController(this, Volley.newRequestQueue(context));
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -99,8 +100,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         }
 
-        webView.setWebViewClient(new LCWebViewClient(this, viewModel));
-        webView.setWebChromeClient(new LCWebChromeClient(this, viewModel));
+        webView.setWebViewClient(new LCWebViewClient(this, controller));
+        webView.setWebChromeClient(new LCWebChromeClient(this, controller));
 
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setVisibility(GONE);
@@ -116,7 +117,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
             }
             return false;
         });
-        webView.addJavascriptInterface(new ChatWindowJsInterface(viewModel), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
+        webView.addJavascriptInterface(new ChatWindowJsInterface(controller), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
         adjustResizeOnGlobalLayout(webView, getActivity());
     }
 
@@ -162,6 +163,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     @Override
     protected void onDetachedFromWindow() {
+        Log.i(TAG, "onDetachedFromWindow");
         removeLayoutListener();
         webView.destroy();
         super.onDetachedFromWindow();
@@ -189,44 +191,44 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     @Override
     public boolean setConfiguration(@NonNull ChatWindowConfiguration config) {
-        return viewModel.setConfig(config);
+        return controller.setConfig(config);
     }
 
     @Override
     public void setEventsListener(ChatWindowEventsListener listener) {
-        viewModel.setEventsListener(listener);
+        controller.setEventsListener(listener);
     }
 
     @Override
     public void initialize() {
-        viewModel.init();
+        controller.init();
     }
 
     @Override
     public void reload(Boolean fullReload) {
-        viewModel.reinitialize();
+        controller.reinitialize();
     }
 
 
     @Override
     public void showChatWindow() {
         ChatWindowViewImpl.this.setVisibility(VISIBLE);
-        if (viewModel.eventsListener != null) {
-            post(() -> viewModel.eventsListener.onChatWindowVisibilityChanged(true));
+        if (controller.eventsListener != null) {
+            post(() -> controller.eventsListener.onChatWindowVisibilityChanged(true));
         }
     }
 
     @Override
     public void hideChatWindow() {
         ChatWindowViewImpl.this.setVisibility(GONE);
-        if (viewModel.eventsListener != null) {
-            post(() -> viewModel.eventsListener.onChatWindowVisibilityChanged(false));
+        if (controller.eventsListener != null) {
+            post(() -> controller.eventsListener.onChatWindowVisibilityChanged(false));
         }
     }
 
     @Override
     public boolean isChatLoaded() {
-        return viewModel.chatUiReady;
+        return controller.chatUiReady;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -371,11 +373,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     private void startFileChooserActivity() {
-        if (viewModel.eventsListener != null) {
+        if (controller.eventsListener != null) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
-            viewModel.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
+            controller.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
         } else {
             Log.e(TAG, "You must provide a listener to handle file sharing");
             Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
