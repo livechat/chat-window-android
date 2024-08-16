@@ -3,6 +3,7 @@ package com.livechatinc.inappchat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +26,8 @@ public class ChatWindowConfiguration implements Serializable {
     public static final String KEY_VISITOR_EMAIL = "KEY_VISITOR_EMAIL";
 
     private static final String DEFAULT_GROUP_ID = "0";
+    private static final String TAG = ChatWindowConfiguration.class.getSimpleName();
+
     public static final String CUSTOM_PARAM_PREFIX = "#LCcustomParam_";
 
     public final String licenceNumber;
@@ -110,7 +113,7 @@ public class ChatWindowConfiguration implements Serializable {
                 chatUrl = "https://" + chatUrl;
             }
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error while encoding URL: " + e.getMessage(), e);
         }
 
         return chatUrl;
@@ -165,6 +168,7 @@ public class ChatWindowConfiguration implements Serializable {
         return result;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return

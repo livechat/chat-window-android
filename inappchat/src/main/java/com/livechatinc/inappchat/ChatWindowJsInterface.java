@@ -25,6 +25,7 @@ class ChatWindowJsInterface {
     private static final String TYPE_UI_READY = "uiReady";
     private static final String TYPE_HIDE_CHAT_WINDOW = "hideChatWindow";
     private static final String TYPE_NEW_MESSAGE = "newMessage";
+    private static final String TAG = ChatWindowJsInterface.class.getSimpleName();
 
     @JavascriptInterface
     public void postMessage(String messageJson) {
@@ -35,7 +36,7 @@ class ChatWindowJsInterface {
                 dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), messageJson);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error serializing js message: " + e.getMessage(), e);
         }
     }
 
