@@ -1,7 +1,5 @@
 package com.livechatinc.inappchat;
 
-import static java.security.AccessController.getContext;
-
 import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
@@ -23,6 +21,7 @@ class ChatWindowViewModel extends ViewModel {
         this.chatWindowView = chatWindowView;
         this.queue = queue;
     }
+    final String TAG = ChatWindowViewModel.class.getSimpleName();
 
     final ChatWindowViewImpl chatWindowView;
     final RequestQueue queue;
@@ -39,6 +38,7 @@ class ChatWindowViewModel extends ViewModel {
     public boolean setConfig(ChatWindowConfiguration config) {
         final boolean isEqualConfig = this.config != null && this.config.equals(config);
         this.config = config;
+
         return !isEqualConfig;
     }
 
@@ -55,7 +55,14 @@ class ChatWindowViewModel extends ViewModel {
         queue.add(initializationRequest);
     }
 
-    public void reinitialize() {
+
+    private void checkConfiguration() {
+        if (config == null) {
+            throw new IllegalStateException("Config must be provided before initialization");
+        }
+    }
+
+    protected void reinitialize() {
         chatWindowView.showProgress();
 
         chatUiReady = false;
@@ -66,7 +73,7 @@ class ChatWindowViewModel extends ViewModel {
         Log.d(TAG, "Response: " + response);
         String chatUrl = constructChatUrl(response);
         Log.d(TAG, "constructed url: " + chatUrl);
-        if (chatUrl != null && getContext() != null) {
+        if (chatUrl != null && chatWindowView.getContext() != null) {
             chatWindowView.loadUrl(chatUrl);
         }
         if (eventsListener != null) {
@@ -90,7 +97,8 @@ class ChatWindowViewModel extends ViewModel {
         Log.d(TAG, "Error response: " + error);
         final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
         final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-        if (getContext() != null) {
+
+        if (chatWindowView.getContext() != null) {
             onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
         }
     }
@@ -106,19 +114,11 @@ class ChatWindowViewModel extends ViewModel {
         }
     }
 
-    private void checkConfiguration() {
-        if (config == null) {
-            throw new IllegalStateException("Config must be provided before initialization");
-        }
-    }
-
-    final String TAG = ChatWindowViewModel.class.getSimpleName();
-
-    public void onHideChatWindow() {
+    protected void onHideChatWindow() {
         chatWindowView.onHideChatWindow();
     }
 
-    public void onUiReady() {
+    protected void onUiReady() {
         chatUiReady = true;
         chatWindowView.post(chatWindowView::hideProgressBar);
     }
