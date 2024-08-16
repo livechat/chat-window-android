@@ -1,7 +1,6 @@
 package com.livechatinc.inappchat;
 
 
-import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.annotation.TargetApi;
@@ -28,21 +27,9 @@ class LCWebViewClient extends WebViewClient {
 
     @Override
     public void onPageFinished(WebView webView, String url) {
-        if (url.startsWith("https://www.facebook.com/dialog/return/arbiter")) {
-            hideWebViewPopup();
-        }
-
         webView.setVisibility(VISIBLE);
 
         super.onPageFinished(webView, url);
-    }
-
-    private void hideWebViewPopup() {
-        if (view.webViewPopup != null) {
-            view.webViewPopup.setVisibility(GONE);
-            view.removeView(view.webViewPopup);
-            view.webViewPopup = null;
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -85,26 +72,19 @@ class LCWebViewClient extends WebViewClient {
     private boolean handleUri(WebView webView, final Uri uri) {
         String uriString = uri.toString();
         Log.i(TAG, "handle url: " + uriString);
-        boolean facebookLogin = uriString.matches("https://.+facebook.+(/dialog/oauth\\?|/login\\.php\\?|/dialog/return/arbiter\\?).+");
 
-        if (facebookLogin) {
+        String originalUrl = webView.getOriginalUrl();
+        if (uriString.equals(originalUrl) || ChatWindowController.isSecureLivechatIncDomain(uri.getHost())) {
             return false;
         } else {
-            hideWebViewPopup();
+            if (controller.eventsListener != null && controller.eventsListener.handleUri(uri)) {
 
-            String originalUrl = webView.getOriginalUrl();
-            if (uriString.equals(originalUrl) || ChatWindowController.isSecureLivechatIncDomain(uri.getHost())) {
-                return false;
             } else {
-                if (controller.eventsListener != null && controller.eventsListener.handleUri(uri)) {
-
-                } else {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                    view.getContext().startActivity(intent);
-                }
-
-                return true;
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                view.getContext().startActivity(intent);
             }
+
+            return true;
         }
     }
 }

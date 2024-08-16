@@ -44,7 +44,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     private TextView statusText;
     private Button reloadButton;
     private ProgressBar progressBar;
-    protected WebView webViewPopup;
     protected static final int REQUEST_CODE_FILE_UPLOAD = 21354;
     protected static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
