@@ -21,6 +21,7 @@ class ChatWindowViewModel extends ViewModel {
         this.chatWindowView = chatWindowView;
         this.queue = queue;
     }
+
     final String TAG = ChatWindowViewModel.class.getSimpleName();
 
     final ChatWindowViewImpl chatWindowView;
@@ -31,11 +32,11 @@ class ChatWindowViewModel extends ViewModel {
     protected ChatWindowEventsListener eventsListener;
     protected boolean chatUiReady = false;
 
-    public void setEventsListener(ChatWindowEventsListener eventsListener) {
+    protected void setEventsListener(ChatWindowEventsListener eventsListener) {
         this.eventsListener = eventsListener;
     }
 
-    public boolean setConfig(ChatWindowConfiguration config) {
+    protected boolean setConfig(ChatWindowConfiguration config) {
         final boolean isEqualConfig = this.config != null && this.config.equals(config);
         this.config = config;
 
@@ -43,7 +44,7 @@ class ChatWindowViewModel extends ViewModel {
     }
 
 
-    public void init() {
+    protected void init() {
         checkConfiguration();
         JsonObjectRequest initializationRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -87,7 +88,7 @@ class ChatWindowViewModel extends ViewModel {
             chatUrl = jsonResponse.getString("chat_url");
             chatUrl = config.addParamsToChatWindowUrl(chatUrl);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error parsing chat url from response: " + e.getMessage(), e);
         }
 
         return chatUrl;
@@ -113,6 +114,8 @@ class ChatWindowViewModel extends ViewModel {
             chatWindowView.showErrorView();
         }
     }
+
+    // JS Interface methods
 
     protected void onHideChatWindow() {
         chatWindowView.onHideChatWindow();
