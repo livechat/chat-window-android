@@ -94,21 +94,25 @@ class ChatWindowController {
     }
 
     private void onWindowInitializationError(VolleyError error) {
-        Log.d(TAG, "Error response: " + error);
         final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
-        final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
 
-        onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
+        onErrorDetected(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
     }
 
-    protected void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
-        chatWindowView.hideProgressBar();
+    protected void onErrorDetected(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
+        Log.d(TAG, "Error detected. Type: " + errorType + ", code: " + errorCode + ", description: " + errorDescription);
+
+        final boolean errorHandled = eventsListener != null && eventsListener.onError(errorType, errorCode, errorDescription);
+
+        chatWindowView.runOnMainThread(chatWindowView::hideProgressBar);
+
         if (!errorHandled) {
             if (chatUiReady && errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
                 //Internet connection error. Connection issues handled in the chat window
                 return;
             }
-            chatWindowView.showErrorView();
+
+            chatWindowView.runOnMainThread(chatWindowView::showErrorView);
         }
     }
 

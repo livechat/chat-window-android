@@ -30,14 +30,12 @@ class LCWebViewClient extends WebViewClient {
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
-        final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.WebViewClient, error.getErrorCode(), String.valueOf(error.getDescription()));
 
-        view.post(() -> controller.onErrorDetected(
-                errorHandled,
+        controller.onErrorDetected(
                 ChatWindowErrorType.WebViewClient,
                 error.getErrorCode(),
                 String.valueOf(error.getDescription())
-        ));
+        );
 
         super.onReceivedError(view, request, error);
         Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
@@ -45,10 +43,9 @@ class LCWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
-        final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.WebViewClient, errorCode, description);
-        view.post(() -> controller.onErrorDetected(errorHandled, ChatWindowErrorType.WebViewClient, errorCode, description));
+        controller.onErrorDetected(ChatWindowErrorType.WebViewClient, errorCode, description);
+
         super.onReceivedError(view, errorCode, description, failingUrl);
-        Log.e(TAG, "onReceivedError: " + errorCode + ": desc: " + description + " url: " + failingUrl);
     }
 
     @Override

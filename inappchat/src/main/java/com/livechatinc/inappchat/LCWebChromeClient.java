@@ -6,7 +6,6 @@ import static com.livechatinc.inappchat.ChatWindowViewImpl.REQUEST_CODE_AUDIO_PE
 import android.Manifest;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
@@ -25,8 +24,6 @@ class LCWebChromeClient extends WebChromeClient {
 
     final ChatWindowViewImpl view;
     final ChatWindowController controller;
-
-    private static final String TAG = WebChromeClient.class.getSimpleName();
 
     @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -60,10 +57,9 @@ class LCWebChromeClient extends WebChromeClient {
     @Override
     public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
         if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-            final boolean errorHandled = controller.eventsListener != null && controller.eventsListener.onError(ChatWindowErrorType.Console, -1, consoleMessage.message());
-            view.post(() -> controller.onErrorDetected(errorHandled, ChatWindowErrorType.Console, -1, consoleMessage.message()));
+            controller.onErrorDetected(ChatWindowErrorType.Console, -1, consoleMessage.message());
         }
-        Log.i(TAG, "onConsoleMessage" + consoleMessage.messageLevel().name() + " " + consoleMessage.message());
+
         return super.onConsoleMessage(consoleMessage);
     }
 }
