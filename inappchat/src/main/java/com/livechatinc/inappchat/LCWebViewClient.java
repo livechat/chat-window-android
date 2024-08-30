@@ -19,8 +19,6 @@ class LCWebViewClient extends WebViewClient {
 
     final ChatWindowPresenter presenter;
 
-    final String TAG = WebViewClient.class.getSimpleName();
-
     @Override
     public void onPageFinished(WebView webView, String url) {
         presenter.onPageLoaded();

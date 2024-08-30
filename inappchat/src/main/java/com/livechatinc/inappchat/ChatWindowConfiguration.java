@@ -50,7 +50,7 @@ public class ChatWindowConfiguration implements Serializable {
     }
 
     public static ChatWindowConfiguration fromBundle(Bundle arguments) {
-        HashMap<String, String> customParams = new HashMap();
+        HashMap<String, String> customParams = new HashMap<>();
         for (String key : arguments.keySet()) {
             if (key.startsWith(CUSTOM_PARAM_PREFIX)) {
                 customParams.put(key.replaceFirst(CUSTOM_PARAM_PREFIX, ""), arguments.getString(key));
