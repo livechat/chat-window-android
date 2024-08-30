@@ -7,6 +7,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.livechatinc.inappchat.models.NewMessageModel;
+import com.livechatinc.inappchat.src.internal.ChatWindowViewInternal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,18 +16,17 @@ import java.util.regex.Pattern;
 
 class ChatWindowController {
 
-    ChatWindowController(ChatWindowViewImpl chatWindowView, RequestQueue queue) {
+    ChatWindowController(ChatWindowViewInternal chatWindowView, RequestQueue networkQueue) {
         this.chatWindowView = chatWindowView;
-        this.queue = queue;
+        this.networkQueue = networkQueue;
     }
+
+    final ChatWindowViewInternal chatWindowView;
+    final RequestQueue networkQueue;
 
     final String TAG = ChatWindowController.class.getSimpleName();
 
-    final ChatWindowViewImpl chatWindowView;
-    final RequestQueue queue;
-
     private ChatWindowConfiguration config;
-
     protected ChatWindowEventsListener eventsListener;
     protected boolean chatUiReady = false;
 
@@ -51,7 +51,7 @@ class ChatWindowController {
                 this::onWindowInitialized,
                 this::onWindowInitializationError
         );
-        queue.add(initializationRequest);
+        networkQueue.add(initializationRequest);
     }
 
 
@@ -72,7 +72,7 @@ class ChatWindowController {
         Log.d(TAG, "Response: " + response);
         String chatUrl = constructChatUrl(response);
         Log.d(TAG, "constructed url: " + chatUrl);
-        if (chatUrl != null && chatWindowView.getContext() != null) {
+        if (chatUrl != null) {
             chatWindowView.loadUrl(chatUrl);
         }
         if (eventsListener != null) {
@@ -97,9 +97,7 @@ class ChatWindowController {
         final int errorCode = error.networkResponse != null ? error.networkResponse.statusCode : -1;
         final boolean errorHandled = eventsListener != null && eventsListener.onError(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
 
-        if (chatWindowView.getContext() != null) {
-            onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
-        }
+        onErrorDetected(errorHandled, ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
     }
 
     protected void onErrorDetected(boolean errorHandled, ChatWindowErrorType errorType, int errorCode, String errorDescription) {
@@ -116,17 +114,17 @@ class ChatWindowController {
     // JS Interface methods
 
     protected void onHideChatWindow() {
-        chatWindowView.onHideChatWindow();
+        chatWindowView.runOnMainThread(chatWindowView::hideChatWindow);
     }
 
     protected void onUiReady() {
         chatUiReady = true;
-        chatWindowView.post(chatWindowView::hideProgressBar);
+        chatWindowView.runOnMainThread(chatWindowView::hideProgressBar);
     }
 
     protected void onNewMessageReceived(final NewMessageModel newMessageModel) {
         if (eventsListener != null) {
-            chatWindowView.post(() -> eventsListener.onNewMessage(newMessageModel, chatWindowView.isShown()));
+            chatWindowView.runOnMainThread(() -> eventsListener.onNewMessage(newMessageModel, chatWindowView.isShown()));
         }
     }
 

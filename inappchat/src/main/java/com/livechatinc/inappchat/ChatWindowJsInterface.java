@@ -9,10 +9,6 @@ import com.livechatinc.inappchat.models.NewMessageModel;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-/**
- * Created by szymonjarosz on 18/07/2017.
- */
-
 class ChatWindowJsInterface {
     public ChatWindowJsInterface(ChatWindowController controller) {
         this.controller = controller;
@@ -29,7 +25,7 @@ class ChatWindowJsInterface {
 
     @JavascriptInterface
     public void postMessage(String messageJson) {
-        Log.i("Interface", "postMessage: " + messageJson);
+        Log.d(TAG, "postMessage: " + messageJson);
         try {
             JSONObject jsonObject = new JSONObject(messageJson);
             if (jsonObject != null && jsonObject.has(KEY_MESSAGE_TYPE)) {

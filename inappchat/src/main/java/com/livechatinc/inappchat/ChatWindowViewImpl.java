@@ -32,14 +32,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.volley.toolbox.Volley;
+import com.livechatinc.inappchat.src.internal.ChatWindowViewInternal;
 
 import java.io.File;
 
-/**
- * Created by szymonjarosz on 19/07/2017.
- */
-
-public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
+public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, ChatWindowViewInternal {
     private WebView webView;
     private TextView statusText;
     private Button reloadButton;
@@ -66,7 +63,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     }
 
     private void initView(Context context) {
-        Log.i(TAG, "Initializing ChatWindowViewImpl");
+        Log.d(TAG, "Initializing ChatWindowViewImpl");
         setFitsSystemWindows(true);
         setVisibility(GONE);
         LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
@@ -161,7 +158,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.i(TAG, "onDetachedFromWindow");
+        Log.d(TAG, "onDetachedFromWindow");
         removeLayoutListener();
         webView.destroy();
         super.onDetachedFromWindow();
@@ -249,8 +246,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
     @Override
     public boolean onBackPressed() {
         if (ChatWindowViewImpl.this.isShown()) {
-            onHideChatWindow();
-            
+            hideChatWindow();
+
             return true;
         }
 
@@ -275,30 +272,43 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView {
 
     // End of ChatWindowView interface
 
+    @Override
     public void loadUrl(String chatUrl) {
-        webView.loadUrl(chatUrl);
+        if (getContext() != null) {
+            webView.loadUrl(chatUrl);
+        }
     }
 
-    protected void showProgress() {
-        progressBar.setVisibility(VISIBLE);
+    @Override
+    public void showProgress() {
+        if (getContext() != null) {
+            progressBar.setVisibility(VISIBLE);
 
-        webView.setVisibility(GONE);
-        statusText.setVisibility(GONE);
-        reloadButton.setVisibility(GONE);
+            webView.setVisibility(GONE);
+            statusText.setVisibility(GONE);
+            reloadButton.setVisibility(GONE);
+        }
     }
 
-    protected void showErrorView() {
-        webView.setVisibility(GONE);
-        statusText.setVisibility(VISIBLE);
-        reloadButton.setVisibility(VISIBLE);
+    @Override
+    public void hideProgressBar() {
+        if (getContext() != null) {
+            progressBar.setVisibility(GONE);
+        }
     }
 
-    protected void hideProgressBar() {
-        progressBar.setVisibility(GONE);
+    @Override
+    public void showErrorView() {
+        if (getContext() != null) {
+            webView.setVisibility(GONE);
+            statusText.setVisibility(VISIBLE);
+            reloadButton.setVisibility(VISIBLE);
+        }
     }
 
-    protected void onHideChatWindow() {
-        post(this::hideChatWindow);
+    @Override
+    public void runOnMainThread(Runnable runnable) {
+        post(runnable);
     }
 
     private void receiveUploadedData(Intent data) {
