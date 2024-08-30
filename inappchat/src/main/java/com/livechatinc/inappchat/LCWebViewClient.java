@@ -9,8 +9,6 @@ import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.livechatinc.inappchat.models.ChatWindowErrorType;
-
 class LCWebViewClient extends WebViewClient {
 
     LCWebViewClient(ChatWindowPresenter presenter) {

@@ -1,4 +1,4 @@
-package com.livechatinc.inappchat.models;
+package com.livechatinc.inappchat;
 
 public enum ChatWindowErrorType{
     Console, WebViewClient, InitialConfiguration

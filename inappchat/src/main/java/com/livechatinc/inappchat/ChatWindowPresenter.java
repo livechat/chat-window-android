@@ -7,7 +7,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.livechatinc.inappchat.models.ChatWindowErrorType;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import org.json.JSONException;

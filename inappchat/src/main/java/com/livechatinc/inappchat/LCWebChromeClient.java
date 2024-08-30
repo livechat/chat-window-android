@@ -14,8 +14,6 @@ import android.webkit.WebView;
 
 import androidx.annotation.RequiresApi;
 
-import com.livechatinc.inappchat.models.ChatWindowErrorType;
-
 
 class LCWebChromeClient extends WebChromeClient {
 
