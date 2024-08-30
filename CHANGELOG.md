@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.3.3 - Aug 30th, 2024
+Code refactor - remove unused code, introduce MVP pattern, cleanups
+
 ## Version 2.3.2 - Aug 9th, 2024
 Simplify reloading - always reload url.
 This fixes error view not disappearing when chat is reloaded - #34
