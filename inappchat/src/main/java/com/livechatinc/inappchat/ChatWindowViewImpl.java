@@ -316,6 +316,12 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
+    public void launchExternalBrowser(Uri uri) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        webView.getContext().startActivity(intent);
+    }
+
+    @Override
     public void runOnMainThread(Runnable runnable) {
         post(runnable);
     }

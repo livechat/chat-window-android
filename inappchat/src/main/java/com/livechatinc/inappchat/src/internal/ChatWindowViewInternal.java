@@ -1,5 +1,7 @@
 package com.livechatinc.inappchat.src.internal;
 
+import android.net.Uri;
+
 public interface ChatWindowViewInternal {
     void loadUrl(String url);
 
@@ -14,6 +16,8 @@ public interface ChatWindowViewInternal {
     void showErrorView();
 
     boolean isShown();
+
+    void launchExternalBrowser(Uri uri);
 
     void runOnMainThread(Runnable runnable);
 }

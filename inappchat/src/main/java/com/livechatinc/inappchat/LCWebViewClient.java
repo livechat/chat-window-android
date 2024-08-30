@@ -2,7 +2,6 @@ package com.livechatinc.inappchat;
 
 
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -66,21 +65,6 @@ class LCWebViewClient extends WebViewClient {
     }
 
     private boolean handleUri(WebView webView, final Uri uri) {
-        String uriString = uri.toString();
-        Log.i(TAG, "handle url: " + uriString);
-
-        String originalUrl = webView.getOriginalUrl();
-        if (uriString.equals(originalUrl) || ChatWindowController.isSecureLivechatIncDomain(uri.getHost())) {
-            return false;
-        } else {
-            if (controller.eventsListener != null && controller.eventsListener.handleUri(uri)) {
-
-            } else {
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                webView.getContext().startActivity(intent);
-            }
-
-            return true;
-        }
+        return controller.handleUri(uri, webView.getOriginalUrl());
     }
 }

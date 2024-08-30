@@ -1,5 +1,6 @@
 package com.livechatinc.inappchat;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -115,7 +116,28 @@ class ChatWindowController {
         chatWindowView.showWebView();
     }
 
-    // JS Interface methods
+    public boolean handleUri(Uri uri, String originalUrl) {
+        String uriString = uri.toString();
+        Log.i(TAG, "handle url: " + uriString);
+
+        if (uriString.equals(originalUrl) || isSecureLivechatIncDomain(uri.getHost())) {
+            return false;
+        } else {
+            if (eventsListener != null && eventsListener.handleUri(uri)) {
+
+            } else {
+                chatWindowView.launchExternalBrowser(uri);
+            }
+
+            return true;
+        }
+    }
+
+    private boolean isSecureLivechatIncDomain(String host) {
+        return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
+    }
+
+    // JS Interface
 
     protected void onHideChatWindow() {
         chatWindowView.runOnMainThread(chatWindowView::hideChatWindow);
@@ -130,9 +152,5 @@ class ChatWindowController {
         if (eventsListener != null) {
             chatWindowView.runOnMainThread(() -> eventsListener.onNewMessage(newMessageModel, chatWindowView.isShown()));
         }
-    }
-
-    protected static boolean isSecureLivechatIncDomain(String host) {
-        return host != null && Pattern.compile("(secure-?(lc|dal|fra|)\\.(livechat|livechatinc)\\.com)").matcher(host).find();
     }
 }
