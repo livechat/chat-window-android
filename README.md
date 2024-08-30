@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.3.2'
+    implementation 'com.github.livechat:chat-window-android:v2.3.3'
 }
 ```
 
@@ -194,9 +194,9 @@ In case your ChatWindow isn't recreated when ChatWindowConfiguration changes (i.
 
 ## Alternative usage with limited capabilities
 
-If you want you don't want users to be notified when user gets new message in hidden Chat, you might want to use provided activity or fragment
+If you need your users to be notified when user gets new message in hidden Chat, you might want to use provided activity or fragment
 
-If you do not want the chat window to reload its content every time device orientation changes, add this line to your Activity in the manifest:
+If you don't want the chat window to reload its content every time device orientation changes, add this line to your Activity in the manifest:
 
 ```java
 android:configChanges="orientation|screenSize"
