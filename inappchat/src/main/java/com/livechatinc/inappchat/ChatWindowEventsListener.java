@@ -3,6 +3,7 @@ package com.livechatinc.inappchat;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.livechatinc.inappchat.models.ChatWindowErrorType;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 public interface ChatWindowEventsListener {

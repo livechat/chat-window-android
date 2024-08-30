@@ -4,11 +4,12 @@ package com.livechatinc.inappchat;
 import android.annotation.TargetApi;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import com.livechatinc.inappchat.models.ChatWindowErrorType;
 
 class LCWebViewClient extends WebViewClient {
 
@@ -38,7 +39,6 @@ class LCWebViewClient extends WebViewClient {
         );
 
         super.onReceivedError(view, request, error);
-        Log.e(TAG, "onReceivedError: " + error.getErrorCode() + ": desc: " + error.getDescription() + " url: " + request.getUrl());
     }
 
     @Override

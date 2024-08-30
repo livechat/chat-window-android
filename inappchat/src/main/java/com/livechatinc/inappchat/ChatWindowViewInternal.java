@@ -1,8 +1,8 @@
-package com.livechatinc.inappchat.src.internal;
+package com.livechatinc.inappchat;
 
 import android.net.Uri;
 
-public interface ChatWindowViewInternal {
+interface ChatWindowViewInternal {
     void loadUrl(String url);
 
     void showWebView();

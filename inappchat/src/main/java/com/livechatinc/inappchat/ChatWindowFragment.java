@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
+import com.livechatinc.inappchat.models.ChatWindowErrorType;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import java.util.HashMap;

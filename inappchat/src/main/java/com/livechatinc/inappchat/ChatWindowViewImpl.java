@@ -32,7 +32,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.android.volley.toolbox.Volley;
-import com.livechatinc.inappchat.src.internal.ChatWindowViewInternal;
 
 import java.io.File;
 

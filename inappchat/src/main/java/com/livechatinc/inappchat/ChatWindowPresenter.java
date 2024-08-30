@@ -7,8 +7,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.livechatinc.inappchat.models.ChatWindowErrorType;
 import com.livechatinc.inappchat.models.NewMessageModel;
-import com.livechatinc.inappchat.src.internal.ChatWindowViewInternal;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,7 +122,7 @@ class ChatWindowPresenter {
 
     public boolean handleUri(Uri uri, String originalUrl) {
         String uriString = uri.toString();
-        Log.i(TAG, "handle url: " + uriString);
+        Log.d(TAG, "handle url: " + uriString);
 
         if (uriString.equals(originalUrl) || isSecureLivechatIncDomain(uri.getHost())) {
             return false;
