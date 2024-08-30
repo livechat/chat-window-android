@@ -95,7 +95,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         }
 
-        webView.setWebViewClient(new LCWebViewClient(this, controller));
+        webView.setWebViewClient(new LCWebViewClient(controller));
         webView.setWebChromeClient(new LCWebChromeClient(this, controller));
 
         webView.requestFocus(View.FOCUS_DOWN);
@@ -272,10 +272,19 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     // End of ChatWindowView interface
 
+    // ChatWindowViewInternal interface
+
     @Override
     public void loadUrl(String chatUrl) {
         if (getContext() != null) {
             webView.loadUrl(chatUrl);
+        }
+    }
+
+    @Override
+    public void showWebView() {
+        if (getContext() != null) {
+            webView.setVisibility(VISIBLE);
         }
     }
 
@@ -310,6 +319,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     public void runOnMainThread(Runnable runnable) {
         post(runnable);
     }
+
+    // End of ChatWindowViewInternal interface
 
     private void receiveUploadedData(Intent data) {
         if (isUriArrayUpload()) {

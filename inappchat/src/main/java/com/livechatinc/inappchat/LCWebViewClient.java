@@ -1,8 +1,6 @@
 package com.livechatinc.inappchat;
 
 
-import static android.view.View.VISIBLE;
-
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.net.Uri;
@@ -15,19 +13,17 @@ import android.webkit.WebViewClient;
 
 class LCWebViewClient extends WebViewClient {
 
-    LCWebViewClient(ChatWindowViewImpl view, ChatWindowController controller) {
-        this.view = view;
+    LCWebViewClient(ChatWindowController controller) {
         this.controller = controller;
     }
 
-    final ChatWindowViewImpl view;
     final ChatWindowController controller;
 
     final String TAG = WebViewClient.class.getSimpleName();
 
     @Override
     public void onPageFinished(WebView webView, String url) {
-        webView.setVisibility(VISIBLE);
+        controller.onPageLoaded();
 
         super.onPageFinished(webView, url);
     }
@@ -81,7 +77,7 @@ class LCWebViewClient extends WebViewClient {
 
             } else {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                view.getContext().startActivity(intent);
+                webView.getContext().startActivity(intent);
             }
 
             return true;

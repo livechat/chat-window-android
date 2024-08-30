@@ -3,6 +3,8 @@ package com.livechatinc.inappchat.src.internal;
 public interface ChatWindowViewInternal {
     void loadUrl(String url);
 
+    void showWebView();
+
     void showProgress();
 
     void hideProgressBar();

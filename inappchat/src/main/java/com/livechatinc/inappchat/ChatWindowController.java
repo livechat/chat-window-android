@@ -111,6 +111,10 @@ class ChatWindowController {
         }
     }
 
+    public void onPageLoaded() {
+        chatWindowView.showWebView();
+    }
+
     // JS Interface methods
 
     protected void onHideChatWindow() {
