@@ -17,13 +17,13 @@ import androidx.annotation.RequiresApi;
 
 class LCWebChromeClient extends WebChromeClient {
 
-    LCWebChromeClient(ChatWindowViewImpl view, ChatWindowController controller) {
+    LCWebChromeClient(ChatWindowViewImpl view, ChatWindowPresenter presenter) {
         this.view = view;
-        this.controller = controller;
+        this.presenter = presenter;
     }
 
     final ChatWindowViewImpl view;
-    final ChatWindowController controller;
+    final ChatWindowPresenter presenter;
 
     @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg) {
@@ -51,13 +51,13 @@ class LCWebChromeClient extends WebChromeClient {
     public void onPermissionRequest(final PermissionRequest request) {
         view.webRequestPermissions = request;
         String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
-        controller.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
+        presenter.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
     }
 
     @Override
     public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
         if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-            controller.onErrorDetected(ChatWindowErrorType.Console, -1, consoleMessage.message());
+            presenter.onErrorDetected(ChatWindowErrorType.Console, -1, consoleMessage.message());
         }
 
         return super.onConsoleMessage(consoleMessage);

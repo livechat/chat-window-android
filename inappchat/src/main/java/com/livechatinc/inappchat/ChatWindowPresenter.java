@@ -15,9 +15,9 @@ import org.json.JSONObject;
 
 import java.util.regex.Pattern;
 
-class ChatWindowController {
+class ChatWindowPresenter {
 
-    ChatWindowController(ChatWindowViewInternal chatWindowView, RequestQueue networkQueue) {
+    ChatWindowPresenter(ChatWindowViewInternal chatWindowView, RequestQueue networkQueue) {
         this.chatWindowView = chatWindowView;
         this.networkQueue = networkQueue;
     }
@@ -25,7 +25,7 @@ class ChatWindowController {
     final ChatWindowViewInternal chatWindowView;
     final RequestQueue networkQueue;
 
-    final String TAG = ChatWindowController.class.getSimpleName();
+    final String TAG = ChatWindowPresenter.class.getSimpleName();
 
     private ChatWindowConfiguration config;
     protected ChatWindowEventsListener eventsListener;

@@ -12,17 +12,17 @@ import android.webkit.WebViewClient;
 
 class LCWebViewClient extends WebViewClient {
 
-    LCWebViewClient(ChatWindowController controller) {
-        this.controller = controller;
+    LCWebViewClient(ChatWindowPresenter presenter) {
+        this.presenter = presenter;
     }
 
-    final ChatWindowController controller;
+    final ChatWindowPresenter presenter;
 
     final String TAG = WebViewClient.class.getSimpleName();
 
     @Override
     public void onPageFinished(WebView webView, String url) {
-        controller.onPageLoaded();
+        presenter.onPageLoaded();
 
         super.onPageFinished(webView, url);
     }
@@ -31,7 +31,7 @@ class LCWebViewClient extends WebViewClient {
     @Override
     public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
 
-        controller.onErrorDetected(
+        presenter.onErrorDetected(
                 ChatWindowErrorType.WebViewClient,
                 error.getErrorCode(),
                 String.valueOf(error.getDescription())
@@ -43,7 +43,7 @@ class LCWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedError(WebView view, final int errorCode, final String description, String failingUrl) {
-        controller.onErrorDetected(ChatWindowErrorType.WebViewClient, errorCode, description);
+        presenter.onErrorDetected(ChatWindowErrorType.WebViewClient, errorCode, description);
 
         super.onReceivedError(view, errorCode, description, failingUrl);
     }
@@ -62,6 +62,6 @@ class LCWebViewClient extends WebViewClient {
     }
 
     private boolean handleUri(WebView webView, final Uri uri) {
-        return controller.handleUri(uri, webView.getOriginalUrl());
+        return presenter.handleUri(uri, webView.getOriginalUrl());
     }
 }

@@ -48,7 +48,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     private ValueCallback<Uri[]> mUriArrayUploadCallback;
     private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
     protected PermissionRequest webRequestPermissions;
-    private ChatWindowController controller;
+    private ChatWindowPresenter presenter;
 
     private final static String TAG = "ChatWindowView";
 
@@ -72,7 +72,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         progressBar = findViewById(R.id.chat_window_progress);
         reloadButton = findViewById(R.id.chat_window_button);
         reloadButton.setOnClickListener(view -> reload(true));
-        controller = new ChatWindowController(this, Volley.newRequestQueue(context));
+        presenter = new ChatWindowPresenter(this, Volley.newRequestQueue(context));
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
             String userAgentString = webView.getSettings().getUserAgentString();
@@ -95,8 +95,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true);
         }
 
-        webView.setWebViewClient(new LCWebViewClient(controller));
-        webView.setWebChromeClient(new LCWebChromeClient(this, controller));
+        webView.setWebViewClient(new LCWebViewClient(presenter));
+        webView.setWebChromeClient(new LCWebChromeClient(this, presenter));
 
         webView.requestFocus(View.FOCUS_DOWN);
         webView.setVisibility(GONE);
@@ -112,7 +112,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             }
             return false;
         });
-        webView.addJavascriptInterface(new ChatWindowJsInterface(controller), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
+        webView.addJavascriptInterface(new ChatWindowJsInterface(presenter), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
         adjustResizeOnGlobalLayout(webView, getActivity());
     }
 
@@ -186,44 +186,44 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     @Override
     public boolean setConfiguration(@NonNull ChatWindowConfiguration config) {
-        return controller.setConfig(config);
+        return presenter.setConfig(config);
     }
 
     @Override
     public void setEventsListener(ChatWindowEventsListener listener) {
-        controller.setEventsListener(listener);
+        presenter.setEventsListener(listener);
     }
 
     @Override
     public void initialize() {
-        controller.init();
+        presenter.init();
     }
 
     @Override
     public void reload(Boolean fullReload) {
-        controller.reinitialize();
+        presenter.reinitialize();
     }
 
 
     @Override
     public void showChatWindow() {
         ChatWindowViewImpl.this.setVisibility(VISIBLE);
-        if (controller.eventsListener != null) {
-            post(() -> controller.eventsListener.onChatWindowVisibilityChanged(true));
+        if (presenter.eventsListener != null) {
+            post(() -> presenter.eventsListener.onChatWindowVisibilityChanged(true));
         }
     }
 
     @Override
     public void hideChatWindow() {
         ChatWindowViewImpl.this.setVisibility(GONE);
-        if (controller.eventsListener != null) {
-            post(() -> controller.eventsListener.onChatWindowVisibilityChanged(false));
+        if (presenter.eventsListener != null) {
+            post(() -> presenter.eventsListener.onChatWindowVisibilityChanged(false));
         }
     }
 
     @Override
     public boolean isChatLoaded() {
-        return controller.chatUiReady;
+        return presenter.chatUiReady;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -398,11 +398,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     private void startFileChooserActivity() {
-        if (controller.eventsListener != null) {
+        if (presenter.eventsListener != null) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("*/*");
-            controller.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
+            presenter.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
         } else {
             Log.e(TAG, "You must provide a listener to handle file sharing");
             Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();

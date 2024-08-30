@@ -10,11 +10,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 class ChatWindowJsInterface {
-    public ChatWindowJsInterface(ChatWindowController controller) {
-        this.controller = controller;
+    public ChatWindowJsInterface(ChatWindowPresenter presenter) {
+        this.presenter = presenter;
     }
 
-    private final ChatWindowController controller;
+    private final ChatWindowPresenter presenter;
 
     public static final String BRIDGE_OBJECT_NAME = "androidMobileWidget";
     private static final String KEY_MESSAGE_TYPE = "messageType";
@@ -39,13 +39,13 @@ class ChatWindowJsInterface {
     private void dispatchMessage(String messageType, String json) {
         switch (messageType) {
             case TYPE_HIDE_CHAT_WINDOW:
-                controller.onHideChatWindow();
+                presenter.onHideChatWindow();
                 break;
             case TYPE_UI_READY:
-                controller.onUiReady();
+                presenter.onUiReady();
                 break;
             case TYPE_NEW_MESSAGE:
-                controller.onNewMessageReceived(new GsonBuilder().create().fromJson(json, NewMessageModel.class));
+                presenter.onNewMessageReceived(new GsonBuilder().create().fromJson(json, NewMessageModel.class));
                 break;
 
         }
