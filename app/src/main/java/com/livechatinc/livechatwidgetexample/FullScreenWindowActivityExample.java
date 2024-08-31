@@ -2,7 +2,6 @@ package com.livechatinc.livechatwidgetexample;
 
 import static android.view.View.GONE;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,20 +44,12 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         chatWindow.initialize();
 
         startChatBtn = findViewById(R.id.start_chat);
-        startChatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showChatWindow();
-            }
-        });
+        startChatBtn.setOnClickListener(view -> showChatWindow());
         chatBadgeTv = findViewById(R.id.chat_badge);
         clearSessionBtn = findViewById(R.id.clear_session_btn);
-        clearSessionBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ChatWindowUtils.clearSession(view.getContext());
-                chatWindow.reload(false);
-            }
+        clearSessionBtn.setOnClickListener(view -> {
+            ChatWindowUtils.clearSession(view.getContext());
+            chatWindow.reload(false);
         });
     }
 
@@ -98,10 +89,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public void onWindowInitialized() {
 
-    }
-
-    @Override
-    public void onStartFilePickerActivity(Intent intent, int requestCode) {
     }
 
     @Override

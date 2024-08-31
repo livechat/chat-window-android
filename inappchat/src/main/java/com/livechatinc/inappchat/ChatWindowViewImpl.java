@@ -44,7 +44,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     private TextView statusText;
     private Button reloadButton;
     private ProgressBar progressBar;
-    protected static final int REQUEST_CODE_FILE_UPLOAD = 21354;
     protected static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
     private ValueCallback<Uri> mUriUploadCallback;
@@ -275,22 +274,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     public boolean onBackPressed() {
         if (ChatWindowViewImpl.this.isShown()) {
             hideChatWindow();
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-    @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_FILE_UPLOAD) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                receiveUploadedData(data);
-            } else {
-                resetAllUploadCallbacks();
-            }
 
             return true;
         }

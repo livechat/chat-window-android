@@ -1,6 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -105,7 +104,6 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
     @Override
     public void onNewMessage(NewMessageModel message, boolean windowVisible) {
-
     }
 
     @Override
@@ -115,11 +113,6 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
     @Override
     public void onWindowInitialized() {
-
-    }
-
-    @Override
-    public void onStartFilePickerActivity(Intent intent, int requestCode) {
     }
 
     @Override

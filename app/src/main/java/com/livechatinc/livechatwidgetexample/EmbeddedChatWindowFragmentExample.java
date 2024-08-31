@@ -1,6 +1,5 @@
 package com.livechatinc.livechatwidgetexample;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -17,10 +16,6 @@ import com.livechatinc.inappchat.ChatWindowErrorType;
 import com.livechatinc.inappchat.ChatWindowEventsListener;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
-
-/**
- * Created by szymonjarosz on 26/07/2017.
- */
 
 public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatWindowEventsListener,
         MainActivity.OnBackPressedListener {
@@ -40,19 +35,11 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         startChatBtn = view.findViewById(R.id.embedded_start_chat);
-        startChatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                chatWindow.showChatWindow();
-            }
-        });
+        startChatBtn.setOnClickListener(startChat -> chatWindow.showChatWindow());
         reloadChatBtn = view.findViewById(R.id.embedded_reload_chat);
-        reloadChatBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                view.setVisibility(View.GONE);
-                chatWindow.reload(false);
-            }
+        reloadChatBtn.setOnClickListener(reloadChat -> {
+            reloadChat.setVisibility(View.GONE);
+            chatWindow.reload(false);
         });
         chatWindow = view.findViewById(R.id.embedded_chat_window);
 
@@ -88,11 +75,6 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     }
 
     @Override
-    public void onStartFilePickerActivity(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-
-    @Override
     public void onRequestAudioPermissions(String[] permissions, int requestCode) {
     }
 
@@ -109,12 +91,6 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
             Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
         }
         return true;
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        chatWindow.onActivityResult(requestCode, resultCode, data);
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
