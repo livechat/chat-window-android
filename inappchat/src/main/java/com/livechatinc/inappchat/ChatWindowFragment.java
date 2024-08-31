@@ -1,6 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,14 +8,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import java.util.HashMap;
-
-/**
- * Created by Łukasz Jerciński on 09/02/2017.
- */
 
 public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
     private ChatWindowConfiguration configuration;

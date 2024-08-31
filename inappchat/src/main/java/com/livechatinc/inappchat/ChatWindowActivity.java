@@ -1,6 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -8,13 +7,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.HashMap;
 import java.util.HashSet;
-
-/**
- * Created by Łukasz Jerciński on 10/02/2017.
- */
 
 public final class ChatWindowActivity extends FragmentActivity {
     private static final HashSet<String> DEFINED_KEYS = new HashSet<>();
@@ -35,7 +31,6 @@ public final class ChatWindowActivity extends FragmentActivity {
 
         LinearLayout linearLayout = new LinearLayout(this);
         FrameLayout frameLayout = new FrameLayout(this);
-        //noinspection ResourceType
         frameLayout.setId(frameId);
 
         linearLayout.addView(frameLayout, new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
@@ -67,8 +62,7 @@ public final class ChatWindowActivity extends FragmentActivity {
             }
         }
 
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        //noinspection ResourceType
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(frameId, ChatWindowFragment.newInstance(licenceNumber, groupId, visitorName, visitorEmail, customVariables));
         ft.commit();
     }
