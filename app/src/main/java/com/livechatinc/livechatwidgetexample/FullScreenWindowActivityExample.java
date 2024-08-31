@@ -1,5 +1,7 @@
 package com.livechatinc.livechatwidgetexample;
 
+import static android.view.View.GONE;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -22,12 +24,6 @@ import com.livechatinc.inappchat.ChatWindowUtils;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
-import static android.view.View.GONE;
-
-/**
- * Created by szymonjarosz on 26/07/2017.
- */
-
 public class FullScreenWindowActivityExample extends AppCompatActivity implements ChatWindowEventsListener {
     private FloatingActionButton startChatBtn;
     private ChatWindowView chatWindow;
@@ -41,10 +37,13 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         setContentView(R.layout.chat_window_launcher);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
         chatWindow.setConfiguration((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
         chatWindow.setEventsListener(this);
+        chatWindow.setUpAttachmentSupport(getActivityResultRegistry(), getLifecycle(), this);
         chatWindow.initialize();
+
         startChatBtn = findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,7 +102,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
 
     @Override
     public void onStartFilePickerActivity(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
     }
 
     @Override
@@ -123,13 +121,6 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     public void onBackPressed() {
         if (!chatWindow.onBackPressed())
             super.onBackPressed();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!chatWindow.onActivityResult(requestCode, resultCode, data)) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     @Override

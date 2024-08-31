@@ -27,9 +27,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import com.android.volley.toolbox.Volley;
 
@@ -50,6 +54,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     private ChatWindowPresenter presenter;
 
     private final static String TAG = "ChatWindowView";
+    private ChatWindowLifecycleObserver observer;
+    private Observer<Uri> uriObserver;
 
     public ChatWindowViewImpl(@NonNull Context context) {
         super(context);
@@ -157,9 +163,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.d(TAG, "onDetachedFromWindow");
         removeLayoutListener();
+
         webView.destroy();
+
+        if (observer != null && uriObserver != null) {
+            observer.getResultLiveData().removeObserver(uriObserver);
+        }
+
         super.onDetachedFromWindow();
     }
 
@@ -194,6 +205,25 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
+    public void setUpAttachmentSupport(
+            ActivityResultRegistry activityResultRegistry,
+            Lifecycle lifecycle,
+            LifecycleOwner owner
+    ) {
+        //TODO: consider supporting multiple files result as well
+        observer = new ChatWindowLifecycleObserver(activityResultRegistry);
+        lifecycle.addObserver(observer);
+
+        uriObserver = this::onFileChooserResult;
+        observer.getResultLiveData().observe(owner, uriObserver);
+    }
+
+    private void onFileChooserResult(Uri uri) {
+        mUriArrayUploadCallback.onReceiveValue(new Uri[]{uri});
+        mUriArrayUploadCallback = null;
+    }
+
+    @Override
     public void initialize() {
         presenter.init();
     }
@@ -202,7 +232,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     public void reload(Boolean fullReload) {
         presenter.reinitialize();
     }
-
 
     @Override
     public void showChatWindow() {
@@ -327,6 +356,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     // End of ChatWindowViewInternal interface
 
+    //TODO: possibly remove those methods
     private void receiveUploadedData(Intent data) {
         if (isUriArrayUpload()) {
             receiveUploadedUriArray(data);
@@ -397,14 +427,12 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     private void startFileChooserActivity() {
-        if (presenter.eventsListener != null) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            presenter.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
-        } else {
-            Log.e(TAG, "You must provide a listener to handle file sharing");
-            Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
+        if (observer == null) {
+            Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Attachment support is not set up");
+            return;
         }
+
+        observer.selectFile();
     }
 }

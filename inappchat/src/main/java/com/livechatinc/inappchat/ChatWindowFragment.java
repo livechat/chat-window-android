@@ -15,8 +15,6 @@ import com.livechatinc.inappchat.models.NewMessageModel;
 import java.util.HashMap;
 
 public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
-    private ChatWindowConfiguration configuration;
-    private ChatWindowView chatWindow;
 
     public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId) {
         return newInstance(licenceNumber, groupId, null, null, null);
@@ -46,6 +44,9 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
         return chatWindowFragment;
     }
 
+    private ChatWindowConfiguration configuration;
+    private ChatWindowView chatWindow;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +56,7 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
         if (getArguments() != null) {
 
+            //TODO: unify building and getting arguments
             for (String key : getArguments().keySet()) {
                 if (ChatWindowConfiguration.KEY_LICENCE_NUMBER.equals(key)) {
                     builder.setLicenceNumber(getArguments().getString(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
@@ -75,18 +77,23 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        chatWindow = (ChatWindowView) inflater.inflate(R.layout.view_chat_window, container, false);
+        chatWindow = (ChatWindowView) inflater.inflate(
+                R.layout.view_chat_window,
+                container,
+                false
+        );
 
         chatWindow.setConfiguration(configuration);
         chatWindow.setEventsListener(this);
+        chatWindow.setUpAttachmentSupport(
+                requireActivity().getActivityResultRegistry(),
+                getLifecycle(),
+                this
+        );
         chatWindow.initialize();
         chatWindow.showChatWindow();
-        return (View) chatWindow;
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        chatWindow.onActivityResult(requestCode, resultCode, data);
+        return (View) chatWindow;
     }
 
     @Override
@@ -113,7 +120,6 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
     @Override
     public void onStartFilePickerActivity(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
     }
 
     @Override

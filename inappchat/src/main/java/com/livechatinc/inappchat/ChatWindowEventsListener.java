@@ -22,6 +22,7 @@ public interface ChatWindowEventsListener {
      */
     void onNewMessage(NewMessageModel message, boolean windowVisible);
 
+    //TODO: possibly can be removed in favor of setUpAttachmentSupport
     /**
      * Needed for handling attachments
      */
