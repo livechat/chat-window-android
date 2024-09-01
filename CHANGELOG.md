@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.3.4 - Sep 1st, 2024
+Code refactor - remove unused code, introduce MVP pattern, cleanups
+
 ## Version 2.3.3 - Aug 30th, 2024
 Code refactor - remove unused code, introduce MVP pattern, cleanups
 
