@@ -37,7 +37,6 @@ import androidx.lifecycle.Observer;
 
 import com.android.volley.toolbox.Volley;
 
-import java.io.File;
 import java.util.List;
 
 public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, ChatWindowViewInternal {
@@ -210,7 +209,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             Lifecycle lifecycle,
             LifecycleOwner owner
     ) {
-        //TODO: consider supporting multiple files result as well
         observer = new ChatWindowLifecycleObserver(activityResultRegistry);
         lifecycle.addObserver(observer);
 
@@ -219,8 +217,16 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     private void onFileChooserResult(List<Uri> uri) {
-        mUriArrayUploadCallback.onReceiveValue(uri.toArray(new Uri[0]));
-        mUriArrayUploadCallback = null;
+        if (isUriArrayUpload()) {
+            mUriArrayUploadCallback.onReceiveValue(uri.toArray(new Uri[0]));
+            mUriArrayUploadCallback = null;
+        } else {
+            mUriUploadCallback.onReceiveValue(uri.get(0));
+        }
+    }
+
+    private boolean isUriArrayUpload() {
+        return mUriArrayUploadCallback != null;
     }
 
     @Override
@@ -340,43 +346,16 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     // End of ChatWindowViewInternal interface
 
-    //TODO: possibly remove those methods
-    private void receiveUploadedData(Intent data) {
-        if (isUriArrayUpload()) {
-            receiveUploadedUriArray(data);
-        } else {
-            receiveUploadedUri(data);
-        }
+    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback, FileChooserMode mode) {
+        resetAllUploadCallbacks();
+        mUriUploadCallback = uriValueCallback;
+        startFileChooserActivity(mode);
     }
 
-    private boolean isUriArrayUpload() {
-        return mUriArrayUploadCallback != null;
-    }
-
-    private void receiveUploadedUriArray(Intent data) {
-        Uri[] uploadedUris;
-        try {
-            uploadedUris = new Uri[]{Uri.parse(data.getDataString())};
-        } catch (Exception e) {
-            uploadedUris = null;
-        }
-
-        mUriArrayUploadCallback.onReceiveValue(uploadedUris);
-        mUriArrayUploadCallback = null;
-    }
-
-    private void receiveUploadedUri(Intent data) {
-        Uri uploadedFileUri;
-        try {
-            String uploadedUriFilePath = UriUtils.getFilePathFromUri(getContext(), data.getData());
-            File uploadedFile = new File(uploadedUriFilePath);
-            uploadedFileUri = Uri.fromFile(uploadedFile);
-        } catch (Exception e) {
-            uploadedFileUri = null;
-        }
-
-        mUriUploadCallback.onReceiveValue(uploadedFileUri);
-        mUriUploadCallback = null;
+    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback, FileChooserMode mode) {
+        resetAllUploadCallbacks();
+        mUriArrayUploadCallback = uriArrayValueCallback;
+        startFileChooserActivity(mode);
     }
 
     private void resetAllUploadCallbacks() {
@@ -396,18 +375,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             mUriArrayUploadCallback.onReceiveValue(null);
             mUriArrayUploadCallback = null;
         }
-    }
-
-    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback, FileChooserMode mode) {
-        resetAllUploadCallbacks();
-        mUriUploadCallback = uriValueCallback;
-        startFileChooserActivity(mode);
-    }
-
-    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback, FileChooserMode mode) {
-        resetAllUploadCallbacks();
-        mUriArrayUploadCallback = uriArrayValueCallback;
-        startFileChooserActivity(mode);
     }
 
     private void startFileChooserActivity(FileChooserMode mode) {
