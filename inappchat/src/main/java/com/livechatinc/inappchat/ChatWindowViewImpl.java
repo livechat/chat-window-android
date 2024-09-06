@@ -346,12 +346,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     // End of ChatWindowViewInternal interface
 
-    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback, FileChooserMode mode) {
+    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
         resetAllUploadCallbacks();
         mUriUploadCallback = uriValueCallback;
-        startFileChooserActivity(mode);
+        startFileChooserActivity();
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback, FileChooserMode mode) {
         resetAllUploadCallbacks();
         mUriArrayUploadCallback = uriArrayValueCallback;
@@ -377,6 +379,17 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         }
     }
 
+    private void startFileChooserActivity() {
+        if (observer == null) {
+            Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Attachment support is not set up");
+            return;
+        }
+
+        observer.selectFile();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
             Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
