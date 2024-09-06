@@ -385,10 +385,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         }
 
         switch (mode) {
-            case Single:
+            case SINGLE:
                 observer.selectFile();
                 break;
-            case Multiple:
+            case MULTIPLE:
                 observer.selectFiles();
                 break;
         }

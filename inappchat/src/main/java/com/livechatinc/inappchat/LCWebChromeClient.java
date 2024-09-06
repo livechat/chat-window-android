@@ -27,12 +27,12 @@ class LCWebChromeClient extends WebChromeClient {
 
     @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-        view.chooseUriToUpload(uploadMsg, FileChooserMode.Single);
+        view.chooseUriToUpload(uploadMsg, FileChooserMode.SINGLE);
     }
 
     @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        view.chooseUriToUpload(uploadMsg, FileChooserMode.Multiple);
+        view.chooseUriToUpload(uploadMsg, FileChooserMode.MULTIPLE);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -43,7 +43,7 @@ class LCWebChromeClient extends WebChromeClient {
     }
 
     private FileChooserMode toInternalMode(int mode) {
-        return mode == FileChooserParams.MODE_OPEN_MULTIPLE ? FileChooserMode.Multiple : FileChooserMode.Single;
+        return mode == FileChooserParams.MODE_OPEN_MULTIPLE ? FileChooserMode.MULTIPLE : FileChooserMode.SINGLE;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
