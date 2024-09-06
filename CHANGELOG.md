@@ -1,5 +1,8 @@
 # Android ChangeLog
 
+## Version 2.3.4 - Sep 1st, 2024
+Remove obsolete WebView popup from layout and prevent unnecessary view inflation
+
 ## Version 2.3.3 - Aug 30th, 2024
 Code refactor - remove unused code, introduce MVP pattern, cleanups
 

@@ -15,12 +15,6 @@
         android:layout_gravity="center"
         android:indeterminate="true" />
 
-    <WebView
-        android:id="@+id/chat_window_web_view_popup"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/chat_window_status_container"
         android:layout_width="match_parent"
@@ -42,6 +36,4 @@
             android:text="@string/reload_chat"
             android:visibility="gone" />
     </LinearLayout>
-
-
 </merge>
