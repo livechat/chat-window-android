@@ -381,8 +381,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private void startFileChooserActivity() {
         if (observer == null) {
-            Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Attachment support is not set up");
+            onAttachmentSupportNotSetUp();
             return;
         }
 
@@ -392,8 +391,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
-            Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Attachment support is not set up");
+            onAttachmentSupportNotSetUp();
             return;
         }
 
@@ -405,5 +403,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
                 observer.selectFiles();
                 break;
         }
+    }
+
+    private void onAttachmentSupportNotSetUp() {
+        Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "Attachment support is not set up");
     }
 }
