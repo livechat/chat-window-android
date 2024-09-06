@@ -26,24 +26,24 @@ class LCWebChromeClient extends WebChromeClient {
     final ChatWindowPresenter presenter;
 
     @SuppressWarnings("unused")
-    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        view.chooseUriToUpload(uploadMsg);
-    }
-
-    @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-        view.chooseUriToUpload(uploadMsg);
+        view.chooseUriToUpload(uploadMsg, FileChooserMode.Single);
     }
 
     @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        view.chooseUriToUpload(uploadMsg);
+        view.chooseUriToUpload(uploadMsg, FileChooserMode.Multiple);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
-        view.chooseUriArrayToUpload(uploadMsg);
+        view.chooseUriArrayToUpload(uploadMsg, toInternalMode(fileChooserParams.getMode()));
         return true;
+    }
+
+    private FileChooserMode toInternalMode(int mode) {
+        return mode == FileChooserParams.MODE_OPEN_MULTIPLE ? FileChooserMode.Multiple : FileChooserMode.Single;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)

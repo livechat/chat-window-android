@@ -38,6 +38,7 @@ import androidx.lifecycle.Observer;
 import com.android.volley.toolbox.Volley;
 
 import java.io.File;
+import java.util.List;
 
 public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, ChatWindowViewInternal {
     private WebView webView;
@@ -54,7 +55,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private final static String TAG = "ChatWindowView";
     private ChatWindowLifecycleObserver observer;
-    private Observer<Uri> uriObserver;
+    private Observer<List<Uri>> uriObserver;
 
     public ChatWindowViewImpl(@NonNull Context context) {
         super(context);
@@ -217,8 +218,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         observer.getResultLiveData().observe(owner, uriObserver);
     }
 
-    private void onFileChooserResult(Uri uri) {
-        mUriArrayUploadCallback.onReceiveValue(new Uri[]{uri});
+    private void onFileChooserResult(List<Uri> uri) {
+        mUriArrayUploadCallback.onReceiveValue(uri.toArray(new Uri[0]));
         mUriArrayUploadCallback = null;
     }
 
@@ -397,25 +398,32 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         }
     }
 
-    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
+    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback, FileChooserMode mode) {
         resetAllUploadCallbacks();
         mUriUploadCallback = uriValueCallback;
-        startFileChooserActivity();
+        startFileChooserActivity(mode);
     }
 
-    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback) {
+    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback, FileChooserMode mode) {
         resetAllUploadCallbacks();
         mUriArrayUploadCallback = uriArrayValueCallback;
-        startFileChooserActivity();
+        startFileChooserActivity(mode);
     }
 
-    private void startFileChooserActivity() {
+    private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
             Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Attachment support is not set up");
             return;
         }
 
-        observer.selectFile();
+        switch (mode) {
+            case Single:
+                observer.selectFile();
+                break;
+            case Multiple:
+                observer.selectFiles();
+                break;
+        }
     }
 }
