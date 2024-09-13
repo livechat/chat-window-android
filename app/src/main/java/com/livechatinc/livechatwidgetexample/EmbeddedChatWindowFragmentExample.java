@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -32,7 +33,7 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         startChatBtn = view.findViewById(R.id.embedded_start_chat);
         startChatBtn.setOnClickListener(startChat -> chatWindow.showChatWindow());

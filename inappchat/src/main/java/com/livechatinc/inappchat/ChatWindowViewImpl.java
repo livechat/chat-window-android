@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
@@ -70,7 +69,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         Log.d(TAG, "Initializing ChatWindowViewImpl");
         setFitsSystemWindows(true);
         setVisibility(GONE);
-        LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
+        LayoutInflater.from(context).inflate(
+                R.layout.view_chat_window_internal,
+                this,
+                true
+        );
         webView = findViewById(R.id.chat_window_web_view);
         statusText = findViewById(R.id.chat_window_status_text);
         progressBar = findViewById(R.id.chat_window_progress);
@@ -116,7 +119,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             }
             return false;
         });
-        webView.addJavascriptInterface(new ChatWindowJsInterface(presenter), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
+        webView.addJavascriptInterface(
+                new ChatWindowJsInterface(presenter),
+                ChatWindowJsInterface.BRIDGE_OBJECT_NAME
+        );
         adjustResizeOnGlobalLayout(webView, getActivity());
     }
 
@@ -145,13 +151,27 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
             if (viewGroup.getPaddingBottom() != paddingBottom) {
                 // showing/hiding the soft keyboard
-                viewGroup.setPadding(viewGroup.getPaddingLeft(), viewGroup.getPaddingTop(), viewGroup.getPaddingRight(), paddingBottom);
+                viewGroup.setPadding(
+                        viewGroup.getPaddingLeft(),
+                        viewGroup.getPaddingTop(),
+                        viewGroup.getPaddingRight(),
+                        paddingBottom
+                );
             } else {
                 // soft keyboard shown/hidden and padding changed
                 if (paddingBottom != 0) {
-                    // soft keyboard shown, scroll active element into view in case it is blocked by the soft keyboard
+                    // soft keyboard shown, scroll active element into view in case it is blocked
+                    // by the soft keyboard
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        webView.evaluateJavascript("if (document.activeElement) { document.activeElement.scrollIntoView({behavior: \"smooth\", block: \"center\", inline: \"nearest\"}); }", null);
+                        webView.evaluateJavascript(
+                                "if (document.activeElement) { " +
+                                        "document.activeElement.scrollIntoView({" +
+                                        "behavior: \"smooth\", " +
+                                        "block: \"center\", " +
+                                        "inline: \"nearest\"" +
+                                        "}); " +
+                                        "}", null
+                        );
                     }
                 }
             }
@@ -262,7 +282,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public boolean onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
         if (requestCode == REQUEST_CODE_AUDIO_PERMISSIONS && webRequestPermissions != null) {
             String[] PERMISSIONS = {
                     PermissionRequest.RESOURCE_AUDIO_CAPTURE,
@@ -354,7 +378,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback, FileChooserMode mode) {
+    protected void chooseUriArrayToUpload(
+            ValueCallback<Uri[]> uriArrayValueCallback,
+            FileChooserMode mode
+    ) {
         resetAllUploadCallbacks();
         mUriArrayUploadCallback = uriArrayValueCallback;
         startFileChooserActivity(mode);
@@ -406,7 +433,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     private void onAttachmentSupportNotSetUp() {
-        Toast.makeText(getContext(), "Attachment support is not set up", Toast.LENGTH_SHORT).show();
         Log.e(TAG, "Attachment support is not set up");
     }
 }
