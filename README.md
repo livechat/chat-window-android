@@ -229,7 +229,7 @@ intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_EM
 In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number and group ID:
 
 ```java
-getFragmentManager()
+getSupportFragmentManager()
    .beginTransaction()
    .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
    .addToBackStack("chat_fragment")
@@ -245,7 +245,7 @@ Method `ChatWindowFragment.newInstance()` returns chat window Fragment.
 It’s also possible to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in web application and use different `newInstance()` method:
 
 ```java
-getFragmentManager()
+getSupportFragmentManager()
    .beginTransaction()
    .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
    .addToBackStack("chat_fragment")
