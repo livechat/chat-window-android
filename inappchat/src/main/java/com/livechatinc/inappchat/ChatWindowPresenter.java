@@ -152,11 +152,11 @@ class ChatWindowPresenter {
         }
     }
 
-    public void onAttachmentsNotSupported() {
-        if (eventsListener.onError(ChatWindowErrorType.NoAttachmentSupport, -1, "Attachments support not configured")) {
+    public void onFileSharingNotSupported() {
+        if (eventsListener.onError(ChatWindowErrorType.NoFileSharingSupport, -1, "Attachments support not configured")) {
             return;
         }
 
-        chatWindowView.showAttachmentsNotSupportedMessage();
+        chatWindowView.showFileSharingNotSupportedMessage();
     }
 }

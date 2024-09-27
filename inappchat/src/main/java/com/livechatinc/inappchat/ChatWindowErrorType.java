@@ -4,5 +4,5 @@ public enum ChatWindowErrorType {
     Console,
     WebViewClient,
     InitialConfiguration,
-    NoAttachmentSupport,
+    NoFileSharingSupport,
 }

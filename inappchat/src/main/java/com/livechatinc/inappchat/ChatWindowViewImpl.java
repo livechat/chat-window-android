@@ -371,7 +371,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void showAttachmentsNotSupportedMessage() {
+    public void showFileSharingNotSupportedMessage() {
         Log.e(TAG, "Attachment support is not set up");
         Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
     }
@@ -416,7 +416,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private void startFileChooserActivity() {
         if (observer == null) {
-            presenter.onAttachmentsNotSupported();
+            presenter.onFileSharingNotSupported();
 
             return;
         }
@@ -427,7 +427,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
-            presenter.onAttachmentsNotSupported();
+            presenter.onFileSharingNotSupported();
 
             return;
         }

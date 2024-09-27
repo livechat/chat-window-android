@@ -21,5 +21,5 @@ interface ChatWindowViewInternal {
 
     void runOnMainThread(Runnable runnable);
 
-    void showAttachmentsNotSupportedMessage();
+    void showFileSharingNotSupportedMessage();
 }
