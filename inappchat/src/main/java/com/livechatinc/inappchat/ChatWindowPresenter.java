@@ -152,7 +152,7 @@ class ChatWindowPresenter {
         }
     }
 
-    public void onFileSharingNotSupported() {
+    public void onNoFileSharingSupport() {
         if (eventsListener.onError(ChatWindowErrorType.NoFileSharingSupport, -1, "Attachments support not configured")) {
             return;
         }

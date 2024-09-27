@@ -15,7 +15,7 @@ Removed:
 * `onStartFilePickerActivity` callback from `ChatWindowEventsListener`
 * `onActivityResult` method from `ChatWindowView`
 Added:
-* `supportSharingFiles` in `ChatWindowView`
+* `supportFileSharing` in `ChatWindowView`
 * `onFilePickerActivityNotFound` in`ChatWindowEventsListener`
 See "Sharing files" section in the docs for more details.
 

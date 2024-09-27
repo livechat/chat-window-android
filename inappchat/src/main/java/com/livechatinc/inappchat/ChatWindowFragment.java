@@ -64,7 +64,7 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
         );
 
         chatWindow.setEventsListener(this);
-        chatWindow.supportSharingFiles(
+        chatWindow.supportFileSharing(
                 requireActivity().getActivityResultRegistry(),
                 getLifecycle(),
                 this

@@ -220,7 +220,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void supportSharingFiles(
+    public void supportFileSharing(
             ActivityResultRegistry activityResultRegistry,
             Lifecycle lifecycle,
             LifecycleOwner owner
@@ -416,7 +416,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private void startFileChooserActivity() {
         if (observer == null) {
-            presenter.onFileSharingNotSupported();
+            presenter.onNoFileSharingSupport();
 
             return;
         }
@@ -427,7 +427,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
-            presenter.onFileSharingNotSupported();
+            presenter.onNoFileSharingSupport();
 
             return;
         }

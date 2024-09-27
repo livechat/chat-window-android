@@ -124,9 +124,9 @@ This listener gives you opportunity to:
 * allow users to use SnapCall integration
 * get notified if user device can't handle file picker activity Intent
 
-### Sharing files
+### File sharing
 
-To provide your users capability to send files, you need to set it up through `supportSharingFiles` on your `ChatWindowView`.
+To provide your users capability to send files, you need to set it up through `supportFileSharing` on your `ChatWindowView`.
 In case of operating system not able to handle Intent to pick files, you can handle it via `onFilePickerActivityNotFound` callback in `ChatWindowEventsListener`.
 
 ### Handling URL's
