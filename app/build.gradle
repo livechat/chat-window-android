@@ -31,5 +31,4 @@ dependencies {
     implementation project(':inappchat')
 
     testImplementation 'junit:junit:4.13.2'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
 }
