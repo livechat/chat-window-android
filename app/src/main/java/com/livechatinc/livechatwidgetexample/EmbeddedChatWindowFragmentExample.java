@@ -72,6 +72,11 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     }
 
     @Override
+    public void onFilePickerActivityNotFound() {
+        Toast.makeText(getContext(), "No file picker found", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     public void onWindowInitialized() {
     }
 

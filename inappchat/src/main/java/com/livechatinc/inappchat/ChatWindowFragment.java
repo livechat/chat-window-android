@@ -84,7 +84,7 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
         chatWindow.setConfiguration(configuration);
         chatWindow.setEventsListener(this);
-        chatWindow.setUpAttachmentSupport(
+        chatWindow.supportAttachments(
                 requireActivity().getActivityResultRegistry(),
                 getLifecycle(),
                 this
@@ -109,6 +109,10 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
     @Override
     public boolean handleUri(Uri uri) {
         return false;
+    }
+
+    @Override
+    public void onFilePickerActivityNotFound() {
     }
 
     @Override

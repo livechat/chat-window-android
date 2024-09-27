@@ -45,5 +45,8 @@ public interface ChatWindowEventsListener {
      */
     boolean handleUri(final Uri uri);
 
-
+    /**
+     * Notifies about window not able to lunch an app to handle file picker intent.
+     */
+    void onFilePickerActivityNotFound();
 }

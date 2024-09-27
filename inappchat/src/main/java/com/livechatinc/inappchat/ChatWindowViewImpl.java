@@ -224,24 +224,29 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void setUpAttachmentSupport(
+    public void supportAttachments(
             ActivityResultRegistry activityResultRegistry,
             Lifecycle lifecycle,
             LifecycleOwner owner
     ) {
-        observer = new ChatWindowLifecycleObserver(activityResultRegistry);
+        observer = new ChatWindowLifecycleObserver(activityResultRegistry, () -> {
+            if (presenter.eventsListener != null) {
+                presenter.eventsListener.onFilePickerActivityNotFound();
+            }
+        });
         lifecycle.addObserver(observer);
 
         uriObserver = this::onFileChooserResult;
         observer.getResultLiveData().observe(owner, uriObserver);
     }
 
-    private void onFileChooserResult(List<Uri> uri) {
+    private void onFileChooserResult(List<Uri> selectedFiles) {
         if (isUriArrayUpload()) {
-            mUriArrayUploadCallback.onReceiveValue(uri.toArray(new Uri[0]));
+            mUriArrayUploadCallback.onReceiveValue(selectedFiles.toArray(new Uri[0]));
             mUriArrayUploadCallback = null;
-        } else {
-            mUriUploadCallback.onReceiveValue(uri.get(0));
+        } else if (mUriUploadCallback != null) {
+            mUriUploadCallback.onReceiveValue(selectedFiles.isEmpty() ? null : selectedFiles.get(0));
+            mUriUploadCallback = null;
         }
     }
 

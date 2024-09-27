@@ -37,7 +37,11 @@ class LCWebChromeClient extends WebChromeClient {
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
+    public boolean onShowFileChooser(
+            WebView webView,
+            ValueCallback<Uri[]> uploadMsg,
+            FileChooserParams fileChooserParams
+    ) {
         view.chooseUriArrayToUpload(uploadMsg, toInternalMode(fileChooserParams.getMode()));
         return true;
     }
@@ -51,7 +55,11 @@ class LCWebChromeClient extends WebChromeClient {
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
         view.webRequestPermissions = request;
-        String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+        String[] runtimePermissions = {
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.MODIFY_AUDIO_SETTINGS
+        };
         presenter.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
     }
 

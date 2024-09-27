@@ -40,7 +40,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
         chatWindow.setConfiguration((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
         chatWindow.setEventsListener(this);
-        chatWindow.setUpAttachmentSupport(getActivityResultRegistry(), getLifecycle(), this);
+        chatWindow.supportAttachments(getActivityResultRegistry(), getLifecycle(), this);
         chatWindow.initialize();
 
         startChatBtn = findViewById(R.id.start_chat);
@@ -84,6 +84,11 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public boolean handleUri(Uri uri) {
         return false;
+    }
+
+    @Override
+    public void onFilePickerActivityNotFound() {
+        Toast.makeText(this, "No file picker found", Toast.LENGTH_SHORT).show();
     }
 
     @Override

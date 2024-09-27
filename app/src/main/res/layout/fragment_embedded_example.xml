@@ -34,7 +34,7 @@
     <com.livechatinc.inappchat.ChatWindowViewImpl
         android:id="@+id/embedded_chat_window"
         android:layout_width="match_parent"
-        android:layout_height="400dp"
+        android:layout_height="600dp"
         android:visibility="gone" />
 
 </LinearLayout>

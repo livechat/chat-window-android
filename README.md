@@ -120,12 +120,12 @@ public boolean onBackPressed() {
 ## ChatWindowEventsListener
 
 This listener gives you opportunity to:
-* handle a case, when user wants to attach file in ChatWindow
 * get notified if new message arrived in chat. This gets handy if you want to show some kind of badge for a user to read new message.
 * react on visibility changes (user can hide the view on its own)
 * handle user selected links in a custom way
 * react and handle errors coming from chat window
 * allow users to use SnapCall integration
+* get notified if user device can't handle file picker activity Intent
 
 ### File sharing
 
@@ -263,6 +263,10 @@ You can change or localize error messages, by defining your own string resources
 <string name="cant_share_files">File sharing is not configured for this app</string>
 <string name="reload_chat">Reload</string>
 ```
+
+### Migration details
+
+Since version 2.4.0, migration details are listed in CHANGELOG.md.
 
 ### Migrating to version >= 2.2.0
 * ChatWindowView is now interface that can be casted to View
