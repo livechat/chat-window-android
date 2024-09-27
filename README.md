@@ -71,9 +71,8 @@ All you need to do is to create, attach and initialize chat window. Something in
 public void startFullScreenChat() {
     if (fullScreenChatWindow == null) {
         fullScreenChatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(getActivity());
-        fullScreenChatWindow.setConfiguration(configuration);
         fullScreenChatWindow.setEventsListener(this);
-        fullScreenChatWindow.initialize();
+        fullScreenChatWindow.init(configuration);
     }
     fullScreenChatWindow.showChatWindow();
 }
@@ -97,9 +96,8 @@ and then initializing ChatWindow like with full screen window approach:
 ```java
 public void startEmmbeddedChat(View view) {
     if (!emmbeddedChatWindow.isInitialized()) {
-        emmbeddedChatWindow.setConfiguration(configuration);
         emmbeddedChatWindow.setEventsListener(this);
-        emmbeddedChatWindow.initialize();
+        emmbeddedChatWindow.init(configuration);
     }
     emmbeddedChatWindow.showChatWindow();
 }
