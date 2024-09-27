@@ -26,5 +26,5 @@ public interface ChatWindowView {
 
     boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
 
-    void supportAttachments(ActivityResultRegistry activityResultRegistry, Lifecycle lifecycle, LifecycleOwner owner);
+    void supportSharingFiles(ActivityResultRegistry activityResultRegistry, Lifecycle lifecycle, LifecycleOwner owner);
 }

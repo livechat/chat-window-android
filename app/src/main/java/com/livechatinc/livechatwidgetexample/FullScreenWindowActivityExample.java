@@ -39,7 +39,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
 
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
         chatWindow.setEventsListener(this);
-        chatWindow.supportAttachments(getActivityResultRegistry(), getLifecycle(), this);
+        chatWindow.supportSharingFiles(getActivityResultRegistry(), getLifecycle(), this);
         chatWindow.init((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
 
         startChatBtn = findViewById(R.id.start_chat);

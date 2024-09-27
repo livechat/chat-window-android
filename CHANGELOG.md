@@ -15,9 +15,9 @@ Removed:
 * `onStartFilePickerActivity` callback from `ChatWindowEventsListener`
 * `onActivityResult` method from `ChatWindowView`
 Added:
-* `supportAttachments` in `ChatWindowView`
+* `supportSharingFiles` in `ChatWindowView`
 * `onFilePickerActivityNotFound` in`ChatWindowEventsListener`
-See File Sharing section in the docs for more details.
+See "Sharing files" section in the docs for more details.
 
 ## Version 2.3.4 - Sep 1st, 2024
 Remove obsolete WebView popup from layout and prevent unnecessary view inflation

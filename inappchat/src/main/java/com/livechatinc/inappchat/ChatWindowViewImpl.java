@@ -220,7 +220,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void supportAttachments(
+    public void supportSharingFiles(
             ActivityResultRegistry activityResultRegistry,
             Lifecycle lifecycle,
             LifecycleOwner owner
