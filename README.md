@@ -129,7 +129,7 @@ This listener gives you opportunity to:
 
 ### File sharing
 
-To provide your users capability to send files, you need to set it up through `setUpAttachmentSupport` on your `ChatWindowView`.
+To provide your users capability to send files, you need to set it up through `supportAttachments` on your `ChatWindowView`.
 
 ### Handling URL's
 
