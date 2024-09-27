@@ -1,6 +1,6 @@
 # Android ChangeLog
 
-## Version 2.4.0 - Sep 13th, 2024
+## Version 2.4.0 - Sep 27th, 2024
 Migrate to AndroidX for managing Fragments
 Allow for sending multiple files at once on Android 21+
 
