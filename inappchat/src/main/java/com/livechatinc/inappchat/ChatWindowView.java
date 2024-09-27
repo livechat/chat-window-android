@@ -7,12 +7,10 @@ import androidx.lifecycle.LifecycleOwner;
 
 public interface ChatWindowView {
 
-    boolean setConfiguration(@NonNull ChatWindowConfiguration config); //set config, action if config changed?
-
     /**
-     * Checks the configuration and initializes ChatWindow, loading the view.
+     * Initializes ChatWindow, loading the view with provided configuration.
      */
-    void initialize();
+    void init(@NonNull ChatWindowConfiguration config);
 
     void setEventsListener(ChatWindowEventsListener eventListener);
 

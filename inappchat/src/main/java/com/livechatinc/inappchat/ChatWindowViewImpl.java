@@ -214,11 +214,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     // ChatWindowView interface
 
     @Override
-    public boolean setConfiguration(@NonNull ChatWindowConfiguration config) {
-        return presenter.setConfig(config);
-    }
-
-    @Override
     public void setEventsListener(ChatWindowEventsListener listener) {
         presenter.setEventsListener(listener);
     }
@@ -255,7 +250,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void initialize() {
+    public void init(@NonNull ChatWindowConfiguration config) {
+        presenter.setConfig(config);
         presenter.init();
     }
 

@@ -38,10 +38,9 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         setSupportActionBar(toolbar);
 
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
-        chatWindow.setConfiguration((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
         chatWindow.setEventsListener(this);
         chatWindow.supportAttachments(getActivityResultRegistry(), getLifecycle(), this);
-        chatWindow.initialize();
+        chatWindow.init((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
 
         startChatBtn = findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(view -> showChatWindow());

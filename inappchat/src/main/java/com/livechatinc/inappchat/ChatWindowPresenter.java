@@ -34,14 +34,6 @@ class ChatWindowPresenter {
         this.eventsListener = eventsListener;
     }
 
-    protected boolean setConfig(ChatWindowConfiguration config) {
-        final boolean isEqualConfig = this.config != null && this.config.equals(config);
-        this.config = config;
-
-        return !isEqualConfig;
-    }
-
-
     protected void init() {
         checkConfiguration();
         JsonObjectRequest initializationRequest = new JsonObjectRequest(
@@ -54,6 +46,9 @@ class ChatWindowPresenter {
         networkQueue.add(initializationRequest);
     }
 
+    protected void setConfig(ChatWindowConfiguration config) {
+        this.config = config;
+    }
 
     private void checkConfiguration() {
         if (config == null) {

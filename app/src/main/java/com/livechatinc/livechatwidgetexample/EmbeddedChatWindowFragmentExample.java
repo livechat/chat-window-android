@@ -44,9 +44,8 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
         });
         chatWindow = view.findViewById(R.id.embedded_chat_window);
 
-        chatWindow.setConfiguration(ChatWindowConfiguration.fromBundle(getArguments()));
         chatWindow.setEventsListener(this);
-        chatWindow.initialize();
+        chatWindow.init(ChatWindowConfiguration.fromBundle(getArguments()));
     }
 
 

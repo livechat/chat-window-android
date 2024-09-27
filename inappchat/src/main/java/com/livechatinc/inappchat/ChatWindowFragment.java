@@ -82,14 +82,13 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
                 false
         );
 
-        chatWindow.setConfiguration(configuration);
         chatWindow.setEventsListener(this);
         chatWindow.supportAttachments(
                 requireActivity().getActivityResultRegistry(),
                 getLifecycle(),
                 this
         );
-        chatWindow.initialize();
+        chatWindow.init(configuration);
         chatWindow.showChatWindow();
 
         return (View) chatWindow;
