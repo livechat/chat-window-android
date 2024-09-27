@@ -50,28 +50,9 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final ChatWindowConfiguration.Builder builder = new ChatWindowConfiguration.Builder();
-        HashMap<String, String> customParams = new HashMap<>();
-
         if (getArguments() != null) {
-
-            //TODO: unify building and getting arguments
-            for (String key : getArguments().keySet()) {
-                if (ChatWindowConfiguration.KEY_LICENCE_NUMBER.equals(key)) {
-                    builder.setLicenceNumber(getArguments().getString(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
-                } else if (ChatWindowConfiguration.KEY_GROUP_ID.equals(key)) {
-                    builder.setGroupId(getArguments().getString(ChatWindowConfiguration.KEY_GROUP_ID));
-                } else if (ChatWindowConfiguration.KEY_VISITOR_NAME.equals(key)) {
-                    builder.setVisitorName(getArguments().getString(ChatWindowConfiguration.KEY_VISITOR_NAME));
-                } else if (ChatWindowConfiguration.KEY_VISITOR_EMAIL.equals(key)) {
-                    builder.setVisitorEmail(getArguments().getString(ChatWindowConfiguration.KEY_VISITOR_EMAIL));
-                } else {
-                    customParams.put(key, String.valueOf(getArguments().get(key)));
-                }
-            }
-            builder.setCustomParams(customParams);
+            configuration = ChatWindowConfiguration.fromBundle(getArguments());
         }
-        configuration = builder.build();
     }
 
     @Override

@@ -15,10 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * Created by szymonjarosz on 20/07/2017.
- */
-
 public class ChatWindowConfiguration implements Serializable {
     public static final String KEY_LICENCE_NUMBER = "KEY_LICENCE_NUMBER";
     public static final String KEY_GROUP_ID = "KEY_GROUP_ID";
@@ -41,7 +37,8 @@ public class ChatWindowConfiguration implements Serializable {
             @Nullable String groupId,
             @Nullable String visitorName,
             @Nullable String visitorEmail,
-            @Nullable HashMap<String, String> customVariables) {
+            @Nullable HashMap<String, String> customVariables
+    ) {
         this.licenceNumber = licenceNumber;
         this.groupId = groupId != null ? groupId : DEFAULT_GROUP_ID;
         this.visitorName = visitorName;
@@ -56,6 +53,7 @@ public class ChatWindowConfiguration implements Serializable {
                 customParams.put(key.replaceFirst(CUSTOM_PARAM_PREFIX, ""), arguments.getString(key));
             }
         }
+
         return new ChatWindowConfiguration.Builder()
                 .setLicenceNumber(arguments.getString(KEY_LICENCE_NUMBER))
                 .setGroupId(arguments.getString(KEY_GROUP_ID))
@@ -77,6 +75,7 @@ public class ChatWindowConfiguration implements Serializable {
                 params.put(CUSTOM_PARAM_PREFIX + key, customVariables.get(key));
             }
         }
+
         return params;
     }
 
@@ -85,6 +84,7 @@ public class ChatWindowConfiguration implements Serializable {
         for (Map.Entry<String, String> entry : getParams().entrySet()) {
             bundle.putString(entry.getKey(), entry.getValue());
         }
+
         return bundle;
     }
 
@@ -103,7 +103,7 @@ public class ChatWindowConfiguration implements Serializable {
                 chatUrl = chatUrl + "&email=" + URLEncoder.encode(visitorEmail, "UTF-8");
             }
 
-            final String customParams = escapeCustomParams(getParams(), chatUrl);
+            final String customParams = encodeParams(getParams());
 
             if (!TextUtils.isEmpty(customParams)) {
                 chatUrl = chatUrl + "&params=" + customParams;
@@ -123,7 +123,7 @@ public class ChatWindowConfiguration implements Serializable {
         return url.replace("{%" + key + "%}", value);
     }
 
-    private String escapeCustomParams(Map<String, String> param, String chatUrl) {
+    private String encodeParams(Map<String, String> param) {
         String params = "";
 
         for (String key : param.keySet()) {
