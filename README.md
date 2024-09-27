@@ -95,10 +95,9 @@ ChatWindowViewImpl chatWindowView = new ChatWindowViewImpl(MainActivity.this);
 and then initializing ChatWindow like with full screen window approach:
 ```java
 public void startEmmbeddedChat(View view) {
-    if (!emmbeddedChatWindow.isInitialized()) {
-        emmbeddedChatWindow.setEventsListener(this);
-        emmbeddedChatWindow.init(configuration);
-    }
+    emmbeddedChatWindow.setEventsListener(this);
+    emmbeddedChatWindow.init(configuration);
+    // ...
     emmbeddedChatWindow.showChatWindow();
 }
 ```
