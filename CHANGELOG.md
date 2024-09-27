@@ -5,6 +5,7 @@ Migrate to AndroidX for managing Fragments
 Allow for sending multiple files at once on Android 21+
 
 **Breaking Change**
+
 Initialization
 * removed `setConfiguration` method from `ChatWindowView`
 * changed `initialize` to `init` and added required `ChatWindowConfiguration` parameter
@@ -14,6 +15,7 @@ Move away from deprecated `startActivityForResult` to `registerForActivityResult
 Removed:
 * `onStartFilePickerActivity` callback from `ChatWindowEventsListener`
 * `onActivityResult` method from `ChatWindowView`
+
 Added:
 * `supportFileSharing` in `ChatWindowView`
 * `onFilePickerActivityNotFound` in`ChatWindowEventsListener`
