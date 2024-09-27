@@ -151,4 +151,12 @@ class ChatWindowPresenter {
             chatWindowView.runOnMainThread(() -> eventsListener.onNewMessage(newMessageModel, chatWindowView.isShown()));
         }
     }
+
+    public void onAttachmentsNotSupported() {
+        if (eventsListener.onError(ChatWindowErrorType.NoAttachmentSupport, -1, "Attachments support not configured")) {
+            return;
+        }
+
+        chatWindowView.showAttachmentsNotSupportedMessage();
+    }
 }

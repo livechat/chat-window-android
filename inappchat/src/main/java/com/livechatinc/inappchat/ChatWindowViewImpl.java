@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
@@ -369,6 +370,12 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         post(runnable);
     }
 
+    @Override
+    public void showAttachmentsNotSupportedMessage() {
+        Log.e(TAG, "Attachment support is not set up");
+        Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
+    }
+
     // End of ChatWindowViewInternal interface
 
     protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
@@ -409,7 +416,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private void startFileChooserActivity() {
         if (observer == null) {
-            onAttachmentSupportNotSetUp();
+            presenter.onAttachmentsNotSupported();
+
             return;
         }
 
@@ -419,7 +427,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void startFileChooserActivity(FileChooserMode mode) {
         if (observer == null) {
-            onAttachmentSupportNotSetUp();
+            presenter.onAttachmentsNotSupported();
+
             return;
         }
 
@@ -431,9 +440,5 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
                 observer.selectFiles();
                 break;
         }
-    }
-
-    private void onAttachmentSupportNotSetUp() {
-        Log.e(TAG, "Attachment support is not set up");
     }
 }

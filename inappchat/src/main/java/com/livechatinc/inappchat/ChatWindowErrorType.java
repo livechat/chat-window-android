@@ -1,5 +1,8 @@
 package com.livechatinc.inappchat;
 
-public enum ChatWindowErrorType{
-    Console, WebViewClient, InitialConfiguration
+public enum ChatWindowErrorType {
+    Console,
+    WebViewClient,
+    InitialConfiguration,
+    NoAttachmentSupport,
 }
