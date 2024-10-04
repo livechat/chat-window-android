@@ -1,6 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.content.Intent;
 import android.net.Uri;
 
 import com.livechatinc.inappchat.models.NewMessageModel;
@@ -21,11 +20,6 @@ public interface ChatWindowEventsListener {
      * Happens every time chat is loaded and new message appears.
      */
     void onNewMessage(NewMessageModel message, boolean windowVisible);
-
-    /**
-     * Needed for handling attachments
-     */
-    void onStartFilePickerActivity(Intent intent, int requestCode);
 
     /**
      * Needed for requesting AUDIO and CAMERA permissions for SnapCall integration
@@ -51,5 +45,8 @@ public interface ChatWindowEventsListener {
      */
     boolean handleUri(final Uri uri);
 
-
+    /**
+     * Notifies about window not able to lunch an app to handle file picker intent.
+     */
+    void onFilePickerActivityNotFound();
 }

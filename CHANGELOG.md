@@ -1,5 +1,27 @@
 # Android ChangeLog
 
+## Version 2.4.0 - Oct 4th, 2024
+Migrate to AndroidX for managing Fragments
+Allow for sending multiple files at once on Android 21+
+
+**Breaking Changes**
+
+Initialization
+* removed `setConfiguration` method from `ChatWindowView`
+* changed `initialize` to `init` and added required `ChatWindowConfiguration` parameter
+
+Move away from deprecated `startActivityForResult` to `registerForActivityResult` to start file picker Activity and handle its result.
+
+Removed:
+* `onStartFilePickerActivity` callback from `ChatWindowEventsListener`
+* `onActivityResult` method from `ChatWindowView`
+
+Added:
+* `supportFileSharing` in `ChatWindowView`
+* `onFilePickerActivityNotFound` in`ChatWindowEventsListener`
+
+See "Sharing files" section in the docs for more details.
+
 ## Version 2.3.4 - Sep 1st, 2024
 Remove obsolete WebView popup from layout and prevent unnecessary view inflation
 

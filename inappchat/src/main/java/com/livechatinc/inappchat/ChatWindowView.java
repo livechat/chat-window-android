@@ -1,24 +1,16 @@
 package com.livechatinc.inappchat;
 
-import android.content.Intent;
-
+import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
-
-/**
- * Created by szymonjarosz on 20/07/2017.
- */
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
 
 public interface ChatWindowView {
 
-
-    boolean setConfiguration(@NonNull ChatWindowConfiguration config); //set config, action if config changed?
-
     /**
-     * Checks the configuration and initializes ChatWindow, loading the view.
+     * Initializes ChatWindow, loading the view with provided configuration.
      */
-    void initialize();
-
-    boolean onActivityResult(int requestCode, int resultCode, Intent data); // needed for file upload
+    void init(@NonNull ChatWindowConfiguration config);
 
     void setEventsListener(ChatWindowEventsListener eventListener);
 
@@ -33,4 +25,6 @@ public interface ChatWindowView {
     boolean isChatLoaded();
 
     boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
+
+    void supportFileSharing(ActivityResultRegistry activityResultRegistry, Lifecycle lifecycle, LifecycleOwner owner);
 }

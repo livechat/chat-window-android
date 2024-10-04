@@ -20,4 +20,6 @@ interface ChatWindowViewInternal {
     void launchExternalBrowser(Uri uri);
 
     void runOnMainThread(Runnable runnable);
+
+    void showFileSharingNotSupportedMessage();
 }

@@ -27,20 +27,23 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.Observer;
 
 import com.android.volley.toolbox.Volley;
 
-import java.io.File;
+import java.util.List;
 
 public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, ChatWindowViewInternal {
     private WebView webView;
     private TextView statusText;
     private Button reloadButton;
     private ProgressBar progressBar;
-    protected static final int REQUEST_CODE_FILE_UPLOAD = 21354;
     protected static final int REQUEST_CODE_AUDIO_PERMISSIONS = 89292;
 
     private ValueCallback<Uri> mUriUploadCallback;
@@ -50,6 +53,8 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     private ChatWindowPresenter presenter;
 
     private final static String TAG = "ChatWindowView";
+    private ChatWindowLifecycleObserver observer;
+    private Observer<List<Uri>> uriObserver;
 
     public ChatWindowViewImpl(@NonNull Context context) {
         super(context);
@@ -65,7 +70,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         Log.d(TAG, "Initializing ChatWindowViewImpl");
         setFitsSystemWindows(true);
         setVisibility(GONE);
-        LayoutInflater.from(context).inflate(R.layout.view_chat_window_internal, this, true);
+        LayoutInflater.from(context).inflate(
+                R.layout.view_chat_window_internal,
+                this,
+                true
+        );
         webView = findViewById(R.id.chat_window_web_view);
         statusText = findViewById(R.id.chat_window_status_text);
         progressBar = findViewById(R.id.chat_window_progress);
@@ -111,7 +120,10 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
             }
             return false;
         });
-        webView.addJavascriptInterface(new ChatWindowJsInterface(presenter), ChatWindowJsInterface.BRIDGE_OBJECT_NAME);
+        webView.addJavascriptInterface(
+                new ChatWindowJsInterface(presenter),
+                ChatWindowJsInterface.BRIDGE_OBJECT_NAME
+        );
         adjustResizeOnGlobalLayout(webView, getActivity());
     }
 
@@ -140,13 +152,27 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
             if (viewGroup.getPaddingBottom() != paddingBottom) {
                 // showing/hiding the soft keyboard
-                viewGroup.setPadding(viewGroup.getPaddingLeft(), viewGroup.getPaddingTop(), viewGroup.getPaddingRight(), paddingBottom);
+                viewGroup.setPadding(
+                        viewGroup.getPaddingLeft(),
+                        viewGroup.getPaddingTop(),
+                        viewGroup.getPaddingRight(),
+                        paddingBottom
+                );
             } else {
                 // soft keyboard shown/hidden and padding changed
                 if (paddingBottom != 0) {
-                    // soft keyboard shown, scroll active element into view in case it is blocked by the soft keyboard
+                    // soft keyboard shown, scroll active element into view in case it is blocked
+                    // by the soft keyboard
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                        webView.evaluateJavascript("if (document.activeElement) { document.activeElement.scrollIntoView({behavior: \"smooth\", block: \"center\", inline: \"nearest\"}); }", null);
+                        webView.evaluateJavascript(
+                                "if (document.activeElement) { " +
+                                        "document.activeElement.scrollIntoView({" +
+                                        "behavior: \"smooth\", " +
+                                        "block: \"center\", " +
+                                        "inline: \"nearest\"" +
+                                        "}); " +
+                                        "}", null
+                        );
                     }
                 }
             }
@@ -157,9 +183,14 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     @Override
     protected void onDetachedFromWindow() {
-        Log.d(TAG, "onDetachedFromWindow");
         removeLayoutListener();
+
         webView.destroy();
+
+        if (observer != null && uriObserver != null) {
+            observer.getResultLiveData().removeObserver(uriObserver);
+        }
+
         super.onDetachedFromWindow();
     }
 
@@ -184,17 +215,44 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     // ChatWindowView interface
 
     @Override
-    public boolean setConfiguration(@NonNull ChatWindowConfiguration config) {
-        return presenter.setConfig(config);
-    }
-
-    @Override
     public void setEventsListener(ChatWindowEventsListener listener) {
         presenter.setEventsListener(listener);
     }
 
     @Override
-    public void initialize() {
+    public void supportFileSharing(
+            ActivityResultRegistry activityResultRegistry,
+            Lifecycle lifecycle,
+            LifecycleOwner owner
+    ) {
+        observer = new ChatWindowLifecycleObserver(activityResultRegistry, () -> {
+            if (presenter.eventsListener != null) {
+                presenter.eventsListener.onFilePickerActivityNotFound();
+            }
+        });
+        lifecycle.addObserver(observer);
+
+        uriObserver = this::onFileChooserResult;
+        observer.getResultLiveData().observe(owner, uriObserver);
+    }
+
+    private void onFileChooserResult(List<Uri> selectedFiles) {
+        if (isUriArrayUpload()) {
+            mUriArrayUploadCallback.onReceiveValue(selectedFiles.toArray(new Uri[0]));
+            mUriArrayUploadCallback = null;
+        } else if (mUriUploadCallback != null) {
+            mUriUploadCallback.onReceiveValue(selectedFiles.isEmpty() ? null : selectedFiles.get(0));
+            mUriUploadCallback = null;
+        }
+    }
+
+    private boolean isUriArrayUpload() {
+        return mUriArrayUploadCallback != null;
+    }
+
+    @Override
+    public void init(@NonNull ChatWindowConfiguration config) {
+        presenter.setConfig(config);
         presenter.init();
     }
 
@@ -202,7 +260,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     public void reload(Boolean fullReload) {
         presenter.reinitialize();
     }
-
 
     @Override
     public void showChatWindow() {
@@ -227,7 +284,11 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public boolean onRequestPermissionsResult(
+            int requestCode,
+            String[] permissions,
+            int[] grantResults
+    ) {
         if (requestCode == REQUEST_CODE_AUDIO_PERMISSIONS && webRequestPermissions != null) {
             String[] PERMISSIONS = {
                     PermissionRequest.RESOURCE_AUDIO_CAPTURE,
@@ -246,22 +307,6 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     public boolean onBackPressed() {
         if (ChatWindowViewImpl.this.isShown()) {
             hideChatWindow();
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-    @Override
-    public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CODE_FILE_UPLOAD) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
-                receiveUploadedData(data);
-            } else {
-                resetAllUploadCallbacks();
-            }
 
             return true;
         }
@@ -325,44 +370,29 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         post(runnable);
     }
 
+    @Override
+    public void showFileSharingNotSupportedMessage() {
+        Log.e(TAG, "Attachment support is not set up");
+        Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
+    }
+
     // End of ChatWindowViewInternal interface
 
-    private void receiveUploadedData(Intent data) {
-        if (isUriArrayUpload()) {
-            receiveUploadedUriArray(data);
-        } else {
-            receiveUploadedUri(data);
-        }
+    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
+        resetAllUploadCallbacks();
+        mUriUploadCallback = uriValueCallback;
+        startFileChooserActivity();
     }
 
-    private boolean isUriArrayUpload() {
-        return mUriArrayUploadCallback != null;
-    }
 
-    private void receiveUploadedUriArray(Intent data) {
-        Uri[] uploadedUris;
-        try {
-            uploadedUris = new Uri[]{Uri.parse(data.getDataString())};
-        } catch (Exception e) {
-            uploadedUris = null;
-        }
-
-        mUriArrayUploadCallback.onReceiveValue(uploadedUris);
-        mUriArrayUploadCallback = null;
-    }
-
-    private void receiveUploadedUri(Intent data) {
-        Uri uploadedFileUri;
-        try {
-            String uploadedUriFilePath = UriUtils.getFilePathFromUri(getContext(), data.getData());
-            File uploadedFile = new File(uploadedUriFilePath);
-            uploadedFileUri = Uri.fromFile(uploadedFile);
-        } catch (Exception e) {
-            uploadedFileUri = null;
-        }
-
-        mUriUploadCallback.onReceiveValue(uploadedFileUri);
-        mUriUploadCallback = null;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    protected void chooseUriArrayToUpload(
+            ValueCallback<Uri[]> uriArrayValueCallback,
+            FileChooserMode mode
+    ) {
+        resetAllUploadCallbacks();
+        mUriArrayUploadCallback = uriArrayValueCallback;
+        startFileChooserActivity(mode);
     }
 
     private void resetAllUploadCallbacks() {
@@ -384,27 +414,31 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         }
     }
 
-    protected void chooseUriToUpload(ValueCallback<Uri> uriValueCallback) {
-        resetAllUploadCallbacks();
-        mUriUploadCallback = uriValueCallback;
-        startFileChooserActivity();
-    }
-
-    protected void chooseUriArrayToUpload(ValueCallback<Uri[]> uriArrayValueCallback) {
-        resetAllUploadCallbacks();
-        mUriArrayUploadCallback = uriArrayValueCallback;
-        startFileChooserActivity();
-    }
-
     private void startFileChooserActivity() {
-        if (presenter.eventsListener != null) {
-            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("*/*");
-            presenter.eventsListener.onStartFilePickerActivity(intent, REQUEST_CODE_FILE_UPLOAD);
-        } else {
-            Log.e(TAG, "You must provide a listener to handle file sharing");
-            Toast.makeText(getContext(), R.string.cant_share_files, Toast.LENGTH_SHORT).show();
+        if (observer == null) {
+            presenter.onNoFileSharingSupport();
+
+            return;
+        }
+
+        observer.selectFile();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void startFileChooserActivity(FileChooserMode mode) {
+        if (observer == null) {
+            presenter.onNoFileSharingSupport();
+
+            return;
+        }
+
+        switch (mode) {
+            case SINGLE:
+                observer.selectFile();
+                break;
+            case MULTIPLE:
+                observer.selectFiles();
+                break;
         }
     }
 }

@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.3.4'
+    implementation 'com.github.livechat:chat-window-android:v2.4.0'
 }
 ```
 
@@ -71,9 +71,8 @@ All you need to do is to create, attach and initialize chat window. Something in
 public void startFullScreenChat() {
     if (fullScreenChatWindow == null) {
         fullScreenChatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(getActivity());
-        fullScreenChatWindow.setConfiguration(configuration);
         fullScreenChatWindow.setEventsListener(this);
-        fullScreenChatWindow.initialize();
+        fullScreenChatWindow.init(configuration);
     }
     fullScreenChatWindow.showChatWindow();
 }
@@ -96,11 +95,9 @@ ChatWindowViewImpl chatWindowView = new ChatWindowViewImpl(MainActivity.this);
 and then initializing ChatWindow like with full screen window approach:
 ```java
 public void startEmmbeddedChat(View view) {
-    if (!emmbeddedChatWindow.isInitialized()) {
-        emmbeddedChatWindow.setConfiguration(configuration);
-        emmbeddedChatWindow.setEventsListener(this);
-        emmbeddedChatWindow.initialize();
-    }
+    emmbeddedChatWindow.setEventsListener(this);
+    emmbeddedChatWindow.init(configuration);
+    // ...
     emmbeddedChatWindow.showChatWindow();
 }
 ```
@@ -120,35 +117,17 @@ public boolean onBackPressed() {
 ## ChatWindowEventsListener
 
 This listener gives you opportunity to:
-* handle a case, when user wants to attach file in ChatWindow
 * get notified if new message arrived in chat. This gets handy if you want to show some kind of badge for a user to read new message.
 * react on visibility changes (user can hide the view on its own)
 * handle user selected links in a custom way
 * react and handle errors coming from chat window
 * allow users to use SnapCall integration
+* get notified if user device can't handle file picker activity Intent
 
 ### File sharing
 
-To provide your users capability to send files, you need to set `ChatWindowEventsListener` on your `ChatWindowView`.
-
-Your listener should override `onStartFilePickerActivity` method and start activity for result with provided intent and request code.
-
-```java
-    @Override
-    public void onStartFilePickerActivity(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
-    }
-```
-
-and then give opportunity to the view to handle activity result, i.e.
-
-```java
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    if (fullChatWindow != null) fullChatWindow.onActivityResult(requestCode, resultCode, data);
-    super.onActivityResult(requestCode, resultCode, data);
-}
-```
+To provide your users capability to send files, you need to set it up through `supportFileSharing` on your `ChatWindowView`.
+In case of operating system not able to handle Intent to pick files, you can handle it via `onFilePickerActivityNotFound` callback in `ChatWindowEventsListener`.
 
 ### Handling URL's
 
@@ -251,7 +230,7 @@ intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_EM
 In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number and group ID:
 
 ```java
-getFragmentManager()
+getSupportFragmentManager()
    .beginTransaction()
    .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
    .addToBackStack("chat_fragment")
@@ -267,7 +246,7 @@ Method `ChatWindowFragment.newInstance()` returns chat window Fragment.
 It’s also possible to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in web application and use different `newInstance()` method:
 
 ```java
-getFragmentManager()
+getSupportFragmentManager()
    .beginTransaction()
    .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
    .addToBackStack("chat_fragment")
@@ -282,6 +261,10 @@ You can change or localize error messages, by defining your own string resources
 <string name="cant_share_files">File sharing is not configured for this app</string>
 <string name="reload_chat">Reload</string>
 ```
+
+### Migration details
+
+Since version 2.4.0, migration details are listed in CHANGELOG.md.
 
 ### Migrating to version >= 2.2.0
 * ChatWindowView is now interface that can be casted to View

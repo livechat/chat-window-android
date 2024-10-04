@@ -26,11 +26,6 @@ class LCWebChromeClient extends WebChromeClient {
     final ChatWindowPresenter presenter;
 
     @SuppressWarnings("unused")
-    public void openFileChooser(ValueCallback<Uri> uploadMsg) {
-        view.chooseUriToUpload(uploadMsg);
-    }
-
-    @SuppressWarnings("unused")
     public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
         view.chooseUriToUpload(uploadMsg);
     }
@@ -40,17 +35,31 @@ class LCWebChromeClient extends WebChromeClient {
         view.chooseUriToUpload(uploadMsg);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
-    public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> uploadMsg, FileChooserParams fileChooserParams) {
-        view.chooseUriArrayToUpload(uploadMsg);
+    public boolean onShowFileChooser(
+            WebView webView,
+            ValueCallback<Uri[]> uploadMsg,
+            FileChooserParams fileChooserParams
+    ) {
+        view.chooseUriArrayToUpload(uploadMsg, toInternalMode(fileChooserParams.getMode()));
         return true;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private FileChooserMode toInternalMode(int mode) {
+        return mode == FileChooserParams.MODE_OPEN_MULTIPLE ? FileChooserMode.MULTIPLE : FileChooserMode.SINGLE;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
         view.webRequestPermissions = request;
-        String[] runtimePermissions = {Manifest.permission.RECORD_AUDIO, Manifest.permission.CAMERA, Manifest.permission.MODIFY_AUDIO_SETTINGS};
+        String[] runtimePermissions = {
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.CAMERA,
+                Manifest.permission.MODIFY_AUDIO_SETTINGS
+        };
         presenter.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
     }
 

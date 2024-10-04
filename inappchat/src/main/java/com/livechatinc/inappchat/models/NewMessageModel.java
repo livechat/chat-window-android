@@ -1,11 +1,9 @@
 package com.livechatinc.inappchat.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by szymonjarosz on 24/07/2017.
- */
 
 public class NewMessageModel {
     @SerializedName("messageType")
@@ -44,6 +42,7 @@ public class NewMessageModel {
         return author;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "NewMessageModel{" +

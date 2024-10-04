@@ -1,7 +1,5 @@
 package com.livechatinc.inappchat;
 
-import android.app.Fragment;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,18 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 import java.util.HashMap;
 
-/**
- * Created by Łukasz Jerciński on 09/02/2017.
- */
-
 public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
-    private ChatWindowConfiguration configuration;
-    private ChatWindowView chatWindow;
 
     public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId) {
         return newInstance(licenceNumber, groupId, null, null, null);
@@ -50,47 +43,36 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
         return chatWindowFragment;
     }
 
+    private ChatWindowConfiguration configuration;
+    private ChatWindowView chatWindow;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final ChatWindowConfiguration.Builder builder = new ChatWindowConfiguration.Builder();
-        HashMap<String, String> customParams = new HashMap<>();
-
         if (getArguments() != null) {
-
-            for (String key : getArguments().keySet()) {
-                if (ChatWindowConfiguration.KEY_LICENCE_NUMBER.equals(key)) {
-                    builder.setLicenceNumber(getArguments().getString(ChatWindowConfiguration.KEY_LICENCE_NUMBER));
-                } else if (ChatWindowConfiguration.KEY_GROUP_ID.equals(key)) {
-                    builder.setGroupId(getArguments().getString(ChatWindowConfiguration.KEY_GROUP_ID));
-                } else if (ChatWindowConfiguration.KEY_VISITOR_NAME.equals(key)) {
-                    builder.setVisitorName(getArguments().getString(ChatWindowConfiguration.KEY_VISITOR_NAME));
-                } else if (ChatWindowConfiguration.KEY_VISITOR_EMAIL.equals(key)) {
-                    builder.setVisitorEmail(getArguments().getString(ChatWindowConfiguration.KEY_VISITOR_EMAIL));
-                } else {
-                    customParams.put(key, String.valueOf(getArguments().get(key)));
-                }
-            }
-            builder.setCustomParams(customParams);
+            configuration = ChatWindowConfiguration.fromBundle(getArguments());
         }
-        configuration = builder.build();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        chatWindow = (ChatWindowView) inflater.inflate(R.layout.view_chat_window, container, false);
+        chatWindow = (ChatWindowView) inflater.inflate(
+                R.layout.view_chat_window,
+                container,
+                false
+        );
 
-        chatWindow.setConfiguration(configuration);
         chatWindow.setEventsListener(this);
-        chatWindow.initialize();
+        chatWindow.supportFileSharing(
+                requireActivity().getActivityResultRegistry(),
+                getLifecycle(),
+                this
+        );
+        chatWindow.init(configuration);
         chatWindow.showChatWindow();
-        return (View) chatWindow;
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        chatWindow.onActivityResult(requestCode, resultCode, data);
+        return (View) chatWindow;
     }
 
     @Override
@@ -102,7 +84,6 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
 
     @Override
     public void onNewMessage(NewMessageModel message, boolean windowVisible) {
-
     }
 
     @Override
@@ -111,13 +92,11 @@ public final class ChatWindowFragment extends Fragment implements ChatWindowEven
     }
 
     @Override
-    public void onWindowInitialized() {
-
+    public void onFilePickerActivityNotFound() {
     }
 
     @Override
-    public void onStartFilePickerActivity(Intent intent, int requestCode) {
-        startActivityForResult(intent, requestCode);
+    public void onWindowInitialized() {
     }
 
     @Override

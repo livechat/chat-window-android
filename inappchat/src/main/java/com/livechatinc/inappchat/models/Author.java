@@ -1,11 +1,9 @@
 package com.livechatinc.inappchat.models;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
-/**
- * Created by szymonjarosz on 24/07/2017.
- */
 
 public class Author {
     @SerializedName("name")
@@ -16,6 +14,7 @@ public class Author {
         return name;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Author{" +
