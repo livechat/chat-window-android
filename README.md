@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.4.0rc1'
+    implementation 'com.github.livechat:chat-window-android:v2.4.0'
 }
 ```
 

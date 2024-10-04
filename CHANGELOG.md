@@ -1,10 +1,10 @@
 # Android ChangeLog
 
-## Version 2.4.0 - Sep 27th, 2024
+## Version 2.4.0 - Oct 4th, 2024
 Migrate to AndroidX for managing Fragments
 Allow for sending multiple files at once on Android 21+
 
-**Breaking Change**
+**Breaking Changes**
 
 Initialization
 * removed `setConfiguration` method from `ChatWindowView`
@@ -19,6 +19,7 @@ Removed:
 Added:
 * `supportFileSharing` in `ChatWindowView`
 * `onFilePickerActivityNotFound` in`ChatWindowEventsListener`
+
 See "Sharing files" section in the docs for more details.
 
 ## Version 2.3.4 - Sep 1st, 2024
