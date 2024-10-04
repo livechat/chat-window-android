@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.4.0'
+    implementation 'com.github.livechat:chat-window-android:v2.4.1'
 }
 ```
 
@@ -165,11 +165,9 @@ public boolean onError(ChatWindowErrorType errorType, int errorCode, String erro
 ### Clear chat session
 
 After your user signs out of the app, you might want to clear the chat session.
-You can do that by invoking static method on `ChatWindowUtils.clearSession(Context)` from anywhere in the app.
+You can do that by invoking static method on `ChatWindowUtils.clearSession()` from anywhere in the app.
 In case your `ChatWindowView` is attached in course of the log out flow, you also going to need to reload it by calling
-`chatWindow.reload(false)` after clearSession code. See [FullScreenWindowActivityExample.java](https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java)
-
-In case your ChatWindow isn't recreated when ChatWindowConfiguration changes (i.e. VisitorName), you might want to full reload chat window by invoking `chatWindow.reload(true)`
+`chatWindow.reload()` after clearSession code. See [FullScreenWindowActivityExample.java](https://github.com/livechat/chat-window-android/blob/master/app/src/main/java/com/livechatinc/livechatwidgetexample/FullScreenWindowActivityExample.java)
 
 ## Alternative usage with limited capabilities
 
@@ -270,7 +268,7 @@ Since version 2.4.0, migration details are listed in CHANGELOG.md.
 * ChatWindowView is now interface that can be casted to View
 * `setUpWindow(configuration);` is replaced by `setConfiguration(configuration);`
 * `setUpListener(listener)` is replaced by `setEventsListener(listener)`
-* `ChatWindowView.clearSession(Context)` is moved to `ChatWindowUtils.clearSession(Context)`
+* `ChatWindowView.clearSession()` is moved to `ChatWindowUtils.clearSession(Context)`
 * `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())``
 
 ### Migrating to versions >=2.3.x
