@@ -47,7 +47,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         chatBadgeTv = findViewById(R.id.chat_badge);
         clearSessionBtn = findViewById(R.id.clear_session_btn);
         clearSessionBtn.setOnClickListener(view -> {
-            ChatWindowUtils.clearSession(view.getContext());
+            ChatWindowUtils.clearSession();
             chatWindow.reload(false);
         });
     }
