@@ -1,14 +1,12 @@
 package com.livechatinc.inappchat;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebStorage;
 
 import androidx.annotation.NonNull;
@@ -36,19 +34,16 @@ public class ChatWindowUtils {
     /**
      * Clears cookies and web storage for effective reload
      */
-    public static void clearSession(Context context) {
+    public static void clearSession() {
         WebStorage.getInstance().deleteAllData();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             CookieManager.getInstance().removeAllCookies(null);
             CookieManager.getInstance().flush();
         } else {
-            CookieSyncManager cookieSyncMngr = CookieSyncManager.createInstance(context);
-            cookieSyncMngr.startSync();
             CookieManager cookieManager = CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncMngr.stopSync();
-            cookieSyncMngr.sync();
+            cookieManager.removeAllCookies(null);
+            cookieManager.removeSessionCookies(null);
+            cookieManager.flush();
         }
     }
 }
