@@ -77,7 +77,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
         statusText = findViewById(R.id.chat_window_status_text);
         progressBar = findViewById(R.id.chat_window_progress);
         reloadButton = findViewById(R.id.chat_window_button);
-        reloadButton.setOnClickListener(view -> reload(true));
+        reloadButton.setOnClickListener(view -> reload());
         presenter = new ChatWindowPresenter(this, Volley.newRequestQueue(context));
 
         if (Build.VERSION.RELEASE.matches("4\\.4(\\.[12])?")) {
@@ -133,6 +133,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
 
     private void adjustResizeOnGlobalLayout(final WebView webView, final Activity activity) {
         if (!shouldAdjustLayout(getActivity())) return;
+
         final View decorView = activity.getWindow().getDecorView();
         layoutListener = () -> {
             final View decorView1 = getActivity().getWindow().getDecorView();
@@ -241,7 +242,7 @@ public class ChatWindowViewImpl extends FrameLayout implements ChatWindowView, C
     }
 
     @Override
-    public void reload(Boolean fullReload) {
+    public void reload() {
         presenter.reinitialize();
     }
 
