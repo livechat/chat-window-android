@@ -1,5 +1,11 @@
 # Android ChangeLog
 
+## Version 2.4.1 - Oct 4th, 2024
+**Breaking Changes**
+* Minimum Android SDK version is now 21
+* `ChatWindowUtils.clearSession()` - Context param removed
+* `ChatWindnowView.reload()` - Bool param removed
+
 ## Version 2.4.0 - Oct 4th, 2024
 Migrate to AndroidX for managing Fragments
 Allow for sending multiple files at once on Android 21+

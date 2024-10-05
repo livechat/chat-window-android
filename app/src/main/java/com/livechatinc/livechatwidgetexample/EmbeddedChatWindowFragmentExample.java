@@ -40,7 +40,7 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
         reloadChatBtn = view.findViewById(R.id.embedded_reload_chat);
         reloadChatBtn.setOnClickListener(reloadChat -> {
             reloadChat.setVisibility(View.GONE);
-            chatWindow.reload(false);
+            chatWindow.reload();
         });
         chatWindow = view.findViewById(R.id.embedded_chat_window);
 

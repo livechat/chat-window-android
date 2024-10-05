@@ -2,13 +2,11 @@ package com.livechatinc.inappchat;
 
 import android.content.ActivityNotFoundException;
 import android.net.Uri;
-import android.os.Build;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
@@ -29,17 +27,13 @@ class ChatWindowLifecycleObserver implements DefaultLifecycleObserver {
 
     private final ActivityResultRegistry registry;
     private ActivityResultLauncher<String> getContent;
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private ActivityResultLauncher<String> getMultipleContent;
     private final MutableLiveData<List<Uri>> resultLiveData = new MutableLiveData<>();
     private final ActivityNotFoundCallback activityNotFoundCallback;
 
     public void onCreate(@NonNull LifecycleOwner owner) {
         registerSingleContentContract(owner);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            registerMultipleContentContract(owner);
-        }
+        registerMultipleContentContract(owner);
     }
 
     private void registerSingleContentContract(@NonNull LifecycleOwner owner) {
@@ -53,7 +47,6 @@ class ChatWindowLifecycleObserver implements DefaultLifecycleObserver {
         );
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void registerMultipleContentContract(@NonNull LifecycleOwner owner) {
         getMultipleContent = registry.register(
                 "chatWindowMultipleFilesResultRegisterKey",
@@ -73,7 +66,6 @@ class ChatWindowLifecycleObserver implements DefaultLifecycleObserver {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public void selectFiles() {
         try {
             getMultipleContent.launch("*/*");

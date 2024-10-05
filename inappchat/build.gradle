@@ -9,7 +9,7 @@ android {
     namespace 'com.livechatinc.inappchat'
     compileSdk 33
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 33
     }
     buildTypes {
