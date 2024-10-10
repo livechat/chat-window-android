@@ -171,24 +171,13 @@ In case your `ChatWindowView` is attached in course of the log out flow, you als
 
 ## Alternative usage with limited capabilities
 
-If you need your users to be notified when user gets new message in hidden Chat, you might want to use provided activity or fragment
+If you don't need to be notified when user gets new message in a hidden ChatWindow, you might want to use `ChatWindowActivity` or `ChatWindowFragment`
 
-If you don't want the chat window to reload its content every time device orientation changes, add this line to your Activity in the manifest:
-
-```java
-android:configChanges="orientation|screenSize"
-```
 <div class="clear"></div>
-
-The chat window will handle the orientation change by itself.
-
-## Example usage
-
-There are two ways to open the chat window – using Activity or Fragment.
 
 ### Using Activity
 
-In order to open a chat window in new Activity, you need to declare **ChatWindowActivity** in your manifest. Add the following line to **AndroidManifest.xml**, between `<application></application>` tags:
+In order to open a chat window in new Activity, you need to declare `ChatWindowActivity` in your manifest. Add the following line to `AndroidManifest.xml`, between `<application></application>` tags:
 
 ```xml
 <activity 
@@ -200,13 +189,15 @@ In order to open a chat window in new Activity, you need to declare **ChatWindow
 
 <div class="clear"></div>
 
-Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object), your LiveChat license number (taken from the your app: [LiveChat](https://my.livechatinc.com/settings/code) and, optionally, an ID of a group:
+Finally, add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You need to provide a Context (your Activity or Application object) and your LiveChat license number:
 
 ```java
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
 Bundle config = new ChatWindowConfiguration.Builder()
 	.setLicenceNumber("<your_license_number>")
-	.setGroupId("<your_group_id>")
+	.setGroupId("<your_group_id>") // optional
+    .setVisitorName("Visitor Name") // optional
+    .setVisitorEmail("visitor@email.com") // optional
 	.build()
 	.asBundle();
 
@@ -216,40 +207,31 @@ startActivity(intent);
 
 <div class="clear"></div>
 
-It’s also possibile to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in the web application and add the following lines to the previous code:
-
-```java
-intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_NAME, "your_name");
-intent.putExtra(com.livechatinc.inappchat.ChatWindowConfiguration.KEY_VISITOR_EMAIL, "your_email");
-```
-
+It’s also possibile to automatically login to chat window by providing visitor’s name and email and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
 ### Using Fragment
 
-In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number and group ID:
+In order to open chat window in new Fragment, you need to add the following code to your application, in a place where you want to open the chat window (e.g. button listener). You also need to provide your LiveChat license number:
 
 ```java
 getSupportFragmentManager()
    .beginTransaction()
-   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id"), "chat_fragment")
+   .replace(
+        R.id.frame_layout, 
+        ChatWindowFragment.newInstance(
+            "your_license_number", 
+            "your_group_id",
+            "visitor_name", // optional
+            "visitor_email",// optional     
+        ), 
+        "chat_fragment"
+    )
    .addToBackStack("chat_fragment")
    .commit();
 ```
 
 <div class="clear"></div>
 
-Method `ChatWindowFragment.newInstance()` returns chat window Fragment.
-
-<div class="clear"></div>
-
-It’s also possible to automatically login to chat window by providing visitor’s name and email. You need to disable [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey) in web application and use different `newInstance()` method:
-
-```java
-getSupportFragmentManager()
-   .beginTransaction()
-   .replace(R.id.frame_layout, ChatWindowFragment.newInstance("your_license_number", "your_group_id", “visitor _name”, “visitor _email”), "chat_fragment")
-   .addToBackStack("chat_fragment")
-   .commit();
-```
+It’s also possible to automatically login to chat window by providing visitor’s name and email to the Fragment and disabling [pre-chat survey](https://my.livechatinc.com/settings/pre-chat-survey).
 
 # Localisation
 
@@ -269,7 +251,7 @@ Since version 2.4.0, migration details are listed in CHANGELOG.md.
 * `setUpWindow(configuration);` is replaced by `setConfiguration(configuration);`
 * `setUpListener(listener)` is replaced by `setEventsListener(listener)`
 * `ChatWindowView.clearSession()` is moved to `ChatWindowUtils.clearSession(Context)`
-* `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())``
+* `ChatWindowView.createAndAttachChatWindowInstance(Activity)` is moved to `ChatWindowUtils.createAndAttachChatWindowInstance(getActivity())`
 
 ### Migrating to versions >=2.3.x
 * You no longer need to specify `android.permission.READ_EXTERNAL_STORAGE` permission in your AndroidManifest.xml 
