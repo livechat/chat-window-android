@@ -49,10 +49,11 @@ Simply use ChatWindowConfiguration.java constructor. Note that licence number is
 ```java
 configuration = new ChatWindowConfiguration(
     "your_licence_number",
-    "group_id",
-    "Visitor name",
-    "visitor@email.com",
-    customParamsMap);
+    "group_id",         // optional
+    "Visitor name",     // optional
+    "visitor@email.com",// optional
+    customParamsMap     // optional
+);
 ```
 
 You could also use `new ChatWindowConfiguration.Builder()`.
@@ -194,12 +195,12 @@ Finally, add the following code to your application, in a place where you want t
 ```java
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
 Bundle config = new ChatWindowConfiguration.Builder()
-	.setLicenceNumber("<your_license_number>")
-	.setGroupId("<your_group_id>") // optional
+    .setLicenceNumber("<your_license_number>")
+    .setGroupId("<your_group_id>") // optional
     .setVisitorName("Visitor Name") // optional
     .setVisitorEmail("visitor@email.com") // optional
-	.build()
-	.asBundle();
+    .build()
+    .asBundle();
 
 intent.putExtras(config);
 startActivity(intent);
