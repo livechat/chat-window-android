@@ -145,12 +145,20 @@ public class ChatWindowConfiguration implements Serializable {
         private String groupId;
         private String visitorName;
         private String visitorEmail;
-        private HashMap<String, String> customParams;
+        private HashMap<String, String> customParameters;
 
         public ChatWindowConfiguration build() {
-            if (TextUtils.isEmpty(licenceNumber))
+            if (TextUtils.isEmpty(licenceNumber)) {
                 throw new IllegalStateException("Licence Number cannot be null");
-            return new ChatWindowConfiguration(licenceNumber, groupId, visitorName, visitorEmail, customParams);
+            }
+
+            return new ChatWindowConfiguration(
+                    licenceNumber,
+                    groupId,
+                    visitorName,
+                    visitorEmail,
+                    customParameters
+            );
         }
 
         public Builder setLicenceNumber(String licenceNr) {
@@ -173,8 +181,8 @@ public class ChatWindowConfiguration implements Serializable {
             return this;
         }
 
-        public Builder setCustomParams(HashMap<String, String> customParams) {
-            this.customParams = customParams;
+        public Builder setCustomParameters(HashMap<String, String> customParameters) {
+            this.customParameters = customParameters;
             return this;
         }
     }

@@ -17,25 +17,30 @@ import java.util.HashMap;
 
 public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
 
+    public static ChatWindowFragment newInstance(Object licenceNumber) {
+        return newInstance(licenceNumber, null, null, null, null);
+    }
+
     public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId) {
         return newInstance(licenceNumber, groupId, null, null, null);
     }
 
-    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail) {
+    public static ChatWindowFragment newInstance(Object licenceNumber, @Nullable Object groupId, @Nullable String visitorName, @Nullable String visitorEmail) {
         return newInstance(licenceNumber, groupId, visitorName, visitorEmail, null);
     }
 
-    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail, @Nullable HashMap<String, String> customVariables) {
+    public static ChatWindowFragment newInstance(Object licenceNumber, @Nullable Object groupId, @Nullable String visitorName, @Nullable String visitorEmail, @Nullable HashMap<String, String> customVariables) {
         ChatWindowConfiguration.Builder builder = new ChatWindowConfiguration.Builder()
-                .setLicenceNumber(String.valueOf(licenceNumber))
-                .setGroupId(String.valueOf(groupId));
+                .setLicenceNumber(String.valueOf(licenceNumber));
 
+        if (groupId != null)
+            builder.setGroupId(String.valueOf(groupId));
         if (visitorName != null)
             builder.setVisitorName(visitorName);
         if (visitorEmail != null)
             builder.setVisitorEmail(visitorEmail);
         if (customVariables != null) {
-            builder.setCustomParams(customVariables);
+            builder.setCustomParameters(customVariables);
         }
 
         Bundle bundle = new Bundle();
