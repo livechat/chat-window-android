@@ -3,12 +3,9 @@ package com.livechatinc.livechatwidgetexample;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,15 +38,11 @@ public class MainActivity extends AppCompatActivity {
 
         editConfigActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Log.i("TAG", "coming back from activity" + result.getData());
-                        if (result.getResultCode() == Activity.RESULT_OK) {
-                            Intent data = result.getData();
-                            windowConfig = (ChatWindowConfiguration) data.getSerializableExtra("config");
-                            licenceInfoTv.setText(windowConfig.toString());
-                        }
+                result -> {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        Intent data = result.getData();
+                        windowConfig = (ChatWindowConfiguration) data.getSerializableExtra("config");
+                        licenceInfoTv.setText(windowConfig.toString());
                     }
                 });
     }
@@ -64,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         final Fragment fragmentById = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (fragmentById != null && fragmentById instanceof OnBackPressedListener && ((OnBackPressedListener) fragmentById).onBackPressed()) {
+        if (fragmentById instanceof OnBackPressedListener && ((OnBackPressedListener) fragmentById).onBackPressed()) {
             //Let fragment handle this
         } else if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
@@ -96,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clearChatSession(View view) {
-        ChatWindowUtils.clearSession(view.getContext());
+        ChatWindowUtils.clearSession();
     }
 
     public interface OnBackPressedListener {

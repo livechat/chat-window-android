@@ -14,7 +14,7 @@ public interface ChatWindowView {
 
     void setEventsListener(ChatWindowEventsListener eventListener);
 
-    void reload(Boolean fullReload);
+    void reload();
 
     boolean onBackPressed();
 

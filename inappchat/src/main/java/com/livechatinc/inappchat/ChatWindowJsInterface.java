@@ -28,7 +28,7 @@ class ChatWindowJsInterface {
         Log.d(TAG, "postMessage: " + messageJson);
         try {
             JSONObject jsonObject = new JSONObject(messageJson);
-            if (jsonObject != null && jsonObject.has(KEY_MESSAGE_TYPE)) {
+            if (jsonObject.has(KEY_MESSAGE_TYPE)) {
                 dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), messageJson);
             }
         } catch (JSONException e) {

@@ -5,14 +5,11 @@ import static com.livechatinc.inappchat.ChatWindowViewImpl.REQUEST_CODE_AUDIO_PE
 
 import android.Manifest;
 import android.net.Uri;
-import android.os.Build;
 import android.webkit.ConsoleMessage;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-
-import androidx.annotation.RequiresApi;
 
 
 class LCWebChromeClient extends WebChromeClient {
@@ -25,17 +22,6 @@ class LCWebChromeClient extends WebChromeClient {
     final ChatWindowViewImpl view;
     final ChatWindowPresenter presenter;
 
-    @SuppressWarnings("unused")
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType) {
-        view.chooseUriToUpload(uploadMsg);
-    }
-
-    @SuppressWarnings("unused")
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-        view.chooseUriToUpload(uploadMsg);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public boolean onShowFileChooser(
             WebView webView,
@@ -46,12 +32,10 @@ class LCWebChromeClient extends WebChromeClient {
         return true;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private FileChooserMode toInternalMode(int mode) {
         return mode == FileChooserParams.MODE_OPEN_MULTIPLE ? FileChooserMode.MULTIPLE : FileChooserMode.SINGLE;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onPermissionRequest(final PermissionRequest request) {
         view.webRequestPermissions = request;
