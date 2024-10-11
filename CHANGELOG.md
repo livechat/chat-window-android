@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 2.4.2
+**Breaking Changes**
+* `ChatWindowConfiguration` and it's `Builder` custom parameters name change - `customVariables` to `customParameters`
+
 ## Version 2.4.1 - Oct 4th, 2024
 **Breaking Changes**
 * Minimum Android SDK version is now 21
