@@ -1,5 +1,7 @@
 package com.livechatinc.livechatwidgetexample;
 
+import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -9,6 +11,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.livechatinc.inappchat.ChatWindowConfiguration;
+
+import java.util.Objects;
 
 public class EditConfigurationActivity extends AppCompatActivity {
     EditText licenceNumber;
@@ -22,7 +26,9 @@ public class EditConfigurationActivity extends AppCompatActivity {
 
         setContentView(R.layout.edit_configuration_activity);
 
-        final ChatWindowConfiguration config = (ChatWindowConfiguration) getIntent().getSerializableExtra("config");
+        final ChatWindowConfiguration config =
+                ChatWindowConfiguration.fromBundle(Objects.requireNonNull(getIntent().getExtras()));
+
         licenceNumber = findViewById(R.id.licence_number);
         licenceNumber.setText(config.licenceNumber);
         groupId = findViewById(R.id.group_id);
@@ -41,7 +47,7 @@ public class EditConfigurationActivity extends AppCompatActivity {
                 .setVisitorName(visitorName.getText().toString())
                 .setVisitorEmail(visitorEmail.getText().toString())
                 .build();
-        data.putExtra("config", config);
+        data.putExtra(KEY_CHAT_WINDOW_CONFIG, config);
         setResult(RESULT_OK, data);
         finish();
     }

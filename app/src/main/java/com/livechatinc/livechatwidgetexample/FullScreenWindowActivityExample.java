@@ -23,6 +23,8 @@ import com.livechatinc.inappchat.ChatWindowUtils;
 import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
+import java.util.Objects;
+
 public class FullScreenWindowActivityExample extends AppCompatActivity implements ChatWindowEventsListener {
     private FloatingActionButton startChatBtn;
     private ChatWindowView chatWindow;
@@ -37,10 +39,13 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final ChatWindowConfiguration config =
+                ChatWindowConfiguration.fromBundle(Objects.requireNonNull(getIntent().getExtras()));
+
         chatWindow = ChatWindowUtils.createAndAttachChatWindowInstance(FullScreenWindowActivityExample.this);
         chatWindow.setEventsListener(this);
         chatWindow.supportFileSharing(getActivityResultRegistry(), getLifecycle(), this);
-        chatWindow.init((ChatWindowConfiguration) getIntent().getSerializableExtra("config"));
+        chatWindow.init(config);
 
         startChatBtn = findViewById(R.id.start_chat);
         startChatBtn.setOnClickListener(view -> showChatWindow());
@@ -105,7 +110,8 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
     @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         Toast.makeText(FullScreenWindowActivityExample.this, errorDescription, Toast.LENGTH_SHORT).show();
-        return true;
+
+        return false;
     }
 
     @Override

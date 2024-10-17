@@ -25,7 +25,7 @@ allprojects {
 Step 2. Add the dependency
 ```
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:v2.4.1'
+    implementation 'com.github.livechat:chat-window-android:v2.4.2'
 }
 ```
 
@@ -196,13 +196,9 @@ Finally, add the following code to your application, in a place where you want t
 Intent intent = new Intent(context, com.livechatinc.inappchat.ChatWindowActivity.class);
 Bundle config = new ChatWindowConfiguration.Builder()
     .setLicenceNumber("<your_license_number>")
-    .setGroupId("<your_group_id>") // optional
-    .setVisitorName("Visitor Name") // optional
-    .setVisitorEmail("visitor@email.com") // optional
-    .build()
-    .asBundle();
+    .build();
 
-intent.putExtras(config);
+intent.putExtra(ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG, windowConfig);
 startActivity(intent);
 ```
 
@@ -220,7 +216,7 @@ getSupportFragmentManager()
         R.id.frame_layout, 
         ChatWindowFragment.newInstance(
             "your_license_number", 
-            "your_group_id",
+            "your_group_id",// optional
             "visitor_name", // optional
             "visitor_email",// optional     
         ), 

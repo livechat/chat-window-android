@@ -1,5 +1,7 @@
 package com.livechatinc.inappchat;
 
+import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,30 +17,37 @@ import java.util.HashMap;
 
 public final class ChatWindowFragment extends Fragment implements ChatWindowEventsListener {
 
+    public static ChatWindowFragment newInstance(Object licenceNumber) {
+        return newInstance(licenceNumber, null, null, null, null);
+    }
+
     public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId) {
         return newInstance(licenceNumber, groupId, null, null, null);
     }
 
-    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail) {
+    public static ChatWindowFragment newInstance(Object licenceNumber, @Nullable Object groupId, @Nullable String visitorName, @Nullable String visitorEmail) {
         return newInstance(licenceNumber, groupId, visitorName, visitorEmail, null);
     }
 
-    public static ChatWindowFragment newInstance(Object licenceNumber, Object groupId, @Nullable String visitorName, @Nullable String visitorEmail, @Nullable HashMap<String, String> customVariables) {
-        Bundle arguments = new Bundle();
-        arguments.putString(ChatWindowConfiguration.KEY_LICENCE_NUMBER, String.valueOf(licenceNumber));
-        arguments.putString(ChatWindowConfiguration.KEY_GROUP_ID, String.valueOf(groupId));
+    public static ChatWindowFragment newInstance(Object licenceNumber, @Nullable Object groupId, @Nullable String visitorName, @Nullable String visitorEmail, @Nullable HashMap<String, String> customVariables) {
+        ChatWindowConfiguration.Builder builder = new ChatWindowConfiguration.Builder()
+                .setLicenceNumber(String.valueOf(licenceNumber));
+
+        if (groupId != null)
+            builder.setGroupId(String.valueOf(groupId));
         if (visitorName != null)
-            arguments.putString(ChatWindowConfiguration.KEY_VISITOR_NAME, visitorName);
+            builder.setVisitorName(visitorName);
         if (visitorEmail != null)
-            arguments.putString(ChatWindowConfiguration.KEY_VISITOR_EMAIL, visitorEmail);
+            builder.setVisitorEmail(visitorEmail);
         if (customVariables != null) {
-            for (String key : customVariables.keySet()) {
-                arguments.putString(ChatWindowConfiguration.CUSTOM_PARAM_PREFIX + key, customVariables.get(key));
-            }
+            builder.setCustomParameters(customVariables);
         }
 
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_CHAT_WINDOW_CONFIG, builder.build());
+
         ChatWindowFragment chatWindowFragment = new ChatWindowFragment();
-        chatWindowFragment.setArguments(arguments);
+        chatWindowFragment.setArguments(bundle);
 
         return chatWindowFragment;
     }

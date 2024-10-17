@@ -1,5 +1,7 @@
 package com.livechatinc.livechatwidgetexample;
 
+import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     ChatWindowConfiguration windowConfig = new ChatWindowConfiguration.Builder()
             .setLicenceNumber(licenceNumber)
             .build();
+
     TextView licenceInfoTv;
     ActivityResultLauncher<Intent> editConfigActivityResultLauncher;
 
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
                 result -> {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
-                        windowConfig = (ChatWindowConfiguration) data.getSerializableExtra("config");
+                        windowConfig = (ChatWindowConfiguration.fromBundle(data.getExtras()));
                         licenceInfoTv.setText(windowConfig.toString());
                     }
                 });
@@ -50,7 +53,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void startChatActivity() {
         Intent intent = new Intent(this, ChatWindowActivity.class);
-        intent.putExtras(windowConfig.asBundle());
+        intent.putExtra(KEY_CHAT_WINDOW_CONFIG, windowConfig);
+
         startActivity(intent);
     }
 
@@ -68,19 +72,28 @@ public class MainActivity extends AppCompatActivity {
 
     public void startFullScreenWindowExample(View view) {
         final Intent intent = new Intent(this, FullScreenWindowActivityExample.class);
-        intent.putExtra("config", windowConfig);
+        intent.putExtra(KEY_CHAT_WINDOW_CONFIG, windowConfig);
+
         startActivity(intent);
     }
 
     public void startEmbeddedWindowExample(View view) {
         final Fragment fragment = EmbeddedChatWindowFragmentExample.newInstance();
-        fragment.setArguments(windowConfig.asBundle());
-        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).addToBackStack("EmbeddedFragmentExample").commit();
+        final Bundle bundle = new Bundle();
+        bundle.putSerializable(KEY_CHAT_WINDOW_CONFIG, windowConfig);
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.fragment_container, fragment)
+                .addToBackStack("EmbeddedFragmentExample")
+                .commit();
     }
 
     public void editConfiguration(View view) {
         final Intent intent = new Intent(this, EditConfigurationActivity.class);
-        intent.putExtra("config", windowConfig);
+        intent.putExtra(KEY_CHAT_WINDOW_CONFIG, windowConfig);
+
         editConfigActivityResultLauncher.launch(intent);
     }
 
@@ -95,5 +108,4 @@ public class MainActivity extends AppCompatActivity {
     public interface OnBackPressedListener {
         boolean onBackPressed();
     }
-
 }
