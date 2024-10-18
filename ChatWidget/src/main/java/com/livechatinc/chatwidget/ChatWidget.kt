@@ -11,11 +11,12 @@ import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
+import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 
 @SuppressLint("SetJavaScriptEnabled")
 class ChatWidget(
-        context: Context,
-        attrs: AttributeSet?
+    context: Context,
+    attrs: AttributeSet?
 ) : FrameLayout(context, attrs), ChatWidgetViewInternal {
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
@@ -35,10 +36,11 @@ class ChatWidget(
         webSettings.domStorageEnabled = true
 
         webView.webChromeClient = ChatWidgetChromeClient()
+        webView.webViewClient = ChatWidgetWebViewClient()
 
         webView.addJavascriptInterface(
-                ChatWidgetJSBridge(presenter),
-                ChatWidgetJSBridge.INTERFACE_NAME
+            ChatWidgetJSBridge(presenter),
+            ChatWidgetJSBridge.INTERFACE_NAME
         )
     }
 

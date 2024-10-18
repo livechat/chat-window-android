@@ -16,6 +16,7 @@ internal class ChatWidgetJSBridge internal constructor(
         println("### postMessage: $messageJson")
         val jsonObject = JSONObject(messageJson)
         if (jsonObject.has(KEY_MESSAGE_TYPE)) {
+            //TODO: Allow for unknown types
             val messageType = gson.fromJson(
                     jsonObject.getString(KEY_MESSAGE_TYPE),
                     MessageType::class.java
