@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.Objects;
+
 public final class ChatWindowActivity extends FragmentActivity {
 
     @Override
@@ -28,25 +30,21 @@ public final class ChatWindowActivity extends FragmentActivity {
 
         setContentView(linearLayout);
 
-        if (getIntent().getExtras() != null) {
-            final ChatWindowConfiguration chatConfig = ChatWindowConfiguration.fromBundle(
-                    getIntent().getExtras()
-            );
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(frameId,
-                    ChatWindowFragment.newInstance(
-                            chatConfig.licenceNumber,
-                            chatConfig.groupId,
-                            chatConfig.visitorName,
-                            chatConfig.visitorEmail,
-                            chatConfig.customVariables
-                    )
-            );
+        final ChatWindowConfiguration chatConfig =
+                ChatWindowConfiguration.fromBundle(Objects.requireNonNull(getIntent().getExtras()));
 
-            ft.commit();
-        } else {
-            throw new IllegalStateException("Config must be provided");
-        }
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(frameId,
+                ChatWindowFragment.newInstance(
+                        chatConfig.licenceNumber,
+                        chatConfig.groupId,
+                        chatConfig.visitorName,
+                        chatConfig.visitorEmail,
+                        chatConfig.customParameters
+                )
+        );
+
+        ft.commit();
     }
 }

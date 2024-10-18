@@ -20,6 +20,7 @@ public class ChatWindowUtils {
         final ViewGroup contentView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
         ChatWindowViewImpl chatWindowView = (ChatWindowViewImpl) LayoutInflater.from(activity).inflate(R.layout.view_chat_window, contentView, false);
         contentView.addView(chatWindowView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
         return chatWindowView;
     }
 

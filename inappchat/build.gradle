@@ -34,7 +34,7 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
+                from components.findByName('release')
                 groupId = 'com.github.livechat'
                 artifactId = 'inappchat'
             }
