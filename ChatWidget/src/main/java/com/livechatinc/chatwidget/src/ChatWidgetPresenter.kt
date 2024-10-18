@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget.src
 
 import com.livechatinc.chatwidget.ChatWidget
+import com.livechatinc.chatwidget.src.models.ChatMessage
 
 internal class ChatWidgetPresenter internal constructor(private var view: ChatWidget) {
     private var listener: ChatWidgetCallbackListener? = null
@@ -23,5 +24,9 @@ internal class ChatWidgetPresenter internal constructor(private var view: ChatWi
         if (listener != null) {
             view.runOnUiThread(listener!!::hideChatWidget)
         }
+    }
+
+    fun onNewMessage(message: ChatMessage?) {
+        TODO("Not yet implemented")
     }
 }
