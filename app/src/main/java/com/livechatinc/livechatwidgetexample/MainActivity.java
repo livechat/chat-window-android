@@ -105,6 +105,11 @@ public class MainActivity extends AppCompatActivity {
         ChatWindowUtils.clearSession();
     }
 
+    public void startKotlinVersion(View view) {
+        final Intent intent = new Intent(this, UsingKotlinActivity.class);
+        startActivity(intent);
+    }
+
     public interface OnBackPressedListener {
         boolean onBackPressed();
     }
