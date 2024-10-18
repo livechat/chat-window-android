@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
@@ -31,6 +31,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
     implementation project(':inappchat')
+    implementation project(':ChatWidget')
 
     testImplementation 'junit:junit:4.13.2'
 }
