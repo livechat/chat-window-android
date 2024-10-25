@@ -12,6 +12,10 @@ import androidx.annotation.Nullable;
 
 import com.livechatinc.chatwidget.ChatWidget;
 import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener;
+import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UsingKotlinActivity extends Activity {
     public ChatWidget chatWidget;
@@ -32,8 +36,10 @@ public class UsingKotlinActivity extends Activity {
             showChatButton.setVisibility(View.INVISIBLE);
 
         });
+        Map<String, String> customVariables = new HashMap<>();
+        customVariables.put("key", "value");
 
-        chatWidget.init("11172412");
+        chatWidget.init(new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com", customVariables));
         chatWidget.setCallbackListener(
                 new ChatWidgetCallbackListener() {
                     @Override
