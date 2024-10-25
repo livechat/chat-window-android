@@ -3,7 +3,7 @@ package com.livechatinc.chatwidget.src.extensions
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import java.net.URLEncoder
 
-fun String.buildChatUrl(config: ChatWidgetConfig): String {
+internal fun String.buildChatUrl(config: ChatWidgetConfig): String {
     val joinedCustomParameters =
         config.customParameters.map { (key, value) -> "$key=$value" }.joinToString { "&$it" }
 
@@ -17,9 +17,9 @@ fun String.buildChatUrl(config: ChatWidgetConfig): String {
         .addQueryParameter("params", URLEncoder.encode(joinedCustomParameters, "UTF-8"))
 }
 
-fun String.ensureHttps(): String = if (startsWith("http")) this else "https://$this"
+private fun String.ensureHttps(): String = if (startsWith("http")) this else "https://$this"
 
-fun String.replaceParameter(key: String, value: String): String = replace("{%$key%}", value)
+private fun String.replaceParameter(key: String, value: String): String = replace("{%$key%}", value)
 
-fun String.addQueryParameter(key: String, value: String?): String =
+private fun String.addQueryParameter(key: String, value: String?): String =
     if (value?.isNotBlank() == true) "$this&$key=$value" else this
