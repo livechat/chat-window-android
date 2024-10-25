@@ -45,7 +45,7 @@ class ChatWidget(
     }
 
     fun init(licenceId: String) {
-        presenter.init()
+        presenter.init(licenceId)
     }
 
     fun setCallbackListener(callbackListener: ChatWidgetCallbackListener) {
