@@ -1,37 +1,35 @@
 package com.livechatinc.chatwidget.src
 
 import android.webkit.JavascriptInterface
-import com.google.gson.GsonBuilder
+import com.livechatinc.chatwidget.src.models.BridgeMessage
 import com.livechatinc.chatwidget.src.models.ChatMessage
-import org.json.JSONObject
+import com.livechatinc.chatwidget.src.models.MessageType
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 internal class ChatWidgetJSBridge internal constructor(
-        private val presenter: ChatWidgetPresenter
+    private val presenter: ChatWidgetPresenter
 ) {
-    private val KEY_MESSAGE_TYPE = "messageType"
-    val gson = GsonBuilder().create()
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
 
     @JavascriptInterface
     fun postMessage(messageJson: String) {
         println("### postMessage: $messageJson")
-        val jsonObject = JSONObject(messageJson)
-        if (jsonObject.has(KEY_MESSAGE_TYPE)) {
-            //TODO: Allow for unknown types
-            val messageType = gson.fromJson(
-                    jsonObject.getString(KEY_MESSAGE_TYPE),
-                    MessageType::class.java
-            )
 
-            dispatchMessage(messageType, messageJson)
-        }
+        val messageType = json.decodeFromString<BridgeMessage>(messageJson)
+
+        dispatchMessage(messageType.messageType, messageJson)
     }
 
     private fun dispatchMessage(type: MessageType, messageJson: String) {
         when (type) {
             MessageType.UI_READY -> presenter.onUiReady()
             MessageType.HIDE_CHAT_WINDOW -> presenter.onHideChatWidget()
-            MessageType.TYPE_NEW_MESSAGE -> presenter.onNewMessage(
-                    gson.fromJson(messageJson, ChatMessage::class.java)
+            MessageType.NEW_MESSAGE -> presenter.onNewMessage(
+                json.decodeFromString<ChatMessage>(messageJson)
             )
         }
     }
