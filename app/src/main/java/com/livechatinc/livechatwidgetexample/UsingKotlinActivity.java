@@ -7,11 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.livechatinc.chatwidget.ChatWidget;
 import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener;
+import com.livechatinc.chatwidget.src.models.ChatMessage;
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
 
 import java.util.HashMap;
@@ -55,7 +55,7 @@ public class UsingKotlinActivity extends Activity {
                     }
 
                     @Override
-                    public void onChatMessage(@NonNull String message) {
+                    public void onChatMessage(@Nullable ChatMessage message) {
                         println("### onChatMessage: $message");
                     }
                 }

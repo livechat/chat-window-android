@@ -45,7 +45,9 @@ internal class ChatWidgetPresenter internal constructor(private var view: ChatWi
     }
 
     fun onNewMessage(message: ChatMessage?) {
-        TODO("Not yet implemented")
+        if (listener != null) {
+            view.runOnUiThread { listener!!.onChatMessage(message) }
+        }
     }
 }
 
