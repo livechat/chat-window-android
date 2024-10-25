@@ -18,7 +18,7 @@ class ChatWidgetWebViewClient : WebViewClient() {
         printWebViewError(
             error?.errorCode,
             error?.description?.toString(),
-            request?.url?.toString()
+            request?.url?.toString(),
         )
 
         super.onReceivedError(view, request, error)
@@ -31,6 +31,12 @@ class ChatWidgetWebViewClient : WebViewClient() {
         description: String?,
         failingUrl: String?
     ) {
+        printWebViewError(
+            errorCode,
+            description,
+            failingUrl,
+        )
+
         super.onReceivedError(view, errorCode, description, failingUrl)
     }
 
@@ -43,7 +49,7 @@ class ChatWidgetWebViewClient : WebViewClient() {
         printWebViewError(
             errorResponse?.statusCode,
             errorResponse?.reasonPhrase,
-            request?.url?.toString()
+            request?.url?.toString(),
         )
 
         super.onReceivedHttpError(view, request, errorResponse)
