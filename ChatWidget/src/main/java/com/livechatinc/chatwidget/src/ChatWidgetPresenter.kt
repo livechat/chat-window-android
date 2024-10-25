@@ -3,6 +3,7 @@ package com.livechatinc.chatwidget.src
 import com.livechatinc.chatwidget.ChatWidget
 import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.models.ChatMessage
+import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -20,9 +21,9 @@ internal class ChatWidgetPresenter internal constructor(private var view: ChatWi
     private var listener: ChatWidgetCallbackListener? = null
     private val url = "https://cdn.livechatinc.com/app/mobile/urls.json"
 
-    fun init(licenceId: String) {
+    fun init(config: ChatWidgetConfig) {
         runBlocking {
-            val chatUrl = NetworkHelper.fetchChatUrl(url).buildChatUrl(licenceId)
+            val chatUrl = NetworkHelper.fetchChatUrl(url).buildChatUrl(config)
             view.loadUrl(chatUrl)
         }
     }

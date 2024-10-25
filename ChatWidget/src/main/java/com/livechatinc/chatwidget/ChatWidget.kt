@@ -12,6 +12,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
+import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 
 @SuppressLint("SetJavaScriptEnabled")
 class ChatWidget(
@@ -44,8 +45,8 @@ class ChatWidget(
         )
     }
 
-    fun init(licenceId: String) {
-        presenter.init(licenceId)
+    fun init(config: ChatWidgetConfig) {
+        presenter.init(config)
     }
 
     fun setCallbackListener(callbackListener: ChatWidgetCallbackListener) {
