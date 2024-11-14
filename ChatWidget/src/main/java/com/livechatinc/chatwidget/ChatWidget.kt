@@ -92,21 +92,21 @@ class ChatWidget(
         presenter.setCallbackListener(callbackListener)
     }
 
+    override fun launchExternalBrowser(uri: Uri) {
+        TODO("Not yet implemented")
+    }
+
     override fun loadUrl(url: String) {
         webView.loadUrl(url)
     }
 
-    override fun launchExternalBrowser(uri: Uri) {
-        TODO("Not yet implemented")
+    override fun runOnUiThread(action: Runnable?) {
+        post(action)
     }
 
     override fun startFilePicker(filePathCallback: ValueCallback<Array<Uri>>?) {
         uriArrayUploadCallback = filePathCallback
         observer.selectFile()
-    }
-
-    fun runOnUiThread(action: Runnable?) {
-        post(action)
     }
 
     override fun onDetachedFromWindow() {

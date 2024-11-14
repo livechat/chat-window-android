@@ -1,6 +1,5 @@
 package com.livechatinc.chatwidget.src
 
-import com.livechatinc.chatwidget.ChatWidget
 import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
@@ -17,7 +16,7 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-internal class ChatWidgetPresenter internal constructor(private var view: ChatWidget) {
+internal class ChatWidgetPresenter internal constructor(private var view: ChatWidgetViewInternal) {
     private var listener: ChatWidgetCallbackListener? = null
     private val url = "https://cdn.livechatinc.com/app/mobile/urls.json"
 

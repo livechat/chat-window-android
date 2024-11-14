@@ -4,9 +4,11 @@ import android.net.Uri
 import android.webkit.ValueCallback
 
 interface ChatWidgetViewInternal {
+    fun launchExternalBrowser(uri: Uri)
+
     fun loadUrl(url: String)
 
-    fun launchExternalBrowser(uri: Uri)
+    fun runOnUiThread(action: Runnable?)
 
     fun startFilePicker(filePathCallback: ValueCallback<Array<Uri>>?)
 }

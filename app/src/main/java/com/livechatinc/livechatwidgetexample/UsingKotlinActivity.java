@@ -2,12 +2,12 @@ package com.livechatinc.livechatwidgetexample;
 
 import static java.sql.DriverManager.println;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.livechatinc.chatwidget.ChatWidget;
 import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener;
@@ -17,7 +17,7 @@ import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
 import java.util.HashMap;
 import java.util.Map;
 
-public class UsingKotlinActivity extends Activity {
+public class UsingKotlinActivity extends AppCompatActivity {
     public ChatWidget chatWidget;
     public View loadingIndicator;
     public Button showChatButton;
