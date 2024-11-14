@@ -4,12 +4,12 @@ import android.webkit.JavascriptInterface
 import com.livechatinc.chatwidget.src.models.BridgeMessage
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.MessageType
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 internal class ChatWidgetJSBridge internal constructor(
     private val presenter: ChatWidgetPresenter
 ) {
+    //TODO: single json instance
     private val json = Json {
         ignoreUnknownKeys = true
         isLenient = true
@@ -19,6 +19,7 @@ internal class ChatWidgetJSBridge internal constructor(
     fun postMessage(messageJson: String) {
         println("### postMessage: $messageJson")
 
+        //TODO: handle exceptions
         val messageType = json.decodeFromString<BridgeMessage>(messageJson)
 
         dispatchMessage(messageType.messageType, messageJson)

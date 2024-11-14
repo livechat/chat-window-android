@@ -1,7 +1,5 @@
 plugins {
     id 'com.android.application'
-    //TODO: mention in the docs if thats needed for file sharing setup
-    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -10,6 +8,7 @@ android {
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
+        //TODO: check compatibility
         targetSdkVersion 35
         versionCode 1
         versionName "1.0"

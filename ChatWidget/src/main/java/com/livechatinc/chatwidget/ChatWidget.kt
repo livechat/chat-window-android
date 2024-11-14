@@ -2,14 +2,11 @@ package com.livechatinc.chatwidget
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.ContextWrapper
 import android.net.Uri
 import android.util.AttributeSet
-import android.view.View
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
@@ -20,6 +17,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.ChatWindowLifecycleObserver
+import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -129,18 +127,4 @@ class ChatWidget(
         super.onPause(owner)
         println("### onPause")
     }
-}
-
-fun View.getActivity(): AppCompatActivity? {
-    var context = this.context
-
-    while (context is ContextWrapper) {
-        if (context is AppCompatActivity) {
-            return context
-        }
-
-        context = context.baseContext
-    }
-
-    return null
 }
