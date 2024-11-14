@@ -34,10 +34,12 @@ android {
 }
 
 val ktor_version = "3.0.1"
+val lifecycle_version = "2.8.7"
 
 dependencies {
 
     implementation("androidx.core:core-ktx:1.15.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version")
 
     implementation("io.ktor:ktor-client-core:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")

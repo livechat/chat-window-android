@@ -1,5 +1,7 @@
 plugins {
     id 'com.android.application'
+    //TODO: mention in the docs if thats needed for file sharing setup
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
