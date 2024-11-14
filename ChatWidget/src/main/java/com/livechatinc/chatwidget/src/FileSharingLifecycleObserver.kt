@@ -2,22 +2,21 @@ package com.livechatinc.chatwidget.src
 
 import android.content.ActivityNotFoundException
 import android.net.Uri
+import android.webkit.ValueCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 
 
-internal class ChatWindowLifecycleObserver(
+internal class FileSharingLifecycleObserver(
     private val registry: ActivityResultRegistry,
     private val activityNotFoundCallback: ActivityNotFoundCallback
 ) : DefaultLifecycleObserver {
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null
-    private val resultLiveData = MutableLiveData<Array<Uri>>()
+    private var uriArrayUploadCallback: ValueCallback<Array<Uri>>? = null
 
     override fun onCreate(owner: LifecycleOwner) {
         registerSingleContentContract(owner)
@@ -30,7 +29,7 @@ internal class ChatWindowLifecycleObserver(
             owner,
             ActivityResultContracts.GetContent()
         ) { file: Uri? ->
-            resultLiveData.postValue(
+            uriArrayUploadCallback?.onReceiveValue(
                 if (file != null) arrayOf(file) else emptyArray()
             )
         }
@@ -41,30 +40,30 @@ internal class ChatWindowLifecycleObserver(
             "chatWindowMultipleFilesResultRegisterKey",
             owner,
             ActivityResultContracts.GetMultipleContents()
-        ) { value -> resultLiveData.postValue(value.toTypedArray()) }
+        ) { value -> uriArrayUploadCallback?.onReceiveValue(value.toTypedArray()) }
     }
 
-    fun selectFile() {
+    fun selectFile(filePathCallback: ValueCallback<Array<Uri>>?) {
         //TODO: consider using accept type from chrome client callback
+        uriArrayUploadCallback = filePathCallback
+
         try {
             getContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
             activityNotFoundCallback.onActivityNotFoundException()
-            resultLiveData.postValue(emptyArray())
+            uriArrayUploadCallback?.onReceiveValue(emptyArray())
         }
     }
 
-    fun selectFiles() {
+    fun selectFiles(filePathCallback: ValueCallback<Array<Uri>>?) {
+        uriArrayUploadCallback = filePathCallback
+
         try {
             getMultipleContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
             activityNotFoundCallback.onActivityNotFoundException()
-            resultLiveData.postValue(emptyArray())
+            uriArrayUploadCallback?.onReceiveValue(emptyArray())
         }
-    }
-
-    fun getResultLiveData(): LiveData<Array<Uri>> {
-        return resultLiveData
     }
 }
 

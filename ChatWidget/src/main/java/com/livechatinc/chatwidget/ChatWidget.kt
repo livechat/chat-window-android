@@ -9,14 +9,13 @@ import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
-import com.livechatinc.chatwidget.src.ChatWindowLifecycleObserver
+import com.livechatinc.chatwidget.src.FileSharingLifecycleObserver
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 
@@ -25,11 +24,9 @@ class ChatWidget(
     context: Context,
     attrs: AttributeSet?
 ) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
-    private lateinit var uriObserver: Observer<Array<Uri>>
-    private lateinit var observer: ChatWindowLifecycleObserver
+    private lateinit var observer: FileSharingLifecycleObserver
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
-    private var uriArrayUploadCallback: ValueCallback<Array<Uri>>? = null
 
     init {
         inflate(context, R.layout.chat_widget_internal, this)
@@ -64,22 +61,14 @@ class ChatWidget(
         //TODO: consider setting by the lib user
         getActivity().let { activity ->
             if (activity != null) {
-                observer = ChatWindowLifecycleObserver(
+                observer = FileSharingLifecycleObserver(
                     activity.activityResultRegistry
                 ) {
                     //TODO: handle activity not found
                 }
                 activity.lifecycle.addObserver(observer)
-                uriObserver =
-                    Observer { selectedFiles: Array<Uri> -> this.onFileChooserResult(selectedFiles) }
-                observer.getResultLiveData().observe(activity, uriObserver)
             }
         }
-    }
-
-    private fun onFileChooserResult(selectedFiles: Array<Uri>) {
-        uriArrayUploadCallback?.onReceiveValue(selectedFiles)
-        uriArrayUploadCallback = null
     }
 
     fun init(config: ChatWidgetConfig) {
@@ -103,8 +92,7 @@ class ChatWidget(
     }
 
     override fun startFilePicker(filePathCallback: ValueCallback<Array<Uri>>?) {
-        uriArrayUploadCallback = filePathCallback
-        observer.selectFile()
+        observer.selectFile(filePathCallback)
     }
 
     override fun onDetachedFromWindow() {
