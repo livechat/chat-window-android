@@ -6,7 +6,6 @@ import android.webkit.JavascriptInterface;
 import com.google.gson.GsonBuilder;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 class ChatWindowJsInterface {
@@ -31,8 +30,8 @@ class ChatWindowJsInterface {
             if (jsonObject.has(KEY_MESSAGE_TYPE)) {
                 dispatchMessage(jsonObject.getString(KEY_MESSAGE_TYPE), messageJson);
             }
-        } catch (JSONException e) {
-            Log.e(TAG, "Error serializing js message: " + e.getMessage(), e);
+        } catch (Exception e) {
+            Log.e(TAG, "Error deserializing js message: " + e.getMessage(), e);
         }
     }
 
