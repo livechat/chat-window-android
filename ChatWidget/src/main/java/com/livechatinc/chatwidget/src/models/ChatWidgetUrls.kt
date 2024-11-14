@@ -4,6 +4,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-class ChatWidgetUrls(
+internal data class ChatWidgetUrls(
     @SerialName("chat_url") val chatUrl: String? = null
-) {}
+)
