@@ -16,7 +16,7 @@ internal class FileSharing(
 ) : DefaultLifecycleObserver {
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null
-    private var uriArrayUploadCallback: ValueCallback<Array<Uri>>? = null
+    private var filesUploadCallback: ValueCallback<Array<Uri>>? = null
 
     override fun onCreate(owner: LifecycleOwner) {
         registerSingleContentContract(owner)
@@ -29,7 +29,7 @@ internal class FileSharing(
             owner,
             ActivityResultContracts.GetContent()
         ) { file: Uri? ->
-            uriArrayUploadCallback?.onReceiveValue(
+            filesUploadCallback?.onReceiveValue(
                 if (file != null) arrayOf(file) else emptyArray()
             )
         }
@@ -41,29 +41,29 @@ internal class FileSharing(
             "chatWidgetMultipleFilesResultRegistryKey",
             owner,
             ActivityResultContracts.GetMultipleContents()
-        ) { value -> uriArrayUploadCallback?.onReceiveValue(value.toTypedArray()) }
+        ) { value -> filesUploadCallback?.onReceiveValue(value.toTypedArray()) }
     }
 
     fun selectFile(filePathCallback: ValueCallback<Array<Uri>>?) {
         //TODO: consider using accept type from chrome client callback
-        uriArrayUploadCallback = filePathCallback
+        filesUploadCallback = filePathCallback
 
         try {
             getContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
             presenter.onFileChooserActivityNotFound()
-            uriArrayUploadCallback?.onReceiveValue(emptyArray())
+            filesUploadCallback?.onReceiveValue(emptyArray())
         }
     }
 
     fun selectFiles(filePathCallback: ValueCallback<Array<Uri>>?) {
-        uriArrayUploadCallback = filePathCallback
+        filesUploadCallback = filePathCallback
 
         try {
             getMultipleContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
             presenter.onFileChooserActivityNotFound()
-            uriArrayUploadCallback?.onReceiveValue(emptyArray())
+            filesUploadCallback?.onReceiveValue(emptyArray())
         }
     }
 }

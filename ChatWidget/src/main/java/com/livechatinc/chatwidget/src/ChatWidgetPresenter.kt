@@ -64,7 +64,6 @@ internal class ChatWidgetPresenter internal constructor(private var view: ChatWi
 
     fun onFileChooserActivityNotFound() {
         if (listener != null) {
-            //TODO: test if this needs UI thread
             listener!!.onFileChooserActivityNotFound()
         }
     }
