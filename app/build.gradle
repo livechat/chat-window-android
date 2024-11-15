@@ -5,6 +5,7 @@ plugins {
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
     compileSdk 35
+
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
@@ -14,6 +15,18 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
+    flavorDimensions = ["flavor-type"]
+    productFlavors {
+        prod {
+            dimension "flavor-type"
+        }
+        dev {
+            dimension "flavor-type"
+            applicationIdSuffix = ".dev"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
