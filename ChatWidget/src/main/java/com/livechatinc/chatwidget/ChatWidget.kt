@@ -63,10 +63,9 @@ class ChatWidget(
         getActivity().let { activity ->
             if (activity != null) {
                 fileSharing = FileSharing(
-                    activity.activityResultRegistry
-                ) {
-                    //TODO: handle activity not found
-                }
+                    activity.activityResultRegistry,
+                    presenter,
+                )
                 activity.lifecycle.addObserver(fileSharing!!)
             }
         }

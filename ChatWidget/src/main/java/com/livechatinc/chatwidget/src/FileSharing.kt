@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 
 internal class FileSharing(
     private val registry: ActivityResultRegistry,
-    private val activityNotFoundCallback: ActivityNotFoundCallback
+    private val presenter: ChatWidgetPresenter
 ) : DefaultLifecycleObserver {
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null
@@ -51,7 +51,7 @@ internal class FileSharing(
         try {
             getContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
-            activityNotFoundCallback.onActivityNotFoundException()
+            presenter.onFileChooserActivityNotFound()
             uriArrayUploadCallback?.onReceiveValue(emptyArray())
         }
     }
@@ -62,12 +62,8 @@ internal class FileSharing(
         try {
             getMultipleContent!!.launch("*/*")
         } catch (exception: ActivityNotFoundException) {
-            activityNotFoundCallback.onActivityNotFoundException()
+            presenter.onFileChooserActivityNotFound()
             uriArrayUploadCallback?.onReceiveValue(emptyArray())
         }
     }
-}
-
-internal fun interface ActivityNotFoundCallback {
-    fun onActivityNotFoundException()
 }

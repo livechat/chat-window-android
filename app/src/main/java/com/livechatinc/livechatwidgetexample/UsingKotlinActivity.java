@@ -5,6 +5,7 @@ import static java.sql.DriverManager.println;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
             showChatButton.setVisibility(View.INVISIBLE);
 
         });
+
         Map<String, String> customVariables = new HashMap<>();
         customVariables.put("key", "value");
 
@@ -57,6 +59,11 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     @Override
                     public void onChatMessage(@Nullable ChatMessage message) {
                         println("### onChatMessage: $message");
+                    }
+
+                    @Override
+                    public void onFileChooserActivityNotFound() {
+                        Toast.makeText(UsingKotlinActivity.this, "File chooser activity not found", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
