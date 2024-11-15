@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,7 +42,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
         Map<String, String> customVariables = new HashMap<>();
         customVariables.put("key", "value");
 
-        chatWidget.init(new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com", customVariables));
         chatWidget.setCallbackListener(
                 new ChatWidgetCallbackListener() {
                     @Override
@@ -57,6 +57,11 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     }
 
                     @Override
+                    public void onError(@NonNull Throwable cause) {
+                        println("### onError: " + cause);
+                    }
+
+                    @Override
                     public void onChatMessage(@Nullable ChatMessage message) {
                         println("### onChatMessage: $message");
                     }
@@ -67,5 +72,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     }
                 }
         );
+        chatWidget.init(new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com", customVariables));
     }
 }

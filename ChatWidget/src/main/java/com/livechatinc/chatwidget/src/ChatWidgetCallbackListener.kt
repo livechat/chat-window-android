@@ -6,5 +6,6 @@ interface ChatWidgetCallbackListener {
     fun chatLoaded()
     fun hideChatWidget()
     fun onChatMessage(message: ChatMessage?)
+    fun onError(cause: Throwable)
     fun onFileChooserActivityNotFound()
 }

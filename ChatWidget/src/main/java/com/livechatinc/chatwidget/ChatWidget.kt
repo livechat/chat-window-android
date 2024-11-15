@@ -16,9 +16,14 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
+import com.livechatinc.chatwidget.src.common.BuildInfo
+import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
+import com.livechatinc.chatwidget.src.data.core.RetrofitNetworkClient
+import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.FileChooserMode
+import kotlinx.serialization.json.Json
 
 @SuppressLint("SetJavaScriptEnabled")
 class ChatWidget(
@@ -28,12 +33,21 @@ class ChatWidget(
     private var fileSharing: FileSharing? = null
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
+    private val networkClient: NetworkClient
+    private val json: Json = Json {
+        isLenient = true
+        ignoreUnknownKeys = true
+    }
+    private val buildInfo: BuildInfo = BuildInfo(
+        apiHost = "https://cdn.livechatinc.com/",
+        apiPath = "app/mobile/urls.json",
+    )
 
     init {
         inflate(context, R.layout.chat_widget_internal, this)
         webView = findViewById(R.id.chat_widget_webview)
-
-        presenter = ChatWidgetPresenter(this)
+        networkClient = KtorNetworkClient(json, buildInfo)
+        presenter = ChatWidgetPresenter(this, networkClient)
 
         configureWebView()
 
