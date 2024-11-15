@@ -5,15 +5,12 @@ import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 
-internal class ChatWidgetChromeClient(val widget: ChatWidgetViewInternal) : WebChromeClient() {
+internal class ChatWidgetChromeClient(
+    val presenter: ChatWidgetPresenter
+) : WebChromeClient() {
     override fun onShowFileChooser(
         webView: WebView?,
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: FileChooserParams?
-    ): Boolean {
-        //TODO: support single and multi file mode
-        widget.startFilePicker(filePathCallback)
-
-        return true
-    }
+    ): Boolean = presenter.onShowFileChooser(filePathCallback, fileChooserParams)
 }

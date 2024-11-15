@@ -10,7 +10,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 
 
-internal class FileSharingLifecycleObserver(
+internal class FileSharing(
     private val registry: ActivityResultRegistry,
     private val activityNotFoundCallback: ActivityNotFoundCallback
 ) : DefaultLifecycleObserver {
@@ -25,7 +25,7 @@ internal class FileSharingLifecycleObserver(
 
     private fun registerSingleContentContract(owner: LifecycleOwner) {
         getContent = registry.register<String, Uri>(
-            "chatWindowFileResultRegisterKey",
+            "chatWidgetFileResultRegistryKey",
             owner,
             ActivityResultContracts.GetContent()
         ) { file: Uri? ->
@@ -36,8 +36,9 @@ internal class FileSharingLifecycleObserver(
     }
 
     private fun registerMultipleContentContract(owner: LifecycleOwner) {
+        //TODO: what if there are two apps on user device with ChatWidget? Should it contain bundle id?
         getMultipleContent = registry.register(
-            "chatWindowMultipleFilesResultRegisterKey",
+            "chatWidgetMultipleFilesResultRegistryKey",
             owner,
             ActivityResultContracts.GetMultipleContents()
         ) { value -> uriArrayUploadCallback?.onReceiveValue(value.toTypedArray()) }

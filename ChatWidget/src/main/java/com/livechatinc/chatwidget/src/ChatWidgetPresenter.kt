@@ -1,6 +1,10 @@
 package com.livechatinc.chatwidget.src
 
+import android.net.Uri
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import com.livechatinc.chatwidget.src.extensions.buildChatUrl
+import com.livechatinc.chatwidget.src.extensions.fileChooserMode
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
@@ -47,6 +51,15 @@ internal class ChatWidgetPresenter internal constructor(private var view: ChatWi
         if (listener != null) {
             view.runOnUiThread { listener!!.onChatMessage(message) }
         }
+    }
+
+    fun onShowFileChooser(
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserParams: WebChromeClient.FileChooserParams?
+    ): Boolean {
+        view.startFilePicker(filePathCallback, fileChooserParams.fileChooserMode())
+
+        return true
     }
 }
 

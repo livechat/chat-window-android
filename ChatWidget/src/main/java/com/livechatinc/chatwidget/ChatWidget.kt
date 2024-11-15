@@ -15,16 +15,17 @@ import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
-import com.livechatinc.chatwidget.src.FileSharingLifecycleObserver
+import com.livechatinc.chatwidget.src.FileSharing
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.FileChooserMode
 
 @SuppressLint("SetJavaScriptEnabled")
 class ChatWidget(
     context: Context,
     attrs: AttributeSet?
 ) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
-    private lateinit var observer: FileSharingLifecycleObserver
+    private var fileSharing: FileSharing? = null
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
 
@@ -47,7 +48,7 @@ class ChatWidget(
         //TODO: investigate message sounds without user gesture
         webSettings.mediaPlaybackRequiresUserGesture = false
 
-        webView.webChromeClient = ChatWidgetChromeClient(this)
+        webView.webChromeClient = ChatWidgetChromeClient(presenter)
         webView.webViewClient = ChatWidgetWebViewClient()
 
         webView.addJavascriptInterface(
@@ -61,12 +62,12 @@ class ChatWidget(
         //TODO: consider setting by the lib user
         getActivity().let { activity ->
             if (activity != null) {
-                observer = FileSharingLifecycleObserver(
+                fileSharing = FileSharing(
                     activity.activityResultRegistry
                 ) {
                     //TODO: handle activity not found
                 }
-                activity.lifecycle.addObserver(observer)
+                activity.lifecycle.addObserver(fileSharing!!)
             }
         }
     }
@@ -91,8 +92,15 @@ class ChatWidget(
         post(action)
     }
 
-    override fun startFilePicker(filePathCallback: ValueCallback<Array<Uri>>?) {
-        observer.selectFile(filePathCallback)
+    override fun startFilePicker(
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserMode: FileChooserMode,
+    ) {
+        //TODO: handle case where wasn't possible to support file sharing
+        when (fileChooserMode) {
+            FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
+            FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
+        }
     }
 
     override fun onDetachedFromWindow() {
