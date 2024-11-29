@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 2.4.4
+
+* Report http errors in the ChatWindowEventsListener.onError method
+
 ## Version 2.4.3
 
 * Updated gson to `2.11.0` fixing issues when minification enabled

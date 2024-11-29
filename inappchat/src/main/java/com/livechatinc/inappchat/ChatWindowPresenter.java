@@ -93,15 +93,15 @@ class ChatWindowPresenter {
         onErrorDetected(ChatWindowErrorType.InitialConfiguration, errorCode, error.getMessage());
     }
 
-    protected void onErrorDetected(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
-        Log.d(TAG, "Error detected. Type: " + errorType + ", code: " + errorCode + ", description: " + errorDescription);
+    protected void onErrorDetected(ChatWindowErrorType type, int errorCode, String errorDescription) {
+        Log.d(TAG, "Error detected. Type: " + type + ", code: " + errorCode + ", description: " + errorDescription);
 
-        final boolean errorHandled = eventsListener != null && eventsListener.onError(errorType, errorCode, errorDescription);
+        final boolean errorHandled = eventsListener != null && eventsListener.onError(type, errorCode, errorDescription);
 
         chatWindowView.runOnMainThread(chatWindowView::hideProgressBar);
 
         if (!errorHandled) {
-            if (chatUiReady && errorType == ChatWindowErrorType.WebViewClient && errorCode == -2) {
+            if (chatUiReady && type == ChatWindowErrorType.WebViewClient && errorCode == -2) {
                 //Internet connection error. Connection issues handled in the chat window
                 return;
             }
