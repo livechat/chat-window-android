@@ -101,11 +101,6 @@ class ChatWindowPresenter {
         chatWindowView.runOnMainThread(chatWindowView::hideProgressBar);
 
         if (!errorHandled) {
-            if (chatUiReady && type == ChatWindowErrorType.WebViewClient && errorCode == -2) {
-                //Internet connection error. Connection issues handled in the chat window
-                return;
-            }
-
             chatWindowView.runOnMainThread(chatWindowView::showErrorView);
         }
     }
