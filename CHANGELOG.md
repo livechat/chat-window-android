@@ -1,6 +1,6 @@
 # Android ChangeLog
 
-## Version 2.4.4rc1
+## Version 2.4.4
 
 * Report http errors in the ChatWindowEventsListener.onError method
 
