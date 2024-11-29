@@ -5,7 +5,6 @@ import static com.livechatinc.inappchat.ChatWindowViewImpl.REQUEST_CODE_AUDIO_PE
 
 import android.Manifest;
 import android.net.Uri;
-import android.webkit.ConsoleMessage;
 import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -45,14 +44,5 @@ class LCWebChromeClient extends WebChromeClient {
                 Manifest.permission.MODIFY_AUDIO_SETTINGS
         };
         presenter.eventsListener.onRequestAudioPermissions(runtimePermissions, REQUEST_CODE_AUDIO_PERMISSIONS);
-    }
-
-    @Override
-    public boolean onConsoleMessage(final ConsoleMessage consoleMessage) {
-        if (consoleMessage.messageLevel() == ConsoleMessage.MessageLevel.ERROR) {
-            presenter.onErrorDetected(ChatWindowErrorType.Console, -1, consoleMessage.message());
-        }
-
-        return super.onConsoleMessage(consoleMessage);
     }
 }

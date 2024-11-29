@@ -27,15 +27,11 @@ public interface ChatWindowEventsListener {
     void onRequestAudioPermissions(String[] permissions, int requestCode);
 
     /**
-     * This method propagates errors and tells this window if error needs to be handled.
+     * This callback notifies about errors. See {@link ChatWindowErrorType} for more details.
      *
      * @param errorType        Identifies the source of an error
-     * @param errorCode        Error code,
-     *                         for {@link ChatWindowErrorType#WebViewClient} see {@link WebViewClient https://developer.android.com/reference/android/webkit/WebViewClient}
-     *                         for {@link ChatWindowErrorType#Console} always -1
+     * @param errorCode        Error code
      * @param errorDescription Description of the error
-     *                         for {@link ChatWindowErrorType#WebViewClient} see {@link WebViewClient https://developer.android.com/reference/android/webkit/WebViewClient}
-     *                         for {@link ChatWindowErrorType#Console} only Error level messages propagated. {@link WebChromeClient https://developer.android.com/reference/android/webkit/WebChromeClient}
      * @return true if error handled. Returning false, means that library should handle error - show error view
      */
     boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription);
