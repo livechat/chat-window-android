@@ -141,27 +141,13 @@ public boolean handleUri(Uri uri) {
 }
 ````
 
-### Error handling
+### Error Handling
 
-You might want to customize user experience when encountering errors, such as problems with internet connection.
-By returning `true` in `onError` callback method you're taking responsibility to handle errors coming from the chat window.
+Errors are reported through the `onError` callback. Return `true` if you do not want the ChatWindow to display an error view with a reload button. The ChatWindow handles connection issues and can reconnect automatically.
 
-Please keep in mind that chat window, once it's loaded, can handle connection issues by sporadically trying to reconnect.
-This case can be detected by implementing following condition in onError callback method.
+We aim to report only critical errors. If you notice an important error being ignored or a non-critical error being reported, please inform us.
 
-```java
-@Override
-public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
-    if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
-        //Chat window can handle reconnection. You might want to delegate this to chat window
-        return false;
-    } else {
-        reloadChatBtn.setVisibility(View.VISIBLE);
-    }
-    Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
-    return true;
-}
-````
+Refer to `ChatWindowEventsListener.onError` and `ChatWindowErrorType` for more details.
 
 ### Clear chat session
 
