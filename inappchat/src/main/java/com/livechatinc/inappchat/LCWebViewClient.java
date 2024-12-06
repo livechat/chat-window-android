@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -24,15 +25,29 @@ class LCWebViewClient extends WebViewClient {
         super.onPageFinished(webView, url);
     }
 
+    @Override
+    public void onReceivedHttpError(WebView view, WebResourceRequest request, WebResourceResponse errorResponse) {
+        if (request.isForMainFrame()) {
+            presenter.onErrorDetected(
+                    ChatWindowErrorType.WebViewClient,
+                    errorResponse.getStatusCode(),
+                    errorResponse.getReasonPhrase()
+            );
+        }
+
+        super.onReceivedHttpError(view, request, errorResponse);
+    }
+
     @TargetApi(Build.VERSION_CODES.M)
     @Override
     public void onReceivedError(final WebView view, final WebResourceRequest request, final WebResourceError error) {
-
-        presenter.onErrorDetected(
-                ChatWindowErrorType.WebViewClient,
-                error.getErrorCode(),
-                String.valueOf(error.getDescription())
-        );
+        if (request.isForMainFrame()) {
+            presenter.onErrorDetected(
+                    ChatWindowErrorType.WebViewClient,
+                    error.getErrorCode(),
+                    String.valueOf(error.getDescription())
+            );
+        }
 
         super.onReceivedError(view, request, error);
     }

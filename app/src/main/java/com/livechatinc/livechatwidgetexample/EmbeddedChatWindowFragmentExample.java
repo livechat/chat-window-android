@@ -87,12 +87,8 @@ public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatW
     @Override
     public boolean onError(ChatWindowErrorType errorType, int errorCode, String errorDescription) {
         if (isAdded()) {
-            if (errorType == ChatWindowErrorType.WebViewClient && errorCode == -2 && chatWindow.isChatLoaded()) {
-                //Chat window can handle reconnection. You might want to delegate this to chat window
-                return false;
-            } else {
-                reloadChatBtn.setVisibility(View.VISIBLE);
-            }
+            reloadChatBtn.setVisibility(View.VISIBLE);
+
             Toast.makeText(getActivity(), errorDescription, Toast.LENGTH_SHORT).show();
         }
         return true;

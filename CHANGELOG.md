@@ -1,5 +1,17 @@
 # Android ChangeLog
 
+## Version 2.4.5
+
+* Revised error reporting in the `ChatWindowEventsListener.onError` callback and conditions for displaying the error view.
+* JavaScript errors are now ignored.
+
+**Breaking Changes**
+* `ChatWindowErrorType.Console` removed.
+
+## Version 2.4.4
+
+* Report http errors in the ChatWindowEventsListener.onError method
+
 ## Version 2.4.3
 
 * Updated gson to `2.11.0` fixing issues when minification enabled
