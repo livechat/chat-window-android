@@ -23,6 +23,8 @@ public class UsingKotlinActivity extends AppCompatActivity {
     public ChatWidget chatWidget;
     public View loadingIndicator;
     public Button showChatButton;
+    public Button reloadButton;
+    final ChatWidgetConfig config = new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,11 +34,17 @@ public class UsingKotlinActivity extends AppCompatActivity {
         chatWidget = findViewById(R.id.chat_widget);
         loadingIndicator = findViewById(R.id.loader_indicator);
         showChatButton = findViewById(R.id.show_chat_button);
+        reloadButton = findViewById(R.id.reload_button);
 
         showChatButton.setOnClickListener(v -> {
             chatWidget.setVisibility(View.VISIBLE);
             showChatButton.setVisibility(View.INVISIBLE);
+        });
 
+        reloadButton.setOnClickListener(v -> {
+            chatWidget.init(config);
+            reloadButton.setVisibility(View.GONE);
+            loadingIndicator.setVisibility(View.VISIBLE);
         });
 
         Map<String, String> customVariables = new HashMap<>();
@@ -59,6 +67,9 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     @Override
                     public void onError(@NonNull Throwable cause) {
                         println("### onError: " + cause);
+                        chatWidget.setVisibility(View.GONE);
+                        reloadButton.setVisibility(View.VISIBLE);
+                        loadingIndicator.setVisibility(View.GONE);
                     }
 
                     @Override
@@ -72,6 +83,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     }
                 }
         );
-        chatWidget.init(new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com", customVariables));
+        chatWidget.init(config);
     }
 }
