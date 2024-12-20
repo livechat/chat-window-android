@@ -8,34 +8,33 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 
-class ChatWidgetWebViewClient : WebViewClient() {
+internal class ChatWidgetWebViewClient(val presenter: ChatWidgetPresenter) : WebViewClient() {
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceivedError(
-        view: WebView?,
-        request: WebResourceRequest?,
-        error: WebResourceError?
+        view: WebView,
+        request: WebResourceRequest,
+        error: WebResourceError
     ) {
-        printWebViewError(
-            error?.errorCode,
-            error?.description?.toString(),
-            request?.url?.toString(),
-        )
+        if (request.isForMainFrame) {
+            presenter.onWebResourceError(
+                error.errorCode,
+                error.description.toString(),
+                request.url.toString()
+            )
+        }
 
         super.onReceivedError(view, request, error)
     }
 
 
+    @Deprecated("Deprecated in Java")
     override fun onReceivedError(
-        view: WebView?,
+        view: WebView,
         errorCode: Int,
-        description: String?,
-        failingUrl: String?
+        description: String,
+        failingUrl: String
     ) {
-        printWebViewError(
-            errorCode,
-            description,
-            failingUrl,
-        )
+        presenter.onWebResourceError(errorCode, description, failingUrl)
 
         super.onReceivedError(view, errorCode, description, failingUrl)
     }
@@ -43,20 +42,17 @@ class ChatWidgetWebViewClient : WebViewClient() {
 
     override fun onReceivedHttpError(
         view: WebView?,
-        request: WebResourceRequest?,
+        request: WebResourceRequest,
         errorResponse: WebResourceResponse?
     ) {
-        printWebViewError(
-            errorResponse?.statusCode,
-            errorResponse?.reasonPhrase,
-            request?.url?.toString(),
-        )
+        if (request.isForMainFrame) {
+            presenter.onWebViewHttpError(
+                errorResponse!!.statusCode,
+                errorResponse.reasonPhrase,
+                request.url.toString()
+            )
+        }
 
         super.onReceivedHttpError(view, request, errorResponse)
-    }
-
-
-    private fun printWebViewError(errorCode: Int?, description: String?, failingUrl: String?) {
-        println("Error, code: $errorCode, description: $description, failingUrl: $failingUrl")
     }
 }

@@ -3,6 +3,8 @@ package com.livechatinc.chatwidget.src
 import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import com.livechatinc.chatwidget.src.common.WebHttpException
+import com.livechatinc.chatwidget.src.common.WebResourceException
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.extensions.fileChooserMode
@@ -65,5 +67,27 @@ internal class ChatWidgetPresenter internal constructor(
         if (listener != null) {
             listener!!.onFileChooserActivityNotFound()
         }
+    }
+
+    fun onWebResourceError(code: Int, description: String, failingUrl: String) {
+        listener?.onError(WebResourceException(code, description, failingUrl))
+        printWebViewError(
+            code,
+            description,
+            failingUrl
+        )
+    }
+
+    fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
+        listener?.onError(WebHttpException(code, description, failingUrl))
+        printWebViewError(
+            code,
+            description,
+            failingUrl
+        )
+    }
+
+    private fun printWebViewError(errorCode: Int?, description: String?, failingUrl: String?) {
+        println("Error, code: $errorCode, description: $description, failingUrl: $failingUrl")
     }
 }

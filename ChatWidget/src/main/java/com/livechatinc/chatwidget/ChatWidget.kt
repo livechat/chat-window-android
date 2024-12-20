@@ -63,7 +63,7 @@ class ChatWidget(
         webSettings.mediaPlaybackRequiresUserGesture = false
 
         webView.webChromeClient = ChatWidgetChromeClient(presenter)
-        webView.webViewClient = ChatWidgetWebViewClient()
+        webView.webViewClient = ChatWidgetWebViewClient(presenter)
 
         webView.addJavascriptInterface(
             ChatWidgetJSBridge(presenter),
