@@ -4,7 +4,7 @@ import android.os.Build
 import android.webkit.CookieManager
 import android.webkit.WebStorage
 
-class ChatWidgetUtils {
+object ChatWidgetUtils {
     /**
      * Clears cookies and web storage discarding user's chat session
      */
