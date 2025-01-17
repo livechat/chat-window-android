@@ -90,4 +90,15 @@ internal class ChatWidgetPresenter internal constructor(
     private fun printWebViewError(errorCode: Int?, description: String?, failingUrl: String?) {
         println("Error, code: $errorCode, description: $description, failingUrl: $failingUrl")
     }
+
+    fun handleUrl(uri: Uri?): Boolean {
+        if (uri == null) {
+            return false
+        }
+
+        //TODO: test dal/fra licences
+        view.launchExternalBrowser(uri)
+
+        return true
+    }
 }

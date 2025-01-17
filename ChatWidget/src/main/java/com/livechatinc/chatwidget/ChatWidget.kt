@@ -2,6 +2,7 @@ package com.livechatinc.chatwidget
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.util.AttributeSet
 import android.webkit.ValueCallback
@@ -38,6 +39,7 @@ class ChatWidget(
         isLenient = true
         ignoreUnknownKeys = true
     }
+
     private val buildInfo: BuildInfo = BuildInfo(
         apiHost = "https://cdn.livechatinc.com/",
         apiPath = "app/mobile/urls.json",
@@ -93,10 +95,6 @@ class ChatWidget(
         presenter.setCallbackListener(callbackListener)
     }
 
-    override fun launchExternalBrowser(uri: Uri) {
-        TODO("Not yet implemented")
-    }
-
     override fun loadUrl(url: String) {
         webView.loadUrl(url)
     }
@@ -114,6 +112,12 @@ class ChatWidget(
             FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
             FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
         }
+    }
+
+    override fun launchExternalBrowser(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+
+        context.startActivity(intent)
     }
 
     override fun onDetachedFromWindow() {

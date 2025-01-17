@@ -8,7 +8,13 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 
-internal class ChatWidgetWebViewClient(val presenter: ChatWidgetPresenter) : WebViewClient() {
+internal class ChatWidgetWebViewClient(private val presenter: ChatWidgetPresenter) :
+    WebViewClient() {
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        return presenter.handleUrl(request?.url)
+    }
+
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceivedError(
         view: WebView,

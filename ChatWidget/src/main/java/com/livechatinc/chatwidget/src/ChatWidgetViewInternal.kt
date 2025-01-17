@@ -5,8 +5,6 @@ import android.webkit.ValueCallback
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 
 internal interface ChatWidgetViewInternal {
-    fun launchExternalBrowser(uri: Uri)
-
     fun loadUrl(url: String)
 
     fun runOnUiThread(action: Runnable?)
@@ -15,4 +13,6 @@ internal interface ChatWidgetViewInternal {
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserMode: FileChooserMode,
     )
+
+    fun launchExternalBrowser(uri: Uri)
 }
