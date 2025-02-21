@@ -1,5 +1,6 @@
 package com.livechatinc.chatwidget.src.models
 
+import io.ktor.http.Cookie
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -27,3 +28,12 @@ fun CustomerToken.toChatWidgetToken(
 }
 
 
+data class CustomerTokenResponse(
+    val token: ChatWidgetToken,
+    val cookieGrant: CookieGrant,
+)
+
+@Serializable
+data class CookieGrant(
+    val cookies: List<Cookie>,
+)

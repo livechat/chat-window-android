@@ -2,8 +2,9 @@ package com.livechatinc.chatwidget.src.data.core
 
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
+import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
+import io.ktor.http.Cookie
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
@@ -46,7 +47,9 @@ class RetrofitNetworkClient(json: Json, val buildInfo: BuildInfo) : NetworkClien
         license: String,
         licenceId: String,
         clientId: String,
-    ): ChatWidgetToken {
+        //TODO: dependency on ktor cookie
+        lcCookies: List<Cookie>?
+    ): CustomerTokenResponse {
         TODO("Not yet implemented")
     }
 }

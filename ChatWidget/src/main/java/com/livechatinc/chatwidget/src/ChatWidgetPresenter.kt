@@ -12,6 +12,7 @@ import com.livechatinc.chatwidget.src.extensions.fileChooserMode
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
+import com.livechatinc.chatwidget.src.models.CookieGrant
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,6 +22,7 @@ internal class ChatWidgetPresenter internal constructor(
     private val networkClient: NetworkClient,
     private val json: Json,
 ) {
+    private var cookieGrant: CookieGrant? = null
     private lateinit var widgetToken: ChatWidgetToken
     private var listener: ChatWidgetCallbackListener? = null
     private var config: ChatWidgetConfig? = null
@@ -29,8 +31,11 @@ internal class ChatWidgetPresenter internal constructor(
         this.config = config
 
         //TODO: this should be provided by the client
-        view.readTokenFromPreferences()?.let {
-            widgetToken = json.decodeFromString<ChatWidgetToken>(it)
+//        view.readTokenFromPreferences()?.let {
+//            widgetToken = json.decodeFromString<ChatWidgetToken>(it)
+//        }
+        view.readTokenCookiesFromPreferences()?.let {
+            cookieGrant = json.decodeFromString(it)
         }
 
         runBlocking {
@@ -125,7 +130,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun getToken(callback: String?) {
-        println("### getToken, callback: $callback")
+        println("### getToken, callback: $callback, cookieGrant: $cookieGrant")
         runBlocking {
             //TODO: token refresh, fix the condition
             if (::widgetToken.isInitialized) {
@@ -134,16 +139,7 @@ internal class ChatWidgetPresenter internal constructor(
                     Json.encodeToString(widgetToken)
                 )
             } else {
-                widgetToken = networkClient.getVisitorToken(
-                    config!!.license,
-                    config!!.licenceId!!,
-                    config!!.clientId!!
-                )
-                view.saveTokenToPreferences(Json.encodeToString(widgetToken))
-                view.postWebViewMessage(
-                    callback,
-                    Json.encodeToString(widgetToken)
-                )
+                fetchVisitorToken(callback)
             }
         }
     }
@@ -151,17 +147,27 @@ internal class ChatWidgetPresenter internal constructor(
     fun getFreshToken(callback: String?) {
         println("### getFreshToken, callback: $callback")
         runBlocking {
-            widgetToken = networkClient.getVisitorToken(
-                config!!.license,
-                config!!.licenceId!!,
-                config!!.clientId!!
-            )
-            view.saveTokenToPreferences(Json.encodeToString(widgetToken))
-            view.postWebViewMessage(
-                callback,
-                Json.encodeToString(widgetToken)
-            )
+            fetchVisitorToken(callback)
         }
+    }
+
+    private suspend fun fetchVisitorToken(callback: String?) {
+        val response = networkClient.getVisitorToken(
+            config!!.license,
+            config!!.licenceId!!,
+            config!!.clientId!!,
+            cookieGrant?.cookies,
+        )
+
+        widgetToken = response.token
+        cookieGrant = response.cookieGrant
+
+        view.saveTokenToPreferences(Json.encodeToString(widgetToken))
+        view.saveCookiesToPreferences(Json.encodeToString(cookieGrant))
+        view.postWebViewMessage(
+            callback,
+            Json.encodeToString(widgetToken)
+        )
     }
 
     fun hasToken(callback: String) {

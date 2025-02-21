@@ -145,6 +145,14 @@ class ChatWidget(
         editor.apply()
     }
 
+    override fun saveCookiesToPreferences(cookieGrant: String?) {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+        val editor: SharedPreferences.Editor = sharedPreferences.edit()
+        editor.putString("cookieGrant", cookieGrant)
+        editor.apply()
+    }
+
     override fun readTokenFromPreferences(): String? {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
@@ -152,6 +160,15 @@ class ChatWidget(
 
         return token
     }
+
+    override fun readTokenCookiesFromPreferences(): String? {
+        val sharedPreferences: SharedPreferences =
+            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
+        val cookies = sharedPreferences.getString("cookieGrant", null)
+
+        return cookies
+    }
+
 
     override fun onDetachedFromWindow() {
         webView.apply {

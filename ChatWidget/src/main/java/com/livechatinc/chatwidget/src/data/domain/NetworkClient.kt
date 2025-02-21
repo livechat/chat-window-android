@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget.src.data.domain
 
-import com.livechatinc.chatwidget.src.models.ChatWidgetToken
+import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
+import io.ktor.http.Cookie
 
 interface NetworkClient {
     suspend fun fetchChatUrl(): String
@@ -9,5 +10,6 @@ interface NetworkClient {
         license: String,
         licenceId: String,
         clientId: String,
-    ): ChatWidgetToken
+        lcCookies: List<Cookie>? = null,
+    ): CustomerTokenResponse
 }
