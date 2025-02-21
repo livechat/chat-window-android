@@ -4,6 +4,7 @@ import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.CustomerTokenRequest
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
+import com.livechatinc.chatwidget.src.models.Cookie
 import com.livechatinc.chatwidget.src.models.CookieGrant
 import com.livechatinc.chatwidget.src.models.CustomerToken
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
@@ -19,14 +20,15 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.Cookie
+import io.ktor.http.Cookie as KtorCookie
 import io.ktor.http.setCookie
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.util.date.GMTDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-class KtorNetworkClient(val json: Json, val buildInfo: BuildInfo) : NetworkClient {
+class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) : NetworkClient {
     private val client = HttpClient(CIO) {
         install(Logging) {
             logger = Logger.ANDROID
@@ -50,7 +52,7 @@ class KtorNetworkClient(val json: Json, val buildInfo: BuildInfo) : NetworkClien
         license: String,
         licenceId: String,
         clientId: String,
-        lcCookies: List<Cookie>?,
+        cookieGrant: CookieGrant?,
     ): CustomerTokenResponse {
         return withContext(Dispatchers.IO) {
 
@@ -59,7 +61,7 @@ class KtorNetworkClient(val json: Json, val buildInfo: BuildInfo) : NetworkClien
                     append("Content-Type", "application/json")
                 }
 
-                lcCookies?.forEach { cookie ->
+                cookieGrant?.cookies?.forEach { cookie ->
                     this.cookie(
                         name = cookie.name,
                         value = cookie.value,
@@ -67,7 +69,7 @@ class KtorNetworkClient(val json: Json, val buildInfo: BuildInfo) : NetworkClien
                         maxAge = cookie.maxAge!!,
                         domain = cookie.domain,
                         path = cookie.path,
-                        expires = cookie.expires,
+                        expires = GMTDate(cookie.expires),
                         secure = cookie.secure,
                         httpOnly = cookie.httpOnly,
                         extensions = cookie.extensions
@@ -98,9 +100,26 @@ class KtorNetworkClient(val json: Json, val buildInfo: BuildInfo) : NetworkClien
                     cookies = listOfNotNull(
                         lcCid,
                         lcCst
-                    )
+                    ).toInternalCookies()
                 )
-            );
+            )
         }
+    }
+}
+
+
+private fun Iterable<KtorCookie>.toInternalCookies(): List<Cookie> {
+    return this.map { cookie ->
+        Cookie(
+            name = cookie.name,
+            value = cookie.value,
+            domain = cookie.domain,
+            path = cookie.path,
+            expires = cookie.expires?.timestamp,
+            maxAge = cookie.maxAge,
+            secure = cookie.secure,
+            httpOnly = cookie.httpOnly,
+            extensions = cookie.extensions,
+        )
     }
 }
