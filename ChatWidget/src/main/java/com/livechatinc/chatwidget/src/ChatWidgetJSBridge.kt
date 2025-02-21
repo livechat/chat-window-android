@@ -16,6 +16,27 @@ internal class ChatWidgetJSBridge internal constructor(
     }
 
     @JavascriptInterface
+    fun hasToken(callback: String) {
+        println("### <-- hasToken async ${callback}")
+
+        presenter.hasToken(callback)
+    }
+
+    @JavascriptInterface
+    fun getToken(callback: String?) {
+        println("### <-- getToken async ${callback}")
+
+        presenter.getToken(callback)
+    }
+
+    @JavascriptInterface
+    fun getFreshToken(callback: String) {
+        println("### <-- getFreshToken async ${callback}")
+
+        presenter.getFreshToken(callback)
+    }
+
+    @JavascriptInterface
     fun postMessage(messageJson: String) {
         println("### postMessage: $messageJson")
 

@@ -2,6 +2,14 @@ plugins {
     id 'com.android.application'
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
     compileSdk 35
@@ -14,6 +22,10 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "LICENCE", localProperties['licence'])
+        buildConfigField("String", "LICENCE_ID", localProperties['licenceId'])
+        buildConfigField("String", "CLIENT_ID", localProperties['clientId'])
     }
 
     flavorDimensions = ["flavor-type"]

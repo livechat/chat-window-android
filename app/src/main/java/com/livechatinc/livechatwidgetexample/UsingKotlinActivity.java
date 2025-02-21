@@ -24,7 +24,14 @@ public class UsingKotlinActivity extends AppCompatActivity {
     public View loadingIndicator;
     public Button showChatButton;
     public Button reloadButton;
-    final ChatWidgetConfig config = new ChatWidgetConfig("1520", "0", "Szymon", "email@mail.com");
+    final ChatWidgetConfig config = new ChatWidgetConfig(
+            BuildConfig.LICENCE,
+            "0",
+            "Szymon",
+            "email@mail.com",
+            BuildConfig.CLIENT_ID,
+            BuildConfig.LICENCE_ID
+    );
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

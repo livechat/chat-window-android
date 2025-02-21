@@ -2,6 +2,7 @@ package com.livechatinc.chatwidget.src.data.core
 
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
+import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -39,6 +40,14 @@ class RetrofitNetworkClient(json: Json, val buildInfo: BuildInfo) : NetworkClien
 
             return@withContext urls.chatUrl!!
         }
+    }
+
+    override suspend fun getVisitorToken(
+        license: String,
+        licenceId: String,
+        clientId: String,
+    ): ChatWidgetToken {
+        TODO("Not yet implemented")
     }
 }
 

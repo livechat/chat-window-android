@@ -15,4 +15,10 @@ internal interface ChatWidgetViewInternal {
     )
 
     fun launchExternalBrowser(uri: Uri)
+
+    fun postWebViewMessage(callback: String?, data: String)
+
+    fun saveTokenToPreferences(token: String)
+
+    fun readTokenFromPreferences(): String?
 }

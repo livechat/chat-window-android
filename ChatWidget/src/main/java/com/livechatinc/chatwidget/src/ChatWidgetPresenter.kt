@@ -3,6 +3,7 @@ package com.livechatinc.chatwidget.src
 import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import com.livechatinc.chatwidget.BuildConfig
 import com.livechatinc.chatwidget.src.common.WebHttpException
 import com.livechatinc.chatwidget.src.common.WebResourceException
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
@@ -10,17 +11,36 @@ import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.extensions.fileChooserMode
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 internal class ChatWidgetPresenter internal constructor(
     private var view: ChatWidgetViewInternal,
-    private val networkClient: NetworkClient
+    private val networkClient: NetworkClient,
+    private val json: Json,
 ) {
+    private lateinit var widgetToken: ChatWidgetToken
     private var listener: ChatWidgetCallbackListener? = null
+    private var config: ChatWidgetConfig? = null
 
     fun init(config: ChatWidgetConfig) {
+        this.config = config
+
+        //TODO: this should be provided by the client
+        view.readTokenFromPreferences()?.let {
+            widgetToken = json.decodeFromString<ChatWidgetToken>(it)
+        }
+
         runBlocking {
             try {
+                if (BuildConfig.CHAT_URL.isNotBlank()) {
+                    view.loadUrl(BuildConfig.CHAT_URL)
+
+                    return@runBlocking
+                }
+
                 val chatUrl = networkClient.fetchChatUrl().buildChatUrl(config)
 
                 view.loadUrl(chatUrl)
@@ -92,13 +112,59 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun handleUrl(uri: Uri?): Boolean {
-        if (uri == null) {
-            return false
+        //TODO bring back opening links in external browser
+        return false
+//        if (uri == null) {
+//            return false
+//        }
+//
+//        //TODO: test dal/fra licences
+//        view.launchExternalBrowser(uri)
+//
+//        return true
+    }
+
+    fun getToken(callback: String?) {
+        println("### getToken, callback: $callback")
+        runBlocking {
+            //TODO: token refresh, fix the condition
+            if (::widgetToken.isInitialized) {
+                view.postWebViewMessage(
+                    callback,
+                    Json.encodeToString(widgetToken)
+                )
+            } else {
+                widgetToken = networkClient.getVisitorToken(
+                    config!!.license,
+                    config!!.licenceId!!,
+                    config!!.clientId!!
+                )
+                view.saveTokenToPreferences(Json.encodeToString(widgetToken))
+                view.postWebViewMessage(
+                    callback,
+                    Json.encodeToString(widgetToken)
+                )
+            }
         }
+    }
 
-        //TODO: test dal/fra licences
-        view.launchExternalBrowser(uri)
+    fun getFreshToken(callback: String?) {
+        println("### getFreshToken, callback: $callback")
+        runBlocking {
+            widgetToken = networkClient.getVisitorToken(
+                config!!.license,
+                config!!.licenceId!!,
+                config!!.clientId!!
+            )
+            view.saveTokenToPreferences(Json.encodeToString(widgetToken))
+            view.postWebViewMessage(
+                callback,
+                Json.encodeToString(widgetToken)
+            )
+        }
+    }
 
-        return true
+    fun hasToken(callback: String) {
+        view.postWebViewMessage(callback, (::widgetToken.isInitialized).toString())
     }
 }
