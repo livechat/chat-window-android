@@ -25,6 +25,7 @@ internal class ChatWidgetPresenter internal constructor(
     private var cookieGrant: CookieGrant? = null
     private lateinit var widgetToken: ChatWidgetToken
     private var listener: ChatWidgetCallbackListener? = null
+    private var identityCallback: ((CookieGrant) -> Unit?)? = null
     private var config: ChatWidgetConfig? = null
 
     fun init(config: ChatWidgetConfig) {
@@ -34,9 +35,7 @@ internal class ChatWidgetPresenter internal constructor(
 //        view.readTokenFromPreferences()?.let {
 //            widgetToken = json.decodeFromString<ChatWidgetToken>(it)
 //        }
-        view.readTokenCookiesFromPreferences()?.let {
-            cookieGrant = json.decodeFromString(it)
-        }
+        this.cookieGrant = config.cookieGrant
 
         runBlocking {
             try {
@@ -59,6 +58,10 @@ internal class ChatWidgetPresenter internal constructor(
 
     fun setCallbackListener(callbackListener: ChatWidgetCallbackListener) {
         listener = callbackListener
+    }
+
+    fun setIdentityCallback(callback: (CookieGrant) -> Unit?) {
+        identityCallback = callback
     }
 
     fun onUiReady() {
@@ -156,14 +159,15 @@ internal class ChatWidgetPresenter internal constructor(
             config!!.license,
             config!!.licenceId!!,
             config!!.clientId!!,
-            cookieGrant?.cookies,
+            cookieGrant,
         )
 
         widgetToken = response.token
         cookieGrant = response.cookieGrant
 
         view.saveTokenToPreferences(Json.encodeToString(widgetToken))
-        view.saveCookiesToPreferences(Json.encodeToString(cookieGrant))
+        identityCallback?.let { it(response.cookieGrant) }
+
         view.postWebViewMessage(
             callback,
             Json.encodeToString(widgetToken)

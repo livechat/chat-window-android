@@ -21,8 +21,4 @@ internal interface ChatWidgetViewInternal {
     fun saveTokenToPreferences(token: String)
 
     fun readTokenFromPreferences(): String?
-
-    fun readTokenCookiesFromPreferences(): String?
-
-    fun saveCookiesToPreferences(cookieGrant: String?)
 }

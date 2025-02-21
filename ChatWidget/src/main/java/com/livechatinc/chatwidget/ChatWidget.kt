@@ -23,6 +23,7 @@ import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.CookieGrant
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 import kotlinx.serialization.json.Json
 
@@ -104,6 +105,10 @@ class ChatWidget(
         presenter.setCallbackListener(callbackListener)
     }
 
+    fun setIdentityCallback(callback: (CookieGrant) -> Unit?) {
+        presenter.setIdentityCallback(callback)
+    }
+
     override fun loadUrl(url: String) {
         webView.loadUrl(url)
     }
@@ -145,14 +150,6 @@ class ChatWidget(
         editor.apply()
     }
 
-    override fun saveCookiesToPreferences(cookieGrant: String?) {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString("cookieGrant", cookieGrant)
-        editor.apply()
-    }
-
     override fun readTokenFromPreferences(): String? {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
@@ -160,15 +157,6 @@ class ChatWidget(
 
         return token
     }
-
-    override fun readTokenCookiesFromPreferences(): String? {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val cookies = sharedPreferences.getString("cookieGrant", null)
-
-        return cookies
-    }
-
 
     override fun onDetachedFromWindow() {
         webView.apply {

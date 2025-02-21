@@ -97,10 +97,7 @@ class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo
             return@withContext CustomerTokenResponse(
                 token = widgetToken,
                 cookieGrant = CookieGrant(
-                    cookies = listOfNotNull(
-                        lcCid,
-                        lcCst
-                    ).toInternalCookies()
+                    cookies = listOfNotNull(lcCid, lcCst).toInternalCookies()
                 )
             )
         }

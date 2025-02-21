@@ -20,7 +20,7 @@ import com.livechatinc.inappchat.ChatWindowUtils;
 
 public class MainActivity extends AppCompatActivity {
 
-    String licenceNumber = "1520";
+    String licenceNumber = "11172412";
     ChatWindowConfiguration windowConfig = new ChatWindowConfiguration.Builder()
             .setLicenceNumber(licenceNumber)
             .build();

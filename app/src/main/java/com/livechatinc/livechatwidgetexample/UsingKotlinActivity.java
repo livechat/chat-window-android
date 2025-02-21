@@ -2,6 +2,8 @@ package com.livechatinc.livechatwidgetexample;
 
 import static java.sql.DriverManager.println;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -11,15 +13,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
 import com.livechatinc.chatwidget.ChatWidget;
 import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener;
 import com.livechatinc.chatwidget.src.models.ChatMessage;
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
+import com.livechatinc.chatwidget.src.models.CookieGrant;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import kotlin.Unit;
+
 public class UsingKotlinActivity extends AppCompatActivity {
+    private final Gson gson = new Gson();
     public ChatWidget chatWidget;
     public View loadingIndicator;
     public Button showChatButton;
@@ -57,6 +64,8 @@ public class UsingKotlinActivity extends AppCompatActivity {
         Map<String, String> customVariables = new HashMap<>();
         customVariables.put("key", "value");
 
+        chatWidget.setIdentityCallback(this::saveCookieGrantToPreferences);
+
         chatWidget.setCallbackListener(
                 new ChatWidgetCallbackListener() {
                     @Override
@@ -90,6 +99,30 @@ public class UsingKotlinActivity extends AppCompatActivity {
                     }
                 }
         );
-        chatWidget.init(config);
+
+        final CookieGrant cookieGrant = readTokenCookiesFromPreferences();
+
+        chatWidget.init(config.copyWith(null, null, null, null, null, null, null, cookieGrant));
+    }
+
+    private Unit saveCookieGrantToPreferences(CookieGrant cookieGrant) {
+        SharedPreferences sharedPreferences =
+                getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("cookieGrant", gson.toJson(cookieGrant));
+        editor.apply();
+
+        return Unit.INSTANCE;
+    }
+
+    private CookieGrant readTokenCookiesFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+
+        final String cookieGrant = sharedPreferences.getString("cookieGrant", null);
+        if (cookieGrant == null) {
+            return null;
+        }
+
+        return gson.fromJson(cookieGrant, CookieGrant.class);
     }
 }
