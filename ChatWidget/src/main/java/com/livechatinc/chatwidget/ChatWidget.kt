@@ -52,7 +52,7 @@ class ChatWidget(
         inflate(context, R.layout.chat_widget_internal, this)
         webView = findViewById(R.id.chat_widget_webview)
         networkClient = KtorNetworkClient(json, buildInfo)
-        presenter = ChatWidgetPresenter(this, networkClient, json)
+        presenter = ChatWidgetPresenter(this, networkClient)
 
         configureWebView()
 

@@ -20,7 +20,6 @@ import kotlinx.serialization.json.Json
 internal class ChatWidgetPresenter internal constructor(
     private var view: ChatWidgetViewInternal,
     private val networkClient: NetworkClient,
-    private val json: Json,
 ) {
     private var cookieGrant: CookieGrant? = null
     private lateinit var widgetToken: ChatWidgetToken
@@ -30,11 +29,6 @@ internal class ChatWidgetPresenter internal constructor(
 
     fun init(config: ChatWidgetConfig) {
         this.config = config
-
-        //TODO: this should be provided by the client
-//        view.readTokenFromPreferences()?.let {
-//            widgetToken = json.decodeFromString<ChatWidgetToken>(it)
-//        }
         this.cookieGrant = config.cookieGrant
 
         runBlocking {
