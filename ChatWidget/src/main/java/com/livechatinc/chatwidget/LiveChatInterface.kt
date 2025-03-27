@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.models.CookieGrant
 
 abstract class LiveChatInterface {
@@ -16,10 +17,10 @@ abstract class LiveChatInterface {
      * Stores params that are used when initializing chat
      */
     abstract fun setCustomerInfo(
-        name: String?,
-        email: String?,
-        groupId: String?,
-        customParams: Map<String, String>?
+        name: String? = null,
+        email: String? = null,
+        groupId: String? = null,
+        customParams: Map<String, String>? = null
     )
 
     /**
@@ -38,33 +39,17 @@ abstract class LiveChatInterface {
     abstract suspend fun signOutCustomer()
 
     /******* Embedding view mode *******/
+    /**
+     * Custom View
+     *
+     * @see [LiveChatView]
+     * */
+    /**
+     * Callback listener for live chat view
+     *
+     * @see [LiveChatViewCallbackListener]
+     * */
 
-    abstract class LiveChatView {
-        /**
-         * Fetches chat url if not present, loads chat window
-         * Depends on:
-         * - licence from [LiveChatInterface.initialize] SDK
-         * - uses [setCustomerInfo]
-         * - check if [configureIdentityProvider] is configured
-         * */
-        abstract fun initialize(listener: LiveChatViewCallbackListener?)
-
-        abstract fun onBackPressed(): Boolean
-
-        abstract class LiveChatViewCallbackListener {
-            abstract fun onChatLoaded()
-            abstract fun onNewMessage(message: String)
-            abstract fun onHideChat()
-            abstract fun handleUrl(): Boolean // Potentially useful when launched in activity
-            abstract fun onError()
-            abstract fun onFileChooserActivityNotFound()
-
-            // New callbacks
-            // Potentially useful when launched in activity
-            abstract fun onChatId(chatId: String)
-            abstract fun onChatState(chatState: String)
-        }
-    }
 
     /******* Advanced usage *******/
 
@@ -129,6 +114,7 @@ abstract class LiveChatInterface {
 //    - Will name change when providing with cookieGrant?
 //    - Different packages for Base, UI, FCM Messaging
 //    - Customizable error view in Activity component
+//    - Consider configuration changes - android:configChanges="orientation|screenSize"
 
 
 //    Topics to consult:

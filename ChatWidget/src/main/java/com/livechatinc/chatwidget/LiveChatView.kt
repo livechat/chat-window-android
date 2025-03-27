@@ -11,7 +11,7 @@ import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
@@ -22,13 +22,12 @@ import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.getActivity
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.CookieGrant
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 import kotlinx.serialization.json.Json
 
 @SuppressLint("SetJavaScriptEnabled")
-class ChatWidget(
+class LiveChatView(
     context: Context,
     attrs: AttributeSet?
 ) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
@@ -97,12 +96,11 @@ class ChatWidget(
         }
     }
 
-    fun init(config: ChatWidgetConfig) {
-        presenter.init(config)
-    }
-
-    fun setCallbackListener(callbackListener: ChatWidgetCallbackListener) {
+    fun init(callbackListener: LiveChatViewCallbackListener? = null) {
         presenter.setCallbackListener(callbackListener)
+
+        val config = LiveChat.getInstance().createChatConfiguration()
+        presenter.init(config)
     }
 
     fun setIdentityCallback(callback: (CookieGrant) -> Unit?) {

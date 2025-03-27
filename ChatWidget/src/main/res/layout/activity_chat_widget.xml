@@ -5,8 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".src.components.ChatWidgetActivity">
-    <com.livechatinc.chatwidget.ChatWidget
+    tools:context=".src.components.LiveChatActivity">
+    <com.livechatinc.chatwidget.LiveChatView
         android:id="@+id/chat_widget_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

@@ -14,98 +14,87 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.livechatinc.chatwidget.ChatWidget;
-import com.livechatinc.chatwidget.src.ChatWidgetCallbackListener;
+import com.livechatinc.chatwidget.LiveChatView;
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener;
 import com.livechatinc.chatwidget.src.models.ChatMessage;
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
 import com.livechatinc.chatwidget.src.models.CookieGrant;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 import kotlin.Unit;
 
 public class UsingKotlinActivity extends AppCompatActivity {
     private final Gson gson = new Gson();
-    public ChatWidget chatWidget;
+    public LiveChatView liveChatView;
     public View loadingIndicator;
     public Button showChatButton;
     public Button reloadButton;
-    final ChatWidgetConfig config = new ChatWidgetConfig(
-            BuildConfig.LICENCE == null ? "1520" : BuildConfig.LICENCE,
-            "0",
-            "Szymon",
-            "email@mail.com",
-            Collections.emptyMap(),
-            BuildConfig.CLIENT_ID,
-            BuildConfig.LICENCE_ID
-    );
+    private LiveChatViewCallbackListener liveChatViewCallback;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chat_window_kotlin_example);
 
-        chatWidget = findViewById(R.id.chat_widget);
+        liveChatView = findViewById(R.id.chat_widget);
         loadingIndicator = findViewById(R.id.loader_indicator);
         showChatButton = findViewById(R.id.show_chat_button);
         reloadButton = findViewById(R.id.reload_button);
 
         showChatButton.setOnClickListener(v -> {
-            chatWidget.setVisibility(View.VISIBLE);
+            liveChatView.setVisibility(View.VISIBLE);
             showChatButton.setVisibility(View.INVISIBLE);
         });
 
         reloadButton.setOnClickListener(v -> {
-            chatWidget.init(config);
+            liveChatView.init(liveChatViewCallback);
             reloadButton.setVisibility(View.GONE);
             loadingIndicator.setVisibility(View.VISIBLE);
         });
 
-        Map<String, String> customVariables = new HashMap<>();
-        customVariables.put("key", "value");
 
-        chatWidget.setIdentityCallback(this::saveCookieGrantToPreferences);
+        liveChatView.setIdentityCallback(this::saveCookieGrantToPreferences);
 
-        chatWidget.setCallbackListener(
-                new ChatWidgetCallbackListener() {
-                    @Override
-                    public void hideChatWidget() {
-                        chatWidget.setVisibility(View.INVISIBLE);
-                        showChatButton.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void chatLoaded() {
-                        loadingIndicator.setVisibility(View.GONE);
-                        chatWidget.setVisibility(View.VISIBLE);
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable cause) {
-                        println("### onError: " + cause);
-                        chatWidget.setVisibility(View.GONE);
-                        reloadButton.setVisibility(View.VISIBLE);
-                        loadingIndicator.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onChatMessage(@Nullable ChatMessage message) {
-                        println("### onChatMessage: $message");
-                    }
-
-                    @Override
-                    public void onFileChooserActivityNotFound() {
-                        Toast.makeText(UsingKotlinActivity.this, "File chooser activity not found", Toast.LENGTH_SHORT).show();
-                    }
-                }
-        );
+        liveChatViewCallback = liveChatCallback();
 
         final CookieGrant cookieGrant = readTokenCookiesFromPreferences();
 
-        chatWidget.init(config.copyWith(null, null, null, null, null, null, null, cookieGrant));
+        liveChatView.init(liveChatViewCallback);
     }
+
+    @NonNull
+    private LiveChatViewCallbackListener liveChatCallback() {
+        return new LiveChatViewCallbackListener() {
+            @Override
+            public void onHide() {
+                liveChatView.setVisibility(View.INVISIBLE);
+                showChatButton.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onLoaded() {
+                loadingIndicator.setVisibility(View.GONE);
+                liveChatView.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable cause) {
+                println("### onError: " + cause);
+                liveChatView.setVisibility(View.GONE);
+                reloadButton.setVisibility(View.VISIBLE);
+                loadingIndicator.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onNewMessage(@Nullable ChatMessage message) {
+                println("### onChatMessage: $message");
+            }
+
+            @Override
+            public void onFileChooserActivityNotFound() {
+                Toast.makeText(UsingKotlinActivity.this, "File chooser activity not found", Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
 
     private Unit saveCookieGrantToPreferences(CookieGrant cookieGrant) {
         SharedPreferences sharedPreferences =

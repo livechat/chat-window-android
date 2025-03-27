@@ -3,10 +3,10 @@ package com.livechatinc.chatwidget
 import android.content.Context
 import androidx.activity.ComponentActivity
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
-import com.livechatinc.chatwidget.src.components.ChatWidgetActivity
+import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 
-class LiveChat : LiveChatInterface() {
+internal class LiveChat : LiveChatInterface() {
 
     private var licence: String? = null
     private var applicationContext: Context? = null
@@ -53,15 +53,14 @@ class LiveChat : LiveChatInterface() {
             throw IllegalArgumentException("Context must be ComponentActivity")
         }
 
-        val config = createChatConfiguration()
-        startChatActivity(context, config)
+        startChatActivity(context)
     }
 
     override suspend fun signOutCustomer() {
         ChatWidgetUtils.clearSession()
     }
 
-    private fun createChatConfiguration(): ChatWidgetConfig {
+    internal fun createChatConfiguration(): ChatWidgetConfig {
         return ChatWidgetConfig(
             requireNotNull(licence),
             groupId,
@@ -71,11 +70,8 @@ class LiveChat : LiveChatInterface() {
         )
     }
 
-    private fun startChatActivity(
-        context: ComponentActivity,
-        config: ChatWidgetConfig,
-    ) {
-        ChatWidgetActivity.start(context, config)
+    private fun startChatActivity(context: ComponentActivity) {
+        LiveChatActivity.start(context)
     }
 
 }

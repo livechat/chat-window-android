@@ -23,7 +23,7 @@ internal class ChatWidgetPresenter internal constructor(
 ) {
     private var cookieGrant: CookieGrant? = null
     private lateinit var widgetToken: ChatWidgetToken
-    private var listener: ChatWidgetCallbackListener? = null
+    private var listener: LiveChatViewCallbackListener? = null
     private var identityCallback: ((CookieGrant) -> Unit?)? = null
     private var config: ChatWidgetConfig? = null
 
@@ -50,7 +50,7 @@ internal class ChatWidgetPresenter internal constructor(
         }
     }
 
-    fun setCallbackListener(callbackListener: ChatWidgetCallbackListener) {
+    fun setCallbackListener(callbackListener: LiveChatViewCallbackListener?) {
         listener = callbackListener
     }
 
@@ -60,19 +60,19 @@ internal class ChatWidgetPresenter internal constructor(
 
     fun onUiReady() {
         if (listener != null) {
-            view.runOnUiThread(listener!!::chatLoaded)
+            view.runOnUiThread(listener!!::onLoaded)
         }
     }
 
     fun onHideChatWidget() {
         if (listener != null) {
-            view.runOnUiThread(listener!!::hideChatWidget)
+            view.runOnUiThread(listener!!::onHide)
         }
     }
 
     fun onNewMessage(message: ChatMessage?) {
         if (listener != null) {
-            view.runOnUiThread { listener!!.onChatMessage(message) }
+            view.runOnUiThread { listener!!.onNewMessage(message) }
         }
     }
 
