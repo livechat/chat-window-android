@@ -20,6 +20,7 @@ import com.livechatinc.chatwidget.src.models.ChatMessage;
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig;
 import com.livechatinc.chatwidget.src.models.CookieGrant;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,10 +33,11 @@ public class UsingKotlinActivity extends AppCompatActivity {
     public Button showChatButton;
     public Button reloadButton;
     final ChatWidgetConfig config = new ChatWidgetConfig(
-            BuildConfig.LICENCE,
+            BuildConfig.LICENCE == null ? "1520" : BuildConfig.LICENCE,
             "0",
             "Szymon",
             "email@mail.com",
+            Collections.emptyMap(),
             BuildConfig.CLIENT_ID,
             BuildConfig.LICENCE_ID
     );

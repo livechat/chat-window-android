@@ -33,7 +33,7 @@ internal class ChatWidgetPresenter internal constructor(
 
         runBlocking {
             try {
-                if (BuildConfig.CHAT_URL.isNotBlank()) {
+                if (BuildConfig.CHAT_URL != null && BuildConfig.CHAT_URL.isNotBlank()) {
                     view.loadUrl(BuildConfig.CHAT_URL)
 
                     return@runBlocking

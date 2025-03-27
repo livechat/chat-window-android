@@ -1,13 +1,16 @@
 package com.livechatinc.chatwidget.src.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class ChatWidgetConfig @JvmOverloads constructor(
     val license: String,
     val group: String = "0",
     val visitorName: String? = null,
     val visitorEmail: String? = null,
-    val customParameters: Map<String, String> = emptyMap(),
-    val clientId: String?,
-    val licenceId: String?,
+    val customParameters: Map<String, String>?,
+    val clientId: String? = null,
+    val licenceId: String? = null,
     val cookieGrant: CookieGrant? = null,
 ) {
     fun copyWith(

@@ -24,7 +24,7 @@ internal class FileSharing(
     }
 
     private fun registerSingleContentContract(owner: LifecycleOwner) {
-        getContent = registry.register<String, Uri>(
+        getContent = registry.register(
             "chatWidgetFileResultRegistryKey",
             owner,
             ActivityResultContracts.GetContent()
