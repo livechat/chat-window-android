@@ -1,140 +1,81 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import android.view.View
-import com.livechatinc.chatwidget.src.models.CookieGrant
+import androidx.activity.ComponentActivity
+import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
+import com.livechatinc.chatwidget.src.components.ChatWidgetActivity
+import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 
-abstract class LiveChat {
+class LiveChat : LiveChatInterface() {
 
-    /**
-     * Stores licence number
-     * Stores application scope context
-     * Potentially fetches chat url
-     * */
-    abstract suspend fun initialize(licence: String, context: Context)
+    private var licence: String? = null
+    private var applicationContext: Context? = null
+    private var groupId: String = "0"
+    private var customerName: String? = null
+    private var customerEmail: String? = null
+    private var customParams: Map<String, String>? = null
 
-    /**
-     * Stores params that are used when initializing chat
-     */
-    abstract suspend fun setCustomerInfo(
-        name: String,
-        email: String,
-        groupId: String,
-        customParams: Map<String, String>?
-    )
+    companion object {
+        @Volatile
+        private var instance: LiveChat? = null
 
-    /**
-     * Opens full screen activity
-     *
-     * Limitations:
-     * - no callbacks - [LiveChatView.LiveChatViewCallbackListener]
-     * */
-    abstract suspend fun show(
-        context: Context,
-        errorViewBuilder: (message: String) -> View
-    )
+        @JvmStatic
+        fun getInstance(): LiveChat =
+            instance ?: synchronized(this) {
+                instance ?: LiveChat().also { instance = it }
+            }
 
-    /**
-     * Clears webView cookies
-     * Clears cookieGrant, customerToken and chatWidgetToken
-     * Unregisters push token
-     * */
-    abstract suspend fun signOutCustomer()
-
-    /******* Embedding view mode *******/
-
-    abstract class LiveChatView {
-        /**
-         * Fetches chat url if not present, loads chat window
-         * Depends on:
-         * - licence from [LiveChat.initialize] SDK
-         * - uses [setCustomerInfo]
-         * - check if [configureIdentityProvider] is configured
-         * */
-        abstract fun initialize(listener: LiveChatViewCallbackListener?)
-
-        abstract fun onBackPressed(): Boolean
-
-        abstract class LiveChatViewCallbackListener {
-            abstract fun onChatLoaded()
-            abstract fun onNewMessage(message: String)
-            abstract fun onHideChat()
-            abstract fun handleUrl(): Boolean // Potentially useful when launched in activity
-            abstract fun onError()
-            abstract fun onFileChooserActivityNotFound()
-
-            // New callbacks
-            // Potentially useful when launched in activity
-            abstract fun onChatId(chatId: String)
-            abstract fun onChatState(chatState: String)
+        @JvmStatic
+        fun initialize(licence: String, context: Context) {
+            getInstance().apply {
+                this.licence = licence
+                this.applicationContext = context.applicationContext
+            }
         }
     }
 
-    /******* Advanced usage *******/
-
-    /**
-     * Reports back [CookieGrant] to the host app
-     * Needs to be called before [logInCustomer] and launching chat window
-     * */
-    abstract suspend fun configureIdentityProvider(
-        licenceId: String,
-        clientId: String,
-        cookieGrantCallback: (CookieGrant) -> Unit?
-    )
-
-    /**
-     * Fetches token, creates new one if no cookieGrant
-     *
-     * Required:
-     * @see configureIdentityProvider
-     * */
-    abstract suspend fun logInCustomer(cookieGrant: CookieGrant?)
-
-    /******* Push Notification *******/
-
-    /**
-     * Only if not using ChatWidgetDefaultMessagingService
-     * Required:
-     * @see configureIdentityProvider
-     * */
-    abstract suspend fun registerPushToken(token: String)
-
-    class ChatWidgetDefaultMessagingService {// : FirebaseMessagingService() {
-
-        //override
-        fun onNewToken(token: String) {}
-
-        //override
-        fun onMessageReceived() {}
+    override fun setCustomerInfo(
+        name: String?,
+        email: String?,
+        groupId: String?,
+        customParams: Map<String, String>?
+    ) {
+        customerName = name
+        customerEmail = email
+        this.groupId = groupId ?: this.groupId
+        this.customParams = customParams
     }
 
-    /******* Potential features *******/
+    override fun show(context: Context) {
+        requireNotNull(licence) { "SDK not initialized. Call initialize() first" }
 
-    /**
-     * Will chatId be needed?
-     * Required:
-     * @see configureIdentityProvider
-     * */
-    abstract suspend fun unreadMessageCount(token: String): Int
+        if (context !is ComponentActivity) {
+            throw IllegalArgumentException("Context must be ComponentActivity")
+        }
 
-//    Open questions:
-//    - do SDK instance should have ability to receive chat window callbacks?
-//    - should SDK be able to handle external links
-//    - handling errors on SDK side
-//      - network errors
-//          - fetch chat url
-//          - fetch token
-//      - webView errors
-//          - file picker activity not found
-//    - how to store local info? Chat Url, chat token, FCM token
-//    - Will name change when providing with cookieGrant?
-//    - Different packages for Base, UI, FCM Messaging
+        val config = createChatConfiguration()
+        startChatActivity(context, config)
+    }
 
+    override suspend fun signOutCustomer() {
+        ChatWidgetUtils.clearSession()
+    }
 
-//    Topics to consult:
-//    1. Naming convention
-//      - package name - to decide closer to the release
-//      - how to name cookieGrant - RestorationGrant
-//      - licence or licenceNumber?
+    private fun createChatConfiguration(): ChatWidgetConfig {
+        return ChatWidgetConfig(
+            requireNotNull(licence),
+            groupId,
+            customerName,
+            customerEmail,
+            customParams
+        )
+    }
+
+    private fun startChatActivity(
+        context: ComponentActivity,
+        config: ChatWidgetConfig,
+    ) {
+        ChatWidgetActivity.start(context, config)
+    }
 
 }
