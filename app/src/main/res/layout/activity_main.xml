@@ -84,6 +84,17 @@
                 android:onClick="startKotlinVersion"
                 android:text="Kotlin" />
 
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="48dp" />
+
+            <Button
+                style="@style/ExampleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="startFromSingleton"
+                android:text="LiveChat SDK" />
+
             <Button
                 style="@style/ExampleButton"
                 android:layout_width="wrap_content"
