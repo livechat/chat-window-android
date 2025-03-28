@@ -5,6 +5,7 @@ import static java.sql.DriverManager.println;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -61,7 +62,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
                 BuildConfig.CLIENT_ID,
                 cookieGrant -> {
 //                    saveCookieGrantToPreferences(cookieGrant);
-                    println("### new cookie grant: " + cookieGrant);
+                    Log.i("UsingKotlinActivity", "### new cookie grant: " + cookieGrant);
                     return Unit.INSTANCE;
                 }
         );

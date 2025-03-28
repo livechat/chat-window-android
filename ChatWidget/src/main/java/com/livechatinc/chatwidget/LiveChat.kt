@@ -2,6 +2,7 @@ package com.livechatinc.chatwidget
 
 import android.content.Context
 import androidx.activity.ComponentActivity
+import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
@@ -10,9 +11,6 @@ import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CookieGrant
-import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 class LiveChat : LiveChatInterface() {
@@ -21,14 +19,15 @@ class LiveChat : LiveChatInterface() {
         ignoreUnknownKeys = true
         prettyPrint = true
     }
-
     private val buildInfo: BuildInfo = BuildInfo(
         apiHost = "https://cdn.livechatinc.com/",
         apiPath = "app/mobile/urls.json",
         accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
     )
-
     internal val networkClient: NetworkClient = KtorNetworkClient(json, buildInfo)
+    private var tokenManager: TokenManager = TokenManager(networkClient) {
+        identityCallback(it)
+    }
 
     private var licence: String? = null
     private var applicationContext: Context? = null
@@ -42,7 +41,6 @@ class LiveChat : LiveChatInterface() {
     private var clientId: String? = null
     internal var identityCallback: (CookieGrant) -> Unit = { }
     private var identityGrant: CookieGrant? = null
-    private lateinit var widgetToken: ChatWidgetToken
 
     companion object {
         @Volatile
@@ -121,45 +119,14 @@ class LiveChat : LiveChatInterface() {
     }
 
     internal fun hasToken(): Boolean {
-        return ::widgetToken.isInitialized
+        return tokenManager.hasToken()
     }
 
     internal suspend fun getToken(): ChatWidgetToken? {
-        if (::widgetToken.isInitialized) {
-            return widgetToken
-        } else {
-            return getFreshToken()
-        }
+        return tokenManager.getToken(createChatConfiguration())
     }
 
     internal suspend fun getFreshToken(): ChatWidgetToken? {
-        val config = createChatConfiguration()
-
-        if (config.isCIPEnabled) {
-            return withContext(Dispatchers.IO) {
-                val response = fetchVisitorToken()
-
-                widgetToken = response.token
-                identityGrant = response.cookieGrant
-                identityCallback(response.cookieGrant)
-
-                response.token
-            }
-        } else {
-            return null
-        }
-    }
-
-    private suspend fun fetchVisitorToken(): CustomerTokenResponse {
-        val config = createChatConfiguration()
-
-        val response = networkClient.getVisitorToken(
-            config.license,
-            config.licenceId!!,
-            config.clientId!!,
-            config.cookieGrant,
-        )
-
-        return CustomerTokenResponse(response.token, response.cookieGrant)
+        return tokenManager.getFreshToken(createChatConfiguration())
     }
 }
