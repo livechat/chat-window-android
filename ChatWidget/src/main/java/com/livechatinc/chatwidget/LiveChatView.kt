@@ -23,6 +23,9 @@ import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.FileChooserMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 @SuppressLint("SetJavaScriptEnabled")
@@ -125,7 +128,7 @@ class LiveChatView(
 
     override fun postWebViewMessage(callback: String?, data: String) {
         println("### --> post message: $callback, $data")
-        webView.post {
+        CoroutineScope(Dispatchers.Main).launch {
             webView.evaluateJavascript("javascript:$callback($data)", null)
         }
     }

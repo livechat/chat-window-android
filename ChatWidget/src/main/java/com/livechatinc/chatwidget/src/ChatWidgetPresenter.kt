@@ -134,29 +134,19 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun getToken(callback: String?) {
-        runBlocking {
-            //TODO: token refresh, fix the condition
-            if (::widgetToken.isInitialized) {
-                view.postWebViewMessage(
-                    callback,
-                    Json.encodeToString(widgetToken)
-                )
-            } else if (config.isCIPEnabled) {
-                fetchVisitorToken(callback)
-            } else {
-                //TODO: decide how to deal with disabled CIP
-                view.postWebViewMessage(
-                    callback,
-                    Json.encodeToString(false)
-                )
-            }
+        if (::widgetToken.isInitialized) {
+            view.postWebViewMessage(
+                callback,
+                Json.encodeToString(widgetToken)
+            )
+        } else {
+            getFreshToken(callback)
         }
     }
 
     fun getFreshToken(callback: String?) {
-        println("### getFreshToken, callback: $callback")
         if (config.isCIPEnabled) {
-            runBlocking {
+            CoroutineScope(Dispatchers.IO).launch {
                 fetchVisitorToken(callback)
             }
         } else {
