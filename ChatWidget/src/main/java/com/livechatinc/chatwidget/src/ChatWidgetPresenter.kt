@@ -26,14 +26,11 @@ internal class ChatWidgetPresenter internal constructor(
 ) {
     private var cookieGrant: CookieGrant? = null
     private var listener: LiveChatViewCallbackListener? = null
-    private var identityCallback: ((CookieGrant) -> Unit?)? = null
     private lateinit var config: ChatWidgetConfig
 
     fun init(config: ChatWidgetConfig) {
         this.config = config
         this.cookieGrant = config.cookieGrant
-
-        identityCallback = LiveChat.getInstance().identityCallback
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -113,6 +110,7 @@ internal class ChatWidgetPresenter internal constructor(
         println("Error, code: $errorCode, description: $description, failingUrl: $failingUrl")
     }
 
+    //TODO: check main thread safety
     fun handleUrl(uri: Uri?): Boolean {
         //TODO bring back opening links in external browser
         return false
