@@ -106,10 +106,6 @@ class LiveChatView(
         webView.loadUrl(url)
     }
 
-    override fun runOnUiThread(action: Runnable?) {
-        post(action)
-    }
-
     override fun startFilePicker(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserMode: FileChooserMode,

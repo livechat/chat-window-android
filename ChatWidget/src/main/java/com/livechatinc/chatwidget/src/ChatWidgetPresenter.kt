@@ -68,21 +68,15 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onUiReady() {
-        if (listener != null) {
-            view.runOnUiThread(listener!!::onLoaded)
-        }
+        listener?.onLoaded()
     }
 
     fun onHideChatWidget() {
-        if (listener != null) {
-            view.runOnUiThread(listener!!::onHide)
-        }
+        listener?.onHide()
     }
 
     fun onNewMessage(message: ChatMessage?) {
-        if (listener != null) {
-            view.runOnUiThread { listener!!.onNewMessage(message) }
-        }
+        listener?.onNewMessage(message)
     }
 
     fun onShowFileChooser(

@@ -4,11 +4,17 @@ import android.webkit.JavascriptInterface
 import com.livechatinc.chatwidget.src.models.BridgeMessage
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.MessageType
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
 internal class ChatWidgetJSBridge internal constructor(
     private val presenter: ChatWidgetPresenter
 ) {
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+
     //TODO: single json instance
     private val json = Json {
         ignoreUnknownKeys = true
@@ -47,12 +53,18 @@ internal class ChatWidgetJSBridge internal constructor(
     }
 
     private fun dispatchMessage(type: MessageType, messageJson: String) {
-        when (type) {
-            MessageType.UI_READY -> presenter.onUiReady()
-            MessageType.HIDE_CHAT_WINDOW -> presenter.onHideChatWidget()
-            MessageType.NEW_MESSAGE -> presenter.onNewMessage(
-                json.decodeFromString<ChatMessage>(messageJson)
-            )
+        scope.launch {
+            try {
+                when (type) {
+                    MessageType.UI_READY -> presenter.onUiReady()
+                    MessageType.HIDE_CHAT_WINDOW -> presenter.onHideChatWidget()
+                    MessageType.NEW_MESSAGE -> presenter.onNewMessage(
+                        json.decodeFromString<ChatMessage>(messageJson)
+                    )
+                }
+            } catch (e: Exception) {
+                println("Message handling failed: $e")
+            }
         }
     }
 
