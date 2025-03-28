@@ -3,7 +3,7 @@ package com.livechatinc.chatwidget.src.models
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CookieGrant(
+data class IdentityGrant(
     val cookies: List<Cookie>,
 )
 

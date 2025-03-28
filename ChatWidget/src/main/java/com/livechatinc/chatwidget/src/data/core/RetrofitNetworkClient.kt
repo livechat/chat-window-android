@@ -3,7 +3,7 @@ package com.livechatinc.chatwidget.src.data.core
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
-import com.livechatinc.chatwidget.src.models.CookieGrant
+import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -47,7 +47,7 @@ class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInfo) : Netw
         license: String,
         licenceId: String,
         clientId: String,
-        cookieGrant: CookieGrant?
+        identityGrant: IdentityGrant?
     ): CustomerTokenResponse {
         TODO("Not yet implemented")
     }

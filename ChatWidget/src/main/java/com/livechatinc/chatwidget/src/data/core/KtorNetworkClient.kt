@@ -5,7 +5,7 @@ import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.CustomerTokenRequest
 import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
 import com.livechatinc.chatwidget.src.models.Cookie
-import com.livechatinc.chatwidget.src.models.CookieGrant
+import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomerToken
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
 import com.livechatinc.chatwidget.src.models.toChatWidgetToken
@@ -52,7 +52,7 @@ class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo
         license: String,
         licenceId: String,
         clientId: String,
-        cookieGrant: CookieGrant?,
+        identityGrant: IdentityGrant?,
     ): CustomerTokenResponse {
         return withContext(Dispatchers.IO) {
 
@@ -61,7 +61,7 @@ class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo
                     append("Content-Type", "application/json")
                 }
 
-                cookieGrant?.cookies?.forEach { cookie ->
+                identityGrant?.cookies?.forEach { cookie ->
                     this.cookie(
                         name = cookie.name,
                         value = cookie.value,
@@ -96,7 +96,7 @@ class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo
 
             return@withContext CustomerTokenResponse(
                 token = widgetToken,
-                cookieGrant = CookieGrant(
+                identityGrant = IdentityGrant(
                     cookies = listOfNotNull(lcCid, lcCst).toInternalCookies()
                 )
             )

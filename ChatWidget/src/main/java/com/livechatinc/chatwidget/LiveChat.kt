@@ -10,7 +10,7 @@ import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
-import com.livechatinc.chatwidget.src.models.CookieGrant
+import com.livechatinc.chatwidget.src.models.IdentityGrant
 import kotlinx.serialization.json.Json
 
 class LiveChat : LiveChatInterface() {
@@ -39,8 +39,8 @@ class LiveChat : LiveChatInterface() {
     // Custom Identity Provider
     private var licenceId: String? = null
     private var clientId: String? = null
-    internal var identityCallback: (CookieGrant) -> Unit = { }
-    private var identityGrant: CookieGrant? = null
+    internal var identityCallback: (IdentityGrant) -> Unit = { }
+    private var identityGrant: IdentityGrant? = null
 
     companion object {
         @Volatile
@@ -90,15 +90,15 @@ class LiveChat : LiveChatInterface() {
     override fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        cookieGrantCallback: (CookieGrant) -> Unit,
+        cookieGrantCallback: (IdentityGrant) -> Unit,
     ) {
         this.licenceId = licenceId
         this.clientId = clientId
         identityCallback = cookieGrantCallback
     }
 
-    override fun logInCustomer(cookieGrant: CookieGrant?) {
-        identityGrant = cookieGrant
+    override fun logInCustomer(identityGrant: IdentityGrant?) {
+        this.identityGrant = identityGrant
     }
 
     internal fun createChatConfiguration(): ChatWidgetConfig {

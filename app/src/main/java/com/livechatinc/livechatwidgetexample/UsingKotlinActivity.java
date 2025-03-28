@@ -19,7 +19,7 @@ import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.LiveChatView;
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener;
 import com.livechatinc.chatwidget.src.models.ChatMessage;
-import com.livechatinc.chatwidget.src.models.CookieGrant;
+import com.livechatinc.chatwidget.src.models.IdentityGrant;
 
 import kotlin.Unit;
 
@@ -55,14 +55,14 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
         liveChatViewCallback = liveChatCallback();
 
-        final CookieGrant identityRestorationGrant = readTokenCookiesFromPreferences();
+        final IdentityGrant identityRestorationGrant = readTokenCookiesFromPreferences();
 
         LiveChat.getInstance().configureIdentityProvider(
                 BuildConfig.LICENCE_ID,
                 BuildConfig.CLIENT_ID,
-                cookieGrant -> {
+                identityGrant -> {
 //                    saveCookieGrantToPreferences(cookieGrant);
-                    Log.i("UsingKotlinActivity", "### new cookie grant: " + cookieGrant);
+                    Log.i("UsingKotlinActivity", "### new cookie grant: " + identityGrant);
                     return Unit.INSTANCE;
                 }
         );
@@ -108,17 +108,17 @@ public class UsingKotlinActivity extends AppCompatActivity {
     }
 
 
-    private Unit saveCookieGrantToPreferences(CookieGrant cookieGrant) {
+    private Unit saveCookieGrantToPreferences(IdentityGrant identityGrant) {
         SharedPreferences sharedPreferences =
                 getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("cookieGrant", gson.toJson(cookieGrant));
+        editor.putString("cookieGrant", gson.toJson(identityGrant));
         editor.apply();
 
         return Unit.INSTANCE;
     }
 
-    private CookieGrant readTokenCookiesFromPreferences() {
+    private IdentityGrant readTokenCookiesFromPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
 
         final String cookieGrant = sharedPreferences.getString("cookieGrant", null);
@@ -126,6 +126,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
             return null;
         }
 
-        return gson.fromJson(cookieGrant, CookieGrant.class);
+        return gson.fromJson(cookieGrant, IdentityGrant.class);
     }
 }

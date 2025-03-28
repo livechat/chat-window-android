@@ -11,7 +11,7 @@ data class ChatWidgetConfig @JvmOverloads constructor(
     val customParameters: Map<String, String>?,
     val clientId: String? = null,
     val licenceId: String? = null,
-    val cookieGrant: CookieGrant? = null,
+    val identityGrant: IdentityGrant? = null,
 ) {
     val isCIPEnabled: Boolean
         get() = clientId != null && licenceId != null
@@ -24,7 +24,7 @@ data class ChatWidgetConfig @JvmOverloads constructor(
         customParameters: Map<String, String>? = this.customParameters,
         clientId: String? = this.clientId,
         licenceId: String? = this.licenceId,
-        cookieGrant: CookieGrant? = this.cookieGrant,
+        identityGrant: IdentityGrant? = this.identityGrant,
     ): ChatWidgetConfig {
         return ChatWidgetConfig(
             license = license ?: this.license,
@@ -34,7 +34,7 @@ data class ChatWidgetConfig @JvmOverloads constructor(
             customParameters = customParameters ?: this.customParameters,
             clientId = clientId ?: this.clientId,
             licenceId = licenceId ?: this.licenceId,
-            cookieGrant = cookieGrant ?: this.cookieGrant,
+            identityGrant = identityGrant ?: this.identityGrant,
         )
     }
 }

@@ -2,7 +2,7 @@ package com.livechatinc.chatwidget
 
 import android.content.Context
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
-import com.livechatinc.chatwidget.src.models.CookieGrant
+import com.livechatinc.chatwidget.src.models.IdentityGrant
 
 abstract class LiveChatInterface {
 
@@ -54,13 +54,13 @@ abstract class LiveChatInterface {
     /******* Advanced usage *******/
 
     /**
-     * Reports back [CookieGrant] to the host app
+     * Reports back [IdentityGrant] to the host app
      * Needs to be called before [logInCustomer] and launching chat window
      * */
     abstract fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        cookieGrantCallback: (CookieGrant) -> Unit
+        cookieGrantCallback: (IdentityGrant) -> Unit
     )
 
     /**
@@ -69,7 +69,7 @@ abstract class LiveChatInterface {
      * Required:
      * @see configureIdentityProvider
      * */
-    abstract fun logInCustomer(cookieGrant: CookieGrant?)
+    abstract fun logInCustomer(identityGrant: IdentityGrant?)
 
     /******* Push Notification *******/
 
