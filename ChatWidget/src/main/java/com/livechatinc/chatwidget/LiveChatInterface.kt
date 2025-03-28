@@ -57,12 +57,11 @@ abstract class LiveChatInterface {
      * Reports back [CookieGrant] to the host app
      * Needs to be called before [logInCustomer] and launching chat window
      * */
-    suspend fun configureIdentityProvider(
+    abstract fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        cookieGrantCallback: (CookieGrant) -> Unit?
-    ) {
-    }
+        cookieGrantCallback: (CookieGrant) -> Unit
+    )
 
     /**
      * Fetches token, creates new one if no cookieGrant
@@ -70,7 +69,7 @@ abstract class LiveChatInterface {
      * Required:
      * @see configureIdentityProvider
      * */
-    suspend fun logInCustomer(cookieGrant: CookieGrant?) {}
+    abstract fun logInCustomer(cookieGrant: CookieGrant?)
 
     /******* Push Notification *******/
 
@@ -115,6 +114,8 @@ abstract class LiveChatInterface {
 //    - Different packages for Base, UI, FCM Messaging
 //    - Customizable error view in Activity component
 //    - Consider configuration changes - android:configChanges="orientation|screenSize"
+//    - LiveChatActivity should follow app theme
+//    -
 
 
 //    Topics to consult:

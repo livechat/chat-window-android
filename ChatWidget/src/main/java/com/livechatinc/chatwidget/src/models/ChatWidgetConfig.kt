@@ -13,6 +13,9 @@ data class ChatWidgetConfig @JvmOverloads constructor(
     val licenceId: String? = null,
     val cookieGrant: CookieGrant? = null,
 ) {
+    val isCIPEnabled: Boolean
+        get() = clientId != null && licenceId != null
+
     fun copyWith(
         license: String? = this.license,
         group: String? = this.group,

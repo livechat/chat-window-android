@@ -5,8 +5,9 @@ import androidx.activity.ComponentActivity
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.CookieGrant
 
-internal class LiveChat : LiveChatInterface() {
+class LiveChat : LiveChatInterface() {
 
     private var licence: String? = null
     private var applicationContext: Context? = null
@@ -14,6 +15,12 @@ internal class LiveChat : LiveChatInterface() {
     private var customerName: String? = null
     private var customerEmail: String? = null
     private var customParams: Map<String, String>? = null
+
+    // Custom Identity Provider
+    private var licenceId: String? = null
+    private var clientId: String? = null
+    internal var identityCallback: (CookieGrant) -> Unit = { }
+    private var identityGrant: CookieGrant? = null
 
     companion object {
         @Volatile
@@ -60,18 +67,34 @@ internal class LiveChat : LiveChatInterface() {
         ChatWidgetUtils.clearSession()
     }
 
+    override fun configureIdentityProvider(
+        licenceId: String,
+        clientId: String,
+        cookieGrantCallback: (CookieGrant) -> Unit,
+    ) {
+        this.licenceId = licenceId
+        this.clientId = clientId
+        identityCallback = cookieGrantCallback
+    }
+
+    override fun logInCustomer(cookieGrant: CookieGrant?) {
+        identityGrant = cookieGrant
+    }
+
     internal fun createChatConfiguration(): ChatWidgetConfig {
         return ChatWidgetConfig(
             requireNotNull(licence),
             groupId,
             customerName,
             customerEmail,
-            customParams
+            customParams,
+            clientId,
+            licenceId,
+            identityGrant,
         )
     }
 
     private fun startChatActivity(context: ComponentActivity) {
         LiveChatActivity.start(context)
     }
-
 }

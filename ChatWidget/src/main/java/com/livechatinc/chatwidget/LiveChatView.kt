@@ -22,7 +22,6 @@ import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.getActivity
-import com.livechatinc.chatwidget.src.models.CookieGrant
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 import kotlinx.serialization.json.Json
 
@@ -101,10 +100,6 @@ class LiveChatView(
 
         val config = LiveChat.getInstance().createChatConfiguration()
         presenter.init(config)
-    }
-
-    fun setIdentityCallback(callback: (CookieGrant) -> Unit?) {
-        presenter.setIdentityCallback(callback)
     }
 
     override fun loadUrl(url: String) {

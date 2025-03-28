@@ -4,6 +4,7 @@ import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import com.livechatinc.chatwidget.BuildConfig
+import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.src.common.WebHttpException
 import com.livechatinc.chatwidget.src.common.WebResourceException
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
@@ -25,11 +26,13 @@ internal class ChatWidgetPresenter internal constructor(
     private lateinit var widgetToken: ChatWidgetToken
     private var listener: LiveChatViewCallbackListener? = null
     private var identityCallback: ((CookieGrant) -> Unit?)? = null
-    private var config: ChatWidgetConfig? = null
+    private lateinit var config: ChatWidgetConfig
 
     fun init(config: ChatWidgetConfig) {
         this.config = config
         this.cookieGrant = config.cookieGrant
+
+        identityCallback = LiveChat.getInstance().identityCallback
 
         runBlocking {
             try {
@@ -52,10 +55,6 @@ internal class ChatWidgetPresenter internal constructor(
 
     fun setCallbackListener(callbackListener: LiveChatViewCallbackListener?) {
         listener = callbackListener
-    }
-
-    fun setIdentityCallback(callback: (CookieGrant) -> Unit?) {
-        identityCallback = callback
     }
 
     fun onUiReady() {
@@ -126,8 +125,11 @@ internal class ChatWidgetPresenter internal constructor(
 //        return true
     }
 
+    fun hasToken(callback: String) {
+        view.postWebViewMessage(callback, (::widgetToken.isInitialized).toString())
+    }
+
     fun getToken(callback: String?) {
-        println("### getToken, callback: $callback, cookieGrant: $cookieGrant")
         runBlocking {
             //TODO: token refresh, fix the condition
             if (::widgetToken.isInitialized) {
@@ -135,40 +137,50 @@ internal class ChatWidgetPresenter internal constructor(
                     callback,
                     Json.encodeToString(widgetToken)
                 )
-            } else {
+            } else if (config.isCIPEnabled) {
                 fetchVisitorToken(callback)
+            } else {
+                //TODO: decide how to deal with disabled CIP
+                view.postWebViewMessage(
+                    callback,
+                    Json.encodeToString(false)
+                )
             }
         }
     }
 
     fun getFreshToken(callback: String?) {
         println("### getFreshToken, callback: $callback")
-        runBlocking {
-            fetchVisitorToken(callback)
+        if (config.isCIPEnabled) {
+            runBlocking {
+                fetchVisitorToken(callback)
+            }
+        } else {
+            //TODO: decide how to deal with disabled CIP
+            view.postWebViewMessage(
+                callback,
+                Json.encodeToString("")
+            )
         }
     }
 
     private suspend fun fetchVisitorToken(callback: String?) {
         val response = networkClient.getVisitorToken(
-            config!!.license,
-            config!!.licenceId!!,
-            config!!.clientId!!,
+            config.license,
+            config.licenceId!!,
+            config.clientId!!,
             cookieGrant,
         )
 
         widgetToken = response.token
         cookieGrant = response.cookieGrant
 
-        view.saveTokenToPreferences(Json.encodeToString(widgetToken))
+//        view.saveTokenToPreferences(Json.encodeToString(widgetToken))
         identityCallback?.let { it(response.cookieGrant) }
 
         view.postWebViewMessage(
             callback,
             Json.encodeToString(widgetToken)
         )
-    }
-
-    fun hasToken(callback: String) {
-        view.postWebViewMessage(callback, (::widgetToken.isInitialized).toString())
     }
 }

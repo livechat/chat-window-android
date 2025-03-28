@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
+import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.LiveChatView;
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener;
 import com.livechatinc.chatwidget.src.models.ChatMessage;
@@ -51,11 +52,21 @@ public class UsingKotlinActivity extends AppCompatActivity {
         });
 
 
-        liveChatView.setIdentityCallback(this::saveCookieGrantToPreferences);
-
         liveChatViewCallback = liveChatCallback();
 
-        final CookieGrant cookieGrant = readTokenCookiesFromPreferences();
+        final CookieGrant identityRestorationGrant = readTokenCookiesFromPreferences();
+
+        LiveChat.getInstance().configureIdentityProvider(
+                BuildConfig.LICENCE_ID,
+                BuildConfig.CLIENT_ID,
+                cookieGrant -> {
+//                    saveCookieGrantToPreferences(cookieGrant);
+                    println("### new cookie grant: " + cookieGrant);
+                    return Unit.INSTANCE;
+                }
+        );
+
+        LiveChat.getInstance().logInCustomer(identityRestorationGrant);
 
         liveChatView.init(liveChatViewCallback);
     }
