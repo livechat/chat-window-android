@@ -14,7 +14,11 @@ import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CookieGrant
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -34,22 +38,28 @@ internal class ChatWidgetPresenter internal constructor(
 
         identityCallback = LiveChat.getInstance().identityCallback
 
-        runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
             try {
-                if (BuildConfig.CHAT_URL != null && BuildConfig.CHAT_URL.isNotBlank()) {
-                    view.loadUrl(BuildConfig.CHAT_URL)
+                val chatUrl = chatUrl()
 
-                    return@runBlocking
+                withContext(Dispatchers.Main) {
+                    view.loadUrl(chatUrl)
                 }
 
-                val chatUrl = networkClient.fetchChatUrl().buildChatUrl(config)
-
-                view.loadUrl(chatUrl)
+                return@launch
             } catch (cause: Throwable) {
                 println("### ChatWidgetPresenter.init: $cause")
                 listener?.onError(cause)
                 cause.printStackTrace()
             }
+        }
+    }
+
+    private suspend fun chatUrl(): String {
+        return if (BuildConfig.CHAT_URL != null && BuildConfig.CHAT_URL.isNotBlank()) {
+            BuildConfig.CHAT_URL
+        } else {
+            networkClient.fetchChatUrl().buildChatUrl(config)
         }
     }
 
