@@ -12,12 +12,10 @@ import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.extensions.fileChooserMode
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
-import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CookieGrant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -27,7 +25,6 @@ internal class ChatWidgetPresenter internal constructor(
     private val networkClient: NetworkClient,
 ) {
     private var cookieGrant: CookieGrant? = null
-    private lateinit var widgetToken: ChatWidgetToken
     private var listener: LiveChatViewCallbackListener? = null
     private var identityCallback: ((CookieGrant) -> Unit?)? = null
     private lateinit var config: ChatWidgetConfig
@@ -130,51 +127,30 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun hasToken(callback: String) {
-        view.postWebViewMessage(callback, (::widgetToken.isInitialized).toString())
+        val hasToken = LiveChat.getInstance().hasToken();
+
+        view.postWebViewMessage(callback, (hasToken).toString())
     }
 
     fun getToken(callback: String?) {
-        if (::widgetToken.isInitialized) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val token = LiveChat.getInstance().getToken()
+
             view.postWebViewMessage(
                 callback,
-                Json.encodeToString(widgetToken)
+                Json.encodeToString(token)
             )
-        } else {
-            getFreshToken(callback)
         }
     }
 
     fun getFreshToken(callback: String?) {
-        if (config.isCIPEnabled) {
-            CoroutineScope(Dispatchers.IO).launch {
-                fetchVisitorToken(callback)
-            }
-        } else {
-            //TODO: decide how to deal with disabled CIP
+        CoroutineScope(Dispatchers.IO).launch {
+            val token = LiveChat.getInstance().getFreshToken()
+
             view.postWebViewMessage(
                 callback,
-                Json.encodeToString("")
+                Json.encodeToString(token)
             )
         }
-    }
-
-    private suspend fun fetchVisitorToken(callback: String?) {
-        val response = networkClient.getVisitorToken(
-            config.license,
-            config.licenceId!!,
-            config.clientId!!,
-            cookieGrant,
-        )
-
-        widgetToken = response.token
-        cookieGrant = response.cookieGrant
-
-//        view.saveTokenToPreferences(Json.encodeToString(widgetToken))
-        identityCallback?.let { it(response.cookieGrant) }
-
-        view.postWebViewMessage(
-            callback,
-            Json.encodeToString(widgetToken)
-        )
     }
 }
