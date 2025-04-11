@@ -3,10 +3,10 @@ package com.livechatinc.chatwidget.src.data.domain
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
 
-interface NetworkClient {
+internal interface NetworkClient {
     suspend fun fetchChatUrl(): String
 
-    suspend fun getVisitorToken(
+    suspend fun getCustomerToken(
         license: String,
         licenceId: String,
         clientId: String,

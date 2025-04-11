@@ -23,7 +23,7 @@ internal class TokenManager(
         if (!config.isCustomIdentityEnabled) return null
 
         return withContext(Dispatchers.IO) {
-            val response = fetchVisitorToken(config)
+            val response = fetchCustomerToken(config)
             currentToken = response.token
 
             identityCallback(response.identityGrant)
@@ -32,10 +32,10 @@ internal class TokenManager(
         }
     }
 
-    private suspend fun fetchVisitorToken(config: LiveChatConfig): CustomerTokenResponse {
+    private suspend fun fetchCustomerToken(config: LiveChatConfig): CustomerTokenResponse {
         val identityConfig = config.customIdentityConfig!!
 
-        return networkClient.getVisitorToken(
+        return networkClient.getCustomerToken(
             config.license,
             identityConfig.licenceId,
             identityConfig.clientId,

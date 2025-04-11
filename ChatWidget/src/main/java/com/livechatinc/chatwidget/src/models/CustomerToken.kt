@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CustomerToken(
+internal data class CustomerToken(
     @SerialName("access_token") var accessToken: String? = null,
     @SerialName("entity_id") var entityId: String? = null,
     @SerialName("expires_in") var expiresIn: Int? = null,
@@ -13,7 +13,7 @@ data class CustomerToken(
 
 )
 
-fun CustomerToken.toChatWidgetToken(
+internal fun CustomerToken.toChatWidgetToken(
     license: String,
 ): ChatWidgetToken {
     return ChatWidgetToken(

@@ -17,7 +17,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 
-class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInfo) : NetworkClient {
+internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInfo) : NetworkClient {
     private val service: ChatWidgetService
 
     init {
@@ -43,7 +43,7 @@ class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInfo) : Netw
         }
     }
 
-    override suspend fun getVisitorToken(
+    override suspend fun getCustomerToken(
         license: String,
         licenceId: String,
         clientId: String,

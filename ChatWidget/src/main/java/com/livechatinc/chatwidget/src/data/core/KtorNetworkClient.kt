@@ -28,7 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) : NetworkClient {
+internal class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) : NetworkClient {
     private val client = HttpClient(CIO) {
         install(Logging) {
             logger = Logger.ANDROID
@@ -48,7 +48,7 @@ class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo
         }
     }
 
-    override suspend fun getVisitorToken(
+    override suspend fun getCustomerToken(
         license: String,
         licenceId: String,
         clientId: String,

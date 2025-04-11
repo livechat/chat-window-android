@@ -1,6 +1,6 @@
 package com.livechatinc.chatwidget.src.models
 
-data class CustomerTokenResponse(
+internal data class CustomerTokenResponse(
     val token: ChatWidgetToken,
     val identityGrant: IdentityGrant,
 )
