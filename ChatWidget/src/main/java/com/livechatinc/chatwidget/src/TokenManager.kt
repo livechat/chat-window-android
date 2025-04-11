@@ -1,7 +1,7 @@
 package com.livechatinc.chatwidget.src
 
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
@@ -16,11 +16,11 @@ internal class TokenManager(
 
     fun hasToken(): Boolean = currentToken != null
 
-    suspend fun getToken(config: ChatWidgetConfig): ChatWidgetToken? =
+    suspend fun getToken(config: LiveChatConfig): ChatWidgetToken? =
         currentToken ?: getFreshToken(config)
 
-    suspend fun getFreshToken(config: ChatWidgetConfig): ChatWidgetToken? {
-        if (!config.isCIPEnabled) return null
+    suspend fun getFreshToken(config: LiveChatConfig): ChatWidgetToken? {
+        if (!config.isCustomIdentityEnabled) return null
 
         return withContext(Dispatchers.IO) {
             val response = fetchVisitorToken(config)
@@ -32,12 +32,14 @@ internal class TokenManager(
         }
     }
 
-    private suspend fun fetchVisitorToken(config: ChatWidgetConfig): CustomerTokenResponse {
+    private suspend fun fetchVisitorToken(config: LiveChatConfig): CustomerTokenResponse {
+        val identityConfig = config.customIdentityConfig!!
+
         return networkClient.getVisitorToken(
             config.license,
-            config.licenceId!!,
-            config.clientId!!,
-            config.identityGrant,
+            identityConfig.licenceId,
+            identityConfig.clientId,
+            identityConfig.identityGrant,
         )
     }
 }

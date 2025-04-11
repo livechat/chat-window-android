@@ -84,7 +84,7 @@ class LiveChatView(
     fun init(callbackListener: LiveChatViewCallbackListener? = null) {
         presenter.setCallbackListener(callbackListener)
 
-        val config = LiveChat.getInstance().createChatConfiguration()
+        val config = LiveChat.getInstance().createLiveChatConfig()
         presenter.init(config)
     }
 

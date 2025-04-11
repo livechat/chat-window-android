@@ -11,7 +11,7 @@ import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.extensions.buildChatUrl
 import com.livechatinc.chatwidget.src.extensions.fileChooserMode
 import com.livechatinc.chatwidget.src.models.ChatMessage
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,11 +26,11 @@ internal class ChatWidgetPresenter internal constructor(
 ) {
     private var identityGrant: IdentityGrant? = null
     private var listener: LiveChatViewCallbackListener? = null
-    private lateinit var config: ChatWidgetConfig
+    private lateinit var config: LiveChatConfig
 
-    fun init(config: ChatWidgetConfig) {
+    fun init(config: LiveChatConfig) {
         this.config = config
-        this.identityGrant = config.identityGrant
+        this.identityGrant = config.customIdentityConfig?.identityGrant
 
         CoroutineScope(Dispatchers.IO).launch {
             try {

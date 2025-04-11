@@ -1,16 +1,16 @@
 package com.livechatinc.chatwidget.src.extensions
 
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import java.net.URLEncoder
 
-internal fun String.buildChatUrl(config: ChatWidgetConfig): String {
+internal fun String.buildChatUrl(config: LiveChatConfig): String {
     val parameters = listOfNotNull(
-        "group" to config.group,
-        config.visitorEmail?.takeIf { it.isNotBlank() }
+        "group" to config.groupId,
+        config.customerInfo?.email?.takeIf { it.isNotBlank() }
             ?.let { "email" to URLEncoder.encode(it, "UTF-8") },
-        config.visitorName?.takeIf { it.isNotBlank() }
+        config.customerInfo?.name?.takeIf { it.isNotBlank() }
             ?.let { "name" to URLEncoder.encode(it, "UTF-8").replace("+", "%20") },
-        config.customParameters?.takeIf { it.isNotEmpty() }?.let {
+        config.customerInfo?.customParams?.takeIf { it.isNotEmpty() }?.let {
             "params" to URLEncoder.encode(
                 it.map { (key, value) -> "$key=$value" }.joinToString("&"),
                 "UTF-8"
@@ -18,7 +18,7 @@ internal fun String.buildChatUrl(config: ChatWidgetConfig): String {
         }
     )
 
-    return ensureHttps().replaceParameter("group", config.group)
+    return ensureHttps().replaceParameter("group", config.groupId)
         .replaceParameter("license", config.license)
         .let { url ->
             parameters.fold(url) { acc, (key, value) ->

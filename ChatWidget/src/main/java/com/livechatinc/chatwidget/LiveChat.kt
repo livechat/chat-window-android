@@ -8,9 +8,11 @@ import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.models.ChatWidgetConfig
+import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
+import com.livechatinc.chatwidget.src.models.CustomerInfo
 import com.livechatinc.chatwidget.src.models.IdentityGrant
+import com.livechatinc.chatwidget.src.models.CustomIdentityConfig
 import kotlinx.serialization.json.Json
 
 class LiveChat : LiveChatInterface() {
@@ -31,16 +33,15 @@ class LiveChat : LiveChatInterface() {
 
     private var licence: String? = null
     private var applicationContext: Context? = null
-    private var groupId: String = "0"
-    private var customerName: String? = null
-    private var customerEmail: String? = null
-    private var customParams: Map<String, String>? = null
+    private var groupId: String? = null
+
+    private var customerInfo: CustomerInfo? = null
 
     // Custom Identity Provider
     private var licenceId: String? = null
     private var clientId: String? = null
-    internal var identityCallback: (IdentityGrant) -> Unit = { }
     private var identityGrant: IdentityGrant? = null
+    internal var identityCallback: (IdentityGrant) -> Unit = { }
 
     companion object {
         @Volatile
@@ -53,9 +54,11 @@ class LiveChat : LiveChatInterface() {
             }
 
         @JvmStatic
-        fun initialize(licence: String, context: Context) {
+        @JvmOverloads
+        fun initialize(licence: String, context: Context, groupId: String? = null) {
             getInstance().apply {
                 this.licence = licence
+                this.groupId = groupId
                 this.applicationContext = context.applicationContext
             }
         }
@@ -67,10 +70,12 @@ class LiveChat : LiveChatInterface() {
         groupId: String?,
         customParams: Map<String, String>?
     ) {
-        customerName = name
-        customerEmail = email
-        this.groupId = groupId ?: this.groupId
-        this.customParams = customParams
+        customerInfo = CustomerInfo(
+            name = name,
+            email = email,
+            customParams = customParams
+        )
+        this.groupId = groupId
     }
 
     override fun show(context: Context) {
@@ -101,16 +106,24 @@ class LiveChat : LiveChatInterface() {
         this.identityGrant = identityGrant
     }
 
-    internal fun createChatConfiguration(): ChatWidgetConfig {
-        return ChatWidgetConfig(
-            requireNotNull(licence),
-            groupId,
-            customerName,
-            customerEmail,
-            customParams,
-            clientId,
-            licenceId,
-            identityGrant,
+    internal fun createLiveChatConfig(): LiveChatConfig {
+        return LiveChatConfig(
+            license = requireNotNull(licence),
+            groupId = groupId,
+            customerInfo = customerInfo,
+            customIdentityConfig = createIdentityProvider(),
+        )
+    }
+
+    private fun createIdentityProvider(): CustomIdentityConfig? {
+        if (licenceId.isNullOrEmpty() || clientId.isNullOrEmpty()) {
+            return null
+        }
+
+        return CustomIdentityConfig(
+            licenceId = requireNotNull(licenceId),
+            clientId = requireNotNull(clientId),
+            identityGrant = identityGrant,
         )
     }
 
@@ -123,10 +136,10 @@ class LiveChat : LiveChatInterface() {
     }
 
     internal suspend fun getToken(): ChatWidgetToken? {
-        return tokenManager.getToken(createChatConfiguration())
+        return tokenManager.getToken(createLiveChatConfig())
     }
 
     internal suspend fun getFreshToken(): ChatWidgetToken? {
-        return tokenManager.getFreshToken(createChatConfiguration())
+        return tokenManager.getFreshToken(createLiveChatConfig())
     }
 }
