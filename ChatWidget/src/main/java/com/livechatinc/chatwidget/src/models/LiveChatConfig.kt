@@ -9,24 +9,12 @@ internal data class LiveChatConfig @JvmOverloads constructor(
     val customerInfo: CustomerInfo? = null,
     val customIdentityConfig: CustomIdentityConfig? = null
 ) {
-    constructor(
-        license: String,
-        groupId: String?,
-        customerInfo: CustomerInfo? = null,
-        customIdentityConfig: CustomIdentityConfig? = null
-    ) : this(
-        license = license,
-        groupId = groupId ?: DEFAULT_GROUP_ID,
-        customerInfo = customerInfo,
-        customIdentityConfig = customIdentityConfig
-    )
-
     val isCustomIdentityEnabled: Boolean
         get() = customIdentityConfig != null &&
                 customIdentityConfig.licenceId.isNotEmpty() &&
                 customIdentityConfig.clientId.isNotEmpty()
 
-    private companion object {
+    internal companion object {
         const val DEFAULT_GROUP_ID = "0"
     }
 }

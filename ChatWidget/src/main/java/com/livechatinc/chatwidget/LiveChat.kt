@@ -109,7 +109,7 @@ class LiveChat : LiveChatInterface() {
     internal fun createLiveChatConfig(): LiveChatConfig {
         return LiveChatConfig(
             license = requireNotNull(licence),
-            groupId = groupId,
+            groupId = groupId ?: LiveChatConfig.DEFAULT_GROUP_ID,
             customerInfo = customerInfo,
             customIdentityConfig = createIdentityProvider(),
         )
