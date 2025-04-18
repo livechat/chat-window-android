@@ -1,5 +1,6 @@
 package com.livechatinc.chatwidget.src
 
+import android.util.Log
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
@@ -23,16 +24,23 @@ internal class TokenManager(
         if (!config.isCustomIdentityEnabled) return null
 
         return withContext(Dispatchers.IO) {
-            val response = fetchCustomerToken(config)
-            currentToken = response.token
+            val result = fetchCustomerToken(config)
 
-            identityCallback(response.identityGrant)
+            if (result.isSuccess) {
+                val response = result.getOrNull()!!
+                currentToken = response.token
 
-            response.token
+                identityCallback(response.identityGrant)
+
+                result.getOrNull()?.token
+            } else {
+                Log.e("LiveChat.Identity", "Obtaining user identity failed: \n${result.exceptionOrNull()}")
+                return@withContext null
+            }
         }
     }
 
-    private suspend fun fetchCustomerToken(config: LiveChatConfig): CustomerTokenResponse {
+    private suspend fun fetchCustomerToken(config: LiveChatConfig): Result<CustomerTokenResponse> {
         val identityConfig = config.customIdentityConfig!!
 
         return networkClient.getCustomerToken(

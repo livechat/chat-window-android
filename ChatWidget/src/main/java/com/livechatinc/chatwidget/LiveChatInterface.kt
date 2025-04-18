@@ -60,7 +60,7 @@ abstract class LiveChatInterface {
     abstract fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        cookieGrantCallback: (IdentityGrant) -> Unit
+        onIdentityGrantChange: (IdentityGrant) -> Unit
     )
 
     /**

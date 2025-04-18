@@ -29,7 +29,7 @@ internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInf
             .addInterceptor(interceptor)
             .build()
 
-        service = Retrofit.Builder().baseUrl(buildInfo.apiHost).client(client)
+        service = Retrofit.Builder().baseUrl(buildInfo.mobileConfigHost).client(client)
             .addConverterFactory(json.asConverterFactory("application/json; charset=UTF8".toMediaType()))
             .build().create(ChatWidgetService::class.java)
     }
@@ -37,7 +37,7 @@ internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInf
 
     override suspend fun fetchChatUrl(): String {
         return withContext(Dispatchers.IO) {
-            val urls: ChatWidgetUrls = service.chatUrl(buildInfo.apiPath)
+            val urls: ChatWidgetUrls = service.chatUrl(buildInfo.mobileConfigPath)
 
             return@withContext urls.chatUrl!!
         }
@@ -48,7 +48,7 @@ internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInf
         licenceId: String,
         clientId: String,
         identityGrant: IdentityGrant?
-    ): CustomerTokenResponse {
+    ): Result<CustomerTokenResponse> {
         TODO("Not yet implemented")
     }
 }

@@ -134,6 +134,7 @@ internal class ChatWidgetPresenter internal constructor(
         CoroutineScope(Dispatchers.IO).launch {
             val token = LiveChat.getInstance().getToken()
 
+            //TODO: deal with a case where token is returned after view/webView was destroyed
             view.postWebViewMessage(
                 callback,
                 Json.encodeToString(token)

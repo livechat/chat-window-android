@@ -22,8 +22,8 @@ class LiveChat : LiveChatInterface() {
         prettyPrint = true
     }
     private val buildInfo: BuildInfo = BuildInfo(
-        apiHost = "https://cdn.livechatinc.com/",
-        apiPath = "app/mobile/urls.json",
+        mobileConfigHost = "https://cdn.livechatinc.com/",
+        mobileConfigPath = "app/mobile/urls.json",
         accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
     )
     internal val networkClient: NetworkClient = KtorNetworkClient(json, buildInfo)
@@ -95,11 +95,11 @@ class LiveChat : LiveChatInterface() {
     override fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        cookieGrantCallback: (IdentityGrant) -> Unit,
+        onIdentityGrantChange: (IdentityGrant) -> Unit,
     ) {
         this.licenceId = licenceId
         this.clientId = clientId
-        identityCallback = cookieGrantCallback
+        identityCallback = onIdentityGrantChange
     }
 
     override fun logInCustomer(identityGrant: IdentityGrant?) {

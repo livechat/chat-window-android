@@ -12,6 +12,7 @@ import com.livechatinc.chatwidget.src.models.toChatWidgetToken
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.*
@@ -20,6 +21,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.request
 import io.ktor.http.Cookie as KtorCookie
 import io.ktor.http.setCookie
 import io.ktor.serialization.kotlinx.json.json
@@ -28,7 +30,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-internal class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) : NetworkClient {
+internal class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) :
+    NetworkClient {
     private val client = HttpClient(CIO) {
         install(Logging) {
             logger = Logger.ANDROID
@@ -36,13 +39,15 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
         }
         install(ContentNegotiation) {
             json(json)
-
+        }
+        install(HttpRequestRetry) {
+            //TODO: specify retry policy
         }
     }
 
     override suspend fun fetchChatUrl(): String {
         return withContext(Dispatchers.IO) {
-            val urls: ChatWidgetUrls = client.get("${buildInfo.apiHost}${buildInfo.apiPath}").body()
+            val urls: ChatWidgetUrls = client.get(buildInfo.mobileConfigUrl).body()
 
             return@withContext urls.chatUrl!!
         }
@@ -53,9 +58,8 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
         licenceId: String,
         clientId: String,
         identityGrant: IdentityGrant?,
-    ): CustomerTokenResponse {
+    ): Result<CustomerTokenResponse> {
         return withContext(Dispatchers.IO) {
-
             val response = client.post(buildInfo.accountsApiUrl, block = {
                 headers {
                     append("Content-Type", "application/json")
@@ -85,21 +89,29 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
                 )
             })
 
-            val customerToken: CustomerToken = response.body()
-            val widgetToken = customerToken.toChatWidgetToken(
-                license
-            )
-
-            val setCookies = response.setCookie()
-            val lcCid = setCookies.firstOrNull { it.name == "__lc_cid" }
-            val lcCst = setCookies.firstOrNull { it.name == "__lc_cst" }
-
-            return@withContext CustomerTokenResponse(
-                token = widgetToken,
-                identityGrant = IdentityGrant(
-                    cookies = listOfNotNull(lcCid, lcCst).toInternalCookies()
+            if (response.status.value in 200..299) {
+                val customerToken: CustomerToken = response.body()
+                val widgetToken = customerToken.toChatWidgetToken(
+                    license
                 )
-            )
+
+                val setCookies = response.setCookie()
+                val lcCid = setCookies.firstOrNull { it.name == "__lc_cid" }
+                val lcCst = setCookies.firstOrNull { it.name == "__lc_cst" }
+
+                return@withContext Result.success(
+                    CustomerTokenResponse(
+                        token = widgetToken,
+                        identityGrant = IdentityGrant(
+                            cookies = listOfNotNull(lcCid, lcCst).toInternalCookies()
+                        )
+                    )
+                )
+            } else {
+                return@withContext Result.failure(
+                    Exception("${response.status.value} ${response.status.description} from ${response.request.url}\n${response.body<String>()}")
+                )
+            }
         }
     }
 }
