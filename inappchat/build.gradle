@@ -4,6 +4,7 @@ plugins {
 }
 
 group = 'com.github.livechat'
+version = libraryVersion
 
 android {
     namespace 'com.livechatinc.inappchat'
@@ -11,6 +12,7 @@ android {
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
+        buildConfigField "String", "VERSION_NAME", "\"${libraryVersion}\""
     }
     buildTypes {
         release {
@@ -37,6 +39,7 @@ afterEvaluate {
                 from components.findByName('release')
                 groupId = 'com.github.livechat'
                 artifactId = 'inappchat'
+                version = libraryVersion
             }
         }
     }

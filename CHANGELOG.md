@@ -1,5 +1,10 @@
 # Android ChangeLog
 
+## Version 2.4.6
+
+* Report library version
+* Improve build process
+
 ## Version 2.4.5
 
 * Revised error reporting in the `ChatWindowEventsListener.onError` callback and conditions for displaying the error view.
