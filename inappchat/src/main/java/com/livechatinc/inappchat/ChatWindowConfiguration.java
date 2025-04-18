@@ -59,12 +59,14 @@ public class ChatWindowConfiguration implements Serializable {
 
             chatUrl = chatUrl + "&native_platform=android";
 
+            chatUrl = chatUrl + "&wrapper_version=" + encodeParam(BuildConfig.VERSION_NAME);
+
             if (visitorName != null) {
-                chatUrl = chatUrl + "&name=" + URLEncoder.encode(visitorName, "UTF-8").replace("+", "%20");
+                chatUrl = chatUrl + "&name=" + encodeParam(visitorName).replace("+", "%20");
             }
 
             if (visitorEmail != null) {
-                chatUrl = chatUrl + "&email=" + URLEncoder.encode(visitorEmail, "UTF-8");
+                chatUrl = chatUrl + "&email=" + encodeParam(visitorEmail);
             }
 
             final String customParams = encodeParams(customParameters);
@@ -85,6 +87,10 @@ public class ChatWindowConfiguration implements Serializable {
 
     private String replaceParameter(String url, String key, String value) {
         return url.replace("{%" + key + "%}", value);
+    }
+
+    private String encodeParam(String value) throws UnsupportedEncodingException {
+        return URLEncoder.encode(value, "UTF-8");
     }
 
     private String encodeParams(@Nullable Map<String, String> param) {
