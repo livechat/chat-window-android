@@ -4,7 +4,7 @@ plugins {
 
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
