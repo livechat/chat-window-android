@@ -34,17 +34,21 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
+        }
+    }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.findByName('release')
-                groupId = 'com.github.livechat'
-                artifactId = 'inappchat'
-                version = libraryVersion
-            }
+publishing {
+    publications {
+        release(MavenPublication) {
+            from components.findByName('release')
+            groupId = 'com.github.livechat'
+            artifactId = 'inappchat'
+            version = libraryVersion
         }
     }
 }
