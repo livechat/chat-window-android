@@ -9,46 +9,39 @@ version = libraryVersion
 android {
     namespace 'com.livechatinc.inappchat'
     compileSdk 34
+
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 34
         buildConfigField "String", "VERSION_NAME", "\"${libraryVersion}\""
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    sourceSets {
-        main {
-            java {
-                srcDir 'src/main/java'
-            }
-            resources {
-                srcDir 'src/../lib'
-            }
-        }
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     publishing {
-        singleVariant("release") {
-            withSourcesJar()
-            withJavadocJar()
-        }
+        singleVariant("release")
     }
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            from components.findByName('release')
-            groupId = 'com.github.livechat'
-            artifactId = 'inappchat'
-            version = libraryVersion
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.findByName('release')
+                groupId = 'com.github.livechat'
+                artifactId = 'inappchat'
+                version = libraryVersion
+            }
         }
     }
 }
