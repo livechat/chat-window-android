@@ -1,5 +1,19 @@
 # Android ChangeLog
 
+## Version 2.5.0
+
+* Update compileSdk and targetSdk to 34
+* Update AGP to 8.4.2 and Gradle to 8.6
+* Update dependencies
+  * `androidx.annotation:annotation` to `1.9.1`
+  * `androidx.appcompat:appcompat` to `1.7.0`
+  * `com.google.code.gson:gson` to `2.12.1`
+
+## Version 2.4.6
+
+* Report library version
+* Improve build process
+
 ## Version 2.4.5
 
 * Revised error reporting in the `ChatWindowEventsListener.onError` callback and conditions for displaying the error view.

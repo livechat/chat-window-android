@@ -1,2 +1,2 @@
-include ':app', ':inappchat'
+include ':inappchat'
 include ':ChatWidget'
