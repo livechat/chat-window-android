@@ -4,15 +4,22 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.livechatinc.chatwidget.LiveChatView
 import com.livechatinc.chatwidget.R
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
+import com.livechatinc.chatwidget.src.models.ChatMessage
 
 class LiveChatActivity : AppCompatActivity() {
     private lateinit var liveChatView: LiveChatView
+    private lateinit var errorView: ViewGroup
+    private lateinit var reloadButton: View
+    private lateinit var loadingIndicator: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,8 +32,41 @@ class LiveChatActivity : AppCompatActivity() {
         }
 
         liveChatView = findViewById(R.id.chat_widget_view)
+        errorView = findViewById(R.id.chat_widget_error_view)
+        reloadButton = findViewById(R.id.chat_widget_error_button)
+        loadingIndicator = findViewById(R.id.chat_widget_loading_indicator)
 
-        liveChatView.init()
+        val callbackListener = object : LiveChatViewCallbackListener {
+            override fun onLoaded() {
+                loadingIndicator.visibility = View.GONE
+                liveChatView.visibility = ViewGroup.VISIBLE
+                errorView.visibility = ViewGroup.GONE
+            }
+
+            override fun onHide() {
+            }
+
+            override fun onNewMessage(message: ChatMessage?) {
+            }
+
+            override fun onError(cause: Throwable) {
+                loadingIndicator.visibility = View.GONE
+                liveChatView.visibility = ViewGroup.GONE
+                errorView.visibility = ViewGroup.VISIBLE
+            }
+
+            override fun onFileChooserActivityNotFound() {
+                TODO("Not yet implemented")
+            }
+        }
+        reloadButton.setOnClickListener {
+            loadingIndicator.visibility = View.VISIBLE
+            liveChatView.visibility = ViewGroup.GONE
+            errorView.visibility = ViewGroup.GONE
+            liveChatView.init(callbackListener = callbackListener)
+        }
+
+        liveChatView.init(callbackListener = callbackListener)
     }
 
     companion object {

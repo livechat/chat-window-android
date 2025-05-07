@@ -103,6 +103,7 @@ class LiveChat : LiveChatInterface() {
     }
 
     override fun logInCustomer(identityGrant: IdentityGrant?) {
+        //TODO: consider having identityGrant a suspend callback
         this.identityGrant = identityGrant
     }
 
