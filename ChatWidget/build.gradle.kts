@@ -25,7 +25,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "CHAT_URL", localProperties["chatUrl"].toString())
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false

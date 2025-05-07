@@ -1,4 +1,5 @@
 <resources>
-    <string name="chat_widget_error_text">Couldn\'t load chat.</string>
-    <string name="chat_widget_error_reload_label">Reload</string>
+    <string name="chat_widget_error_text">Unable to load chat. Please check your internet connection</string>
+    <string name="chat_widget_error_reload_label">Try Again</string>
+    <string name="chat_widget_file_chooser_not_found">No file picker app found on this device</string>
 </resources>
