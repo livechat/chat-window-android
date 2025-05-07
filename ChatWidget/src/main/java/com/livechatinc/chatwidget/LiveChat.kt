@@ -25,11 +25,15 @@ class LiveChat : LiveChatInterface() {
         mobileConfigHost = "https://cdn.livechatinc.com/",
         mobileConfigPath = "app/mobile/urls.json",
         accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
+        accountsRestoreCustomerApiUrl = "https://accounts.livechat.com/customer/",
     )
     internal val networkClient: NetworkClient = KtorNetworkClient(json, buildInfo)
-    private var tokenManager: TokenManager = TokenManager(networkClient) {
-        identityCallback(it)
-    }
+    private var tokenManager: TokenManager = TokenManager(
+        networkClient = networkClient,
+        identityCallback = { identityGrant -> identityCallback(identityGrant) },
+        customerIdCallback = { customerId -> customerIdCallback(customerId) },
+        customerTokenCallback = { customerToken -> customerTokenCallback(customerToken) },
+    )
 
     private var licence: String? = null
     private var applicationContext: Context? = null
@@ -42,6 +46,10 @@ class LiveChat : LiveChatInterface() {
     private var clientId: String? = null
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
+    private var customerId: String? = null
+    internal var customerIdCallback: (String) -> Unit = { }
+    private var customerToken: String? = null
+    internal var customerTokenCallback: (String) -> Unit = { }
 
     companion object {
         @Volatile
@@ -96,14 +104,24 @@ class LiveChat : LiveChatInterface() {
         licenceId: String,
         clientId: String,
         onIdentityGrantChange: (IdentityGrant) -> Unit,
+        onCustomerIdChange: (String) -> Unit,
+        onCustomerTokenChange: (String) -> Unit,
     ) {
         this.licenceId = licenceId
         this.clientId = clientId
         identityCallback = onIdentityGrantChange
+        customerIdCallback = onCustomerIdChange
+        customerTokenCallback = onCustomerTokenChange
     }
 
-    override fun logInCustomer(identityGrant: IdentityGrant?) {
+    override fun logInCustomer(
+        identityGrant: IdentityGrant?,
+        customerId: String?,
+        customerToken: String?
+    ) {
         this.identityGrant = identityGrant
+        this.customerId = customerId
+        this.customerToken = customerToken
     }
 
     internal fun createLiveChatConfig(): LiveChatConfig {
@@ -124,6 +142,8 @@ class LiveChat : LiveChatInterface() {
             licenceId = requireNotNull(licenceId),
             clientId = requireNotNull(clientId),
             identityGrant = identityGrant,
+            customerId = customerId,
+            customerAccessToken = customerToken,
         )
     }
 

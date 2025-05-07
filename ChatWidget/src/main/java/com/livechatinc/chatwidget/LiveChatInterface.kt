@@ -60,7 +60,9 @@ abstract class LiveChatInterface {
     abstract fun configureIdentityProvider(
         licenceId: String,
         clientId: String,
-        onIdentityGrantChange: (IdentityGrant) -> Unit
+        onIdentityGrantChange: (IdentityGrant) -> Unit,
+        onCustomerIdChange: (String) -> Unit,
+        onCustomerTokenChange: (String) -> Unit,
     )
 
     /**
@@ -69,7 +71,11 @@ abstract class LiveChatInterface {
      * Required:
      * @see configureIdentityProvider
      * */
-    abstract fun logInCustomer(identityGrant: IdentityGrant?)
+    abstract fun logInCustomer(
+        identityGrant: IdentityGrant?,
+        customerId: String?,
+        customerToken: String?
+    )
 
     /******* Push Notification *******/
 

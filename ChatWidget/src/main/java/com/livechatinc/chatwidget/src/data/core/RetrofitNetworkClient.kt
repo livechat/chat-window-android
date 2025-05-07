@@ -47,7 +47,9 @@ internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInf
         license: String,
         licenceId: String,
         clientId: String,
-        identityGrant: IdentityGrant?
+        identityGrant: IdentityGrant?,
+        entityId: String?,
+        accessToken: String?,
     ): Result<CustomerTokenResponse> {
         TODO("Not yet implemented")
     }

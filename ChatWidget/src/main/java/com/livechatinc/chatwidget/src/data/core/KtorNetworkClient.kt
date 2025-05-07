@@ -58,11 +58,14 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
         licenceId: String,
         clientId: String,
         identityGrant: IdentityGrant?,
+        entityId: String?,
+        accessToken: String?,
     ): Result<CustomerTokenResponse> {
         return withContext(Dispatchers.IO) {
             val response = client.post(buildInfo.accountsApiUrl, block = {
                 headers {
                     append("Content-Type", "application/json")
+//                    append("Authorization", "Bearer $accessToken")
                 }
 
                 identityGrant?.cookies?.forEach { cookie ->
@@ -84,7 +87,8 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
                         grantType = "cookie",
                         responseType = "token",
                         clientId = clientId,
-                        licenceId = licenceId
+                        licenceId = licenceId,
+                        entityId = entityId,
                     )
                 )
             })

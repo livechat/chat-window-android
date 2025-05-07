@@ -7,6 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 internal data class ChatWidgetToken(
     @SerialName("accessToken") var accessToken: String? = null,
+    //TODO: entityId non-nullable?
     @SerialName("entityId") var entityId: String? = null,
     @SerialName("expiresIn") var expiresIn: Int? = null,
     @SerialName("licenseId") var licenseId: String? = null,

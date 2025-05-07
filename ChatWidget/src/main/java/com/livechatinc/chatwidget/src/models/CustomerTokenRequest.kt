@@ -9,4 +9,5 @@ internal data class CustomerTokenRequest(
     @SerialName("response_type") val responseType: String? = null,
     @SerialName("client_id") val clientId: String? = null,
     @SerialName("organization_id") val licenceId: String? = null,
+    @SerialName("entity_id") val entityId: String? = null,
 )

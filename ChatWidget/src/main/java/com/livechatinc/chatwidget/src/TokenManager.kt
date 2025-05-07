@@ -11,7 +11,9 @@ import kotlinx.coroutines.withContext
 
 internal class TokenManager(
     private val networkClient: NetworkClient,
-    private val identityCallback: (IdentityGrant) -> Unit = { }
+    private val identityCallback: (IdentityGrant) -> Unit = { },
+    private val customerIdCallback: (String) -> Unit = { },
+    private val customerTokenCallback: (String) -> Unit = { }
 ) {
     private var currentToken: ChatWidgetToken? = null
 
@@ -31,6 +33,8 @@ internal class TokenManager(
                 currentToken = response.token
 
                 identityCallback(response.identityGrant)
+                customerIdCallback(response.token.entityId!!)
+                customerTokenCallback(response.token.accessToken!!)
 
                 result.getOrNull()?.token
             } else {
@@ -48,6 +52,8 @@ internal class TokenManager(
             identityConfig.licenceId,
             identityConfig.clientId,
             identityConfig.identityGrant,
+            identityConfig.customerId,
+            identityConfig.customerAccessToken
         )
     }
 }

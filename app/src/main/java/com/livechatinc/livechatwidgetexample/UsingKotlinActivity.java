@@ -55,7 +55,9 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
         liveChatViewCallback = liveChatCallback();
 
-        final IdentityGrant identityRestorationGrant = readTokenCookiesFromPreferences();
+        final IdentityGrant identityRestorationGrant = null;//readTokenCookiesFromPreferences();
+        final String restoredCustomerId = readCustomerIdFromPreferences();
+        final String restoredCustomerToken = null;//readCustomerTokenFromPreferences();
 
         LiveChat.getInstance().configureIdentityProvider(
                 BuildConfig.LICENCE_ID,
@@ -64,10 +66,21 @@ public class UsingKotlinActivity extends AppCompatActivity {
 //                    saveCookieGrantToPreferences(cookieGrant);
                     Log.i("UsingKotlinActivity", "### new cookie grant: " + identityGrant);
                     return Unit.INSTANCE;
+                },
+                customerId -> {
+                    Log.i("UsingKotlinActivity", "### new customer id: " + customerId);
+//                    saveCustomerIdToPreferences(customerId);
+                    return Unit.INSTANCE;
+                },
+                customerToken -> {
+                    Log.i("UsingKotlinActivity", "### new customer token: " + customerToken);
+//                    saveCustomerTokenToPreferences(customerToken);
+
+                    return Unit.INSTANCE;
                 }
         );
 
-        LiveChat.getInstance().logInCustomer(identityRestorationGrant);
+        LiveChat.getInstance().logInCustomer(identityRestorationGrant, restoredCustomerId, restoredCustomerToken);
 
         liveChatView.init(liveChatViewCallback);
     }
@@ -107,7 +120,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
         };
     }
 
-
     private Unit saveCookieGrantToPreferences(IdentityGrant identityGrant) {
         SharedPreferences sharedPreferences =
                 getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
@@ -128,4 +140,37 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
         return gson.fromJson(cookieGrant, IdentityGrant.class);
     }
+
+    private Unit saveCustomerIdToPreferences(String customerId) {
+        SharedPreferences sharedPreferences =
+                getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("customerId", customerId);
+        editor.apply();
+
+        return Unit.INSTANCE;
+    }
+
+    private String readCustomerIdFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getString("customerId", null);
+    }
+
+    private Unit saveCustomerTokenToPreferences(String customerToken) {
+        SharedPreferences sharedPreferences =
+                getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("customerToken", customerToken);
+        editor.apply();
+
+        return Unit.INSTANCE;
+    }
+
+    private String readCustomerTokenFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+
+        return sharedPreferences.getString("customerToken", null);
+    }
+
 }

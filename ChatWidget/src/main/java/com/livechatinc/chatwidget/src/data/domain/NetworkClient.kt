@@ -11,5 +11,7 @@ internal interface NetworkClient {
         licenceId: String,
         clientId: String,
         identityGrant: IdentityGrant? = null,
+        entityId: String?,
+        accessToken: String?,
     ): Result<CustomerTokenResponse>
 }

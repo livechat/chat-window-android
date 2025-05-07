@@ -7,4 +7,6 @@ internal data class CustomIdentityConfig(
     val licenceId: String,
     val clientId: String,
     val identityGrant: IdentityGrant?,
+    val customerId: String?,
+    val customerAccessToken: String?,
 )
