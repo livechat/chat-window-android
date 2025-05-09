@@ -1,6 +1,5 @@
 package com.livechatinc.chatwidget.src.components
 
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -100,9 +99,6 @@ class LiveChatActivity : AppCompatActivity() {
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, LiveChatActivity::class.java)
-            if (context !is Activity) {
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            }
 
             context.startActivity(intent)
         }
