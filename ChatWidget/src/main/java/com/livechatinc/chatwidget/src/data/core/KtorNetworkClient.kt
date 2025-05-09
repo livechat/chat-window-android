@@ -13,6 +13,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.*
@@ -43,6 +44,7 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
         install(HttpRequestRetry) {
             //TODO: specify retry policy
         }
+        install(HttpCache)
     }
 
     override suspend fun fetchChatUrl(): String {
