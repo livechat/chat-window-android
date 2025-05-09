@@ -1,11 +1,11 @@
 package com.livechatinc.chatwidget.src.extensions
 
+import com.livechatinc.chatwidget.BuildConfig
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import java.net.URLEncoder
 
 internal fun String.buildChatUrl(config: LiveChatConfig): String {
     val parameters = listOfNotNull(
-        "group" to config.groupId,
         config.customerInfo?.email?.takeIf { it.isNotBlank() }
             ?.let { "email" to URLEncoder.encode(it, "UTF-8") },
         config.customerInfo?.name?.takeIf { it.isNotBlank() }
@@ -15,7 +15,8 @@ internal fun String.buildChatUrl(config: LiveChatConfig): String {
                 it.map { (key, value) -> "$key=$value" }.joinToString("&"),
                 "UTF-8"
             )
-        }
+        },
+        "wrapper_version" to URLEncoder.encode(BuildConfig.VERSION_NAME, "UTF-8")
     )
 
     return ensureHttps().replaceParameter("group", config.groupId)

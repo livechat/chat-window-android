@@ -14,6 +14,8 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+version = "0.1.0"
+
 android {
     namespace = "com.livechatinc.chatwidget"
     compileSdk = 35
@@ -24,6 +26,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "CHAT_URL", localProperties["chatUrl"].toString())
+        buildConfigField("String", "VERSION_NAME", "\"${version}\"")
     }
     buildTypes {
         release {
