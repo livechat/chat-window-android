@@ -3,7 +3,6 @@ package com.livechatinc.chatwidget
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -98,7 +97,6 @@ class LiveChatView(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserMode: FileChooserMode,
     ) {
-        //TODO: handle case where wasn't possible to support file sharing
         when (fileChooserMode) {
             FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
             FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
@@ -116,23 +114,6 @@ class LiveChatView(
         CoroutineScope(Dispatchers.Main).launch {
             webView.evaluateJavascript("javascript:$callback($data)", null)
         }
-    }
-
-    //TODO: no need for shared prefs?
-    override fun saveTokenToPreferences(token: String) {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val editor: SharedPreferences.Editor = sharedPreferences.edit()
-        editor.putString("widgetToken", token)
-        editor.apply()
-    }
-
-    override fun readTokenFromPreferences(): String? {
-        val sharedPreferences: SharedPreferences =
-            context.getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val token = sharedPreferences.getString("widgetToken", null)
-
-        return token
     }
 
     companion object {
