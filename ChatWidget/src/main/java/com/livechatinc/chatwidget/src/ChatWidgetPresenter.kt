@@ -43,7 +43,9 @@ internal class ChatWidgetPresenter internal constructor(
                 return@launch
             } catch (cause: Throwable) {
                 println("### ChatWidgetPresenter.init: $cause")
-                listener?.onError(cause)
+                withContext(Dispatchers.Main) {
+                    listener?.onError(cause)
+                }
                 cause.printStackTrace()
             }
         }
