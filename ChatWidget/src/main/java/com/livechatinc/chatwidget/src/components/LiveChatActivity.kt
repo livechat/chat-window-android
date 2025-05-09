@@ -107,4 +107,25 @@ class LiveChatActivity : AppCompatActivity() {
             context.startActivity(intent)
         }
     }
+
+    private object Keys {
+        const val KEY_LOADING_INDICATOR_VISIBLE = "loadingIndicatorVisible"
+        const val KEY_LIVE_CHAT_VIEW_VISIBLE = "liveChatViewVisible"
+        const val KEY_ERROR_VIEW_VISIBLE = "errorViewVisible"
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(Keys.KEY_LOADING_INDICATOR_VISIBLE, loadingIndicator.isVisible)
+        outState.putBoolean(Keys.KEY_LIVE_CHAT_VIEW_VISIBLE, liveChatView.isVisible)
+        outState.putBoolean(Keys.KEY_ERROR_VIEW_VISIBLE, errorView.isVisible)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        loadingIndicator.isVisible =
+            savedInstanceState.getBoolean(Keys.KEY_LOADING_INDICATOR_VISIBLE)
+        liveChatView.isVisible = savedInstanceState.getBoolean(Keys.KEY_LIVE_CHAT_VIEW_VISIBLE)
+        errorView.isVisible = savedInstanceState.getBoolean(Keys.KEY_ERROR_VIEW_VISIBLE)
+    }
 }

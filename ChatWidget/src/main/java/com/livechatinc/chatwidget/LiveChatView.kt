@@ -5,12 +5,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.webkit.ValueCallback
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.FrameLayout
-import androidx.lifecycle.DefaultLifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
@@ -28,7 +29,7 @@ import kotlinx.coroutines.launch
 class LiveChatView(
     context: Context,
     attrs: AttributeSet?
-) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
+) : FrameLayout(context, attrs), ChatWidgetViewInternal {
     private var fileSharing: FileSharing? = null
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
@@ -53,10 +54,11 @@ class LiveChatView(
         webSettings.domStorageEnabled = true
         //TODO: investigate message sounds without user gesture
         webSettings.mediaPlaybackRequiresUserGesture = false
+        webSettings.cacheMode = WebSettings.LOAD_DEFAULT
 
         // TODO: Check if clearCache interrupts with resuming the session
         // Seems to be needed for CIP callbacks
-        webView.clearCache(true)
+//        webView.clearCache(true)
 
         webView.webChromeClient = ChatWidgetChromeClient(presenter)
         webView.webViewClient = ChatWidgetWebViewClient(presenter)
@@ -133,24 +135,25 @@ class LiveChatView(
         return token
     }
 
-    override fun onDetachedFromWindow() {
-        webView.apply {
-            onPause()
-            pauseTimers()
-            destroy()
+    companion object {
+        private const val KEY_WEBVIEW_STATE = "webViewState"
+        private const val KEY_SUPER_STATE = "superState"
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        return Bundle().apply {
+            putParcelable(KEY_SUPER_STATE, superState)
+            putBundle(KEY_WEBVIEW_STATE, Bundle().also { webView.saveState(it) })
         }
-
-        super.onDetachedFromWindow()
     }
 
-    override fun onResume(owner: LifecycleOwner) {
-        //TODO: pass lifecycle events to the webView
-        super.onResume(owner)
-        println("### onResume")
-    }
-
-    override fun onPause(owner: LifecycleOwner) {
-        super.onPause(owner)
-        println("### onPause")
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is Bundle) {
+            state.getBundle(KEY_WEBVIEW_STATE)?.let { webView.restoreState(it) }
+            super.onRestoreInstanceState(state.getParcelable(KEY_SUPER_STATE))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
     }
 }
