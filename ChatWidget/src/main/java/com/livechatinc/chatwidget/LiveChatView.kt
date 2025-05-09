@@ -1,0 +1,140 @@
+package com.livechatinc.chatwidget
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.webkit.ValueCallback
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.widget.FrameLayout
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
+import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
+import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
+import com.livechatinc.chatwidget.src.ChatWidgetPresenter
+import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
+import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
+import com.livechatinc.chatwidget.src.FileSharing
+import com.livechatinc.chatwidget.src.extensions.getActivity
+import com.livechatinc.chatwidget.src.models.FileChooserMode
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+@SuppressLint("SetJavaScriptEnabled")
+class LiveChatView(
+    context: Context,
+    attrs: AttributeSet?
+) : FrameLayout(context, attrs), ChatWidgetViewInternal {
+    private var fileSharing: FileSharing? = null
+    private var webView: WebView
+    private var presenter: ChatWidgetPresenter
+
+    init {
+        inflate(context, R.layout.chat_widget_internal, this)
+        webView = findViewById(R.id.chat_widget_webview)
+        presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
+
+        configureWebView()
+
+        supportFileSharing()
+    }
+
+    private fun configureWebView() {
+        val webSettings = webView.settings
+        webSettings.javaScriptEnabled = true
+        //TODO: test set need for initial focus
+        //webSettings.setNeedInitialFocus(false)
+
+        //TODO: check need for dom storage
+        webSettings.domStorageEnabled = true
+        //TODO: investigate message sounds without user gesture
+        webSettings.mediaPlaybackRequiresUserGesture = false
+        webSettings.cacheMode = WebSettings.LOAD_DEFAULT
+
+        // TODO: Check if clearCache interrupts with resuming the session
+        // Seems to be needed for CIP callbacks
+//        webView.clearCache(true)
+
+        webView.webChromeClient = ChatWidgetChromeClient(presenter)
+        webView.webViewClient = ChatWidgetWebViewClient(presenter)
+
+        webView.addJavascriptInterface(
+            ChatWidgetJSBridge(presenter),
+            ChatWidgetJSBridge.INTERFACE_NAME,
+        )
+    }
+
+    private fun supportFileSharing() {
+        //TODO: check fragment, and regular activity
+        //TODO: consider setting by the lib user
+        getActivity().let { activity ->
+            if (activity != null) {
+                fileSharing = FileSharing(
+                    activity.activityResultRegistry,
+                    presenter,
+                )
+                activity.lifecycle.addObserver(fileSharing!!)
+            }
+        }
+    }
+
+    fun init(callbackListener: LiveChatViewCallbackListener? = null) {
+        presenter.setCallbackListener(callbackListener)
+
+        val config = LiveChat.getInstance().createLiveChatConfig()
+        presenter.init(config)
+    }
+
+    override fun loadUrl(url: String) {
+        webView.loadUrl(url)
+    }
+
+    override fun startFilePicker(
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserMode: FileChooserMode,
+    ) {
+        when (fileChooserMode) {
+            FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
+            FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
+        }
+    }
+
+    override fun launchExternalBrowser(uri: Uri) {
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+
+        context.startActivity(intent)
+    }
+
+    override fun postWebViewMessage(callback: String?, data: String) {
+        println("### --> post message: $callback, $data")
+        CoroutineScope(Dispatchers.Main).launch {
+            webView.evaluateJavascript("javascript:$callback($data)", null)
+        }
+    }
+
+    companion object {
+        private const val KEY_WEBVIEW_STATE = "webViewState"
+        private const val KEY_SUPER_STATE = "superState"
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        val superState = super.onSaveInstanceState()
+        return Bundle().apply {
+            putParcelable(KEY_SUPER_STATE, superState)
+            putBundle(KEY_WEBVIEW_STATE, Bundle().also { webView.saveState(it) })
+        }
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state is Bundle) {
+            state.getBundle(KEY_WEBVIEW_STATE)?.let { webView.restoreState(it) }
+            super.onRestoreInstanceState(state.getParcelable(KEY_SUPER_STATE))
+        } else {
+            super.onRestoreInstanceState(state)
+        }
+    }
+}

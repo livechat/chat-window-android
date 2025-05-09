@@ -2,17 +2,43 @@ plugins {
     id 'com.android.application'
 }
 
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
-    compileSdk 34
+    compileSdk 35
+
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
-        targetSdkVersion 33
+        //TODO: check compatibility
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "LICENCE", localProperties['licence'] ?: "null")
+        buildConfigField("String", "LICENCE_ID", localProperties['licenceId'] ?: "null")
+        buildConfigField("String", "CLIENT_ID", localProperties['clientId'] ?: "null")
     }
+
+    flavorDimensions = ["flavor-type"]
+    productFlavors {
+        prod {
+            dimension "flavor-type"
+        }
+        dev {
+            dimension "flavor-type"
+            applicationIdSuffix = ".dev"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -32,7 +58,9 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
     implementation project(':inappchat')
+    implementation project(':ChatWidget')
 
     testImplementation 'junit:junit:4.13.2'
 }

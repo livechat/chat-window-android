@@ -14,13 +14,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
 import com.livechatinc.inappchat.ChatWindowUtils;
 
+import java.util.Collections;
+
 public class MainActivity extends AppCompatActivity {
 
-    String licenceNumber = "1520";
+    String licenceNumber = BuildConfig.LICENCE == null ? "1520" : BuildConfig.LICENCE;
     ChatWindowConfiguration windowConfig = new ChatWindowConfiguration.Builder()
             .setLicenceNumber(licenceNumber)
             .build();
@@ -103,6 +106,22 @@ public class MainActivity extends AppCompatActivity {
 
     public void clearChatSession(View view) {
         ChatWindowUtils.clearSession();
+    }
+
+    public void startKotlinVersion(View view) {
+        final Intent intent = new Intent(this, UsingKotlinActivity.class);
+        startActivity(intent);
+    }
+
+    public void startFromSingleton(View view) {
+        LiveChat.getInstance().setCustomerInfo(
+                "Joe",
+                "joe@mail.com",
+                "0",
+                Collections.singletonMap("internalId", "ABC123")
+        );
+
+        LiveChat.getInstance().show(this);
     }
 
     public interface OnBackPressedListener {
