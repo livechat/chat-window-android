@@ -25,7 +25,7 @@ internal class FileSharing(
 
     private fun registerSingleContentContract(owner: LifecycleOwner) {
         getContent = registry.register(
-            "chatWidgetFileResultRegistryKey",
+            "liveChatFileResultRegistryKey",
             owner,
             ActivityResultContracts.GetContent()
         ) { file: Uri? ->
@@ -36,9 +36,8 @@ internal class FileSharing(
     }
 
     private fun registerMultipleContentContract(owner: LifecycleOwner) {
-        //TODO: what if there are two apps on user device with ChatWidget? Should it contain bundle id?
         getMultipleContent = registry.register(
-            "chatWidgetMultipleFilesResultRegistryKey",
+            "liveChatMultipleFilesResultRegistryKey",
             owner,
             ActivityResultContracts.GetMultipleContents()
         ) { value -> filesUploadCallback?.onReceiveValue(value.toTypedArray()) }
