@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
+import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
@@ -13,20 +14,14 @@ import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CustomerInfo
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomIdentityConfig
-import kotlinx.serialization.json.Json
 
 class LiveChat : LiveChatInterface() {
-    private val json: Json = Json {
-        isLenient = true
-        ignoreUnknownKeys = true
-        prettyPrint = true
-    }
     private val buildInfo: BuildInfo = BuildInfo(
         mobileConfigHost = "https://cdn.livechatinc.com/",
         mobileConfigPath = "app/mobile/urls.json",
         accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
     )
-    internal val networkClient: NetworkClient = KtorNetworkClient(json, buildInfo)
+    internal val networkClient: NetworkClient = KtorNetworkClient(JsonProvider.instance, buildInfo)
     private var tokenManager: TokenManager = TokenManager(networkClient) {
         identityCallback(it)
     }

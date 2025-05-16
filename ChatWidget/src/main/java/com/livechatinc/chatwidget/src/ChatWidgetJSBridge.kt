@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget.src
 
 import android.webkit.JavascriptInterface
+import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.models.BridgeMessage
 import com.livechatinc.chatwidget.src.models.ChatMessage
@@ -16,11 +17,7 @@ internal class ChatWidgetJSBridge internal constructor(
 ) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
-    //TODO: single json instance
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    private val json: Json = JsonProvider.instance
 
     @JavascriptInterface
     fun hasToken(callback: String) {
