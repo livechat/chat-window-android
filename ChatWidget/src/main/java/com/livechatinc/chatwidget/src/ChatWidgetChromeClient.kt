@@ -5,6 +5,7 @@ import android.webkit.ConsoleMessage
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import com.livechatinc.chatwidget.src.common.Logger
 
 internal class ChatWidgetChromeClient(
     val presenter: ChatWidgetPresenter
@@ -16,7 +17,7 @@ internal class ChatWidgetChromeClient(
     ): Boolean = presenter.onShowFileChooser(filePathCallback, fileChooserParams)
 
     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-        println("### onConsoleMessage: ${consoleMessage?.message()}")
+        Logger.v("onConsoleMessage: ${consoleMessage?.message()}")
 
         return super.onConsoleMessage(consoleMessage)
     }

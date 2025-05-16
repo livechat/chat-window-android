@@ -1,6 +1,6 @@
 package com.livechatinc.chatwidget.src
 
-import android.util.Log
+import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
@@ -34,7 +34,8 @@ internal class TokenManager(
 
                 result.getOrNull()?.token
             } else {
-                Log.e("LiveChat.Identity", "Obtaining user identity failed: \n${result.exceptionOrNull()}")
+                Logger.e("Obtaining user identity failed", throwable = result.exceptionOrNull())
+
                 return@withContext null
             }
         }

@@ -9,6 +9,7 @@ import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomerToken
 import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
 import com.livechatinc.chatwidget.src.models.toChatWidgetToken
+import com.livechatinc.chatwidget.src.common.Logger as InternalLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
@@ -36,7 +37,7 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
     private val client = HttpClient(CIO) {
         install(Logging) {
             logger = Logger.ANDROID
-            level = LogLevel.ALL
+            level = InternalLogger.getLogLevel().toKtorLogLevel
         }
         install(ContentNegotiation) {
             json(json)
@@ -134,3 +135,15 @@ private fun Iterable<KtorCookie>.toInternalCookies(): List<Cookie> {
         )
     }
 }
+
+private val InternalLogger.LogLevel.toKtorLogLevel: LogLevel
+    get() {
+        return when (this) {
+            InternalLogger.LogLevel.VERBOSE -> LogLevel.ALL
+            InternalLogger.LogLevel.DEBUG -> LogLevel.ALL
+            InternalLogger.LogLevel.INFO -> LogLevel.INFO
+            InternalLogger.LogLevel.WARN -> LogLevel.NONE
+            InternalLogger.LogLevel.ERROR -> LogLevel.NONE
+            InternalLogger.LogLevel.NONE -> LogLevel.NONE
+        }
+    }

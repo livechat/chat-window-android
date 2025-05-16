@@ -5,6 +5,7 @@ import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import com.livechatinc.chatwidget.BuildConfig
 import com.livechatinc.chatwidget.LiveChat
+import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.common.WebHttpException
 import com.livechatinc.chatwidget.src.common.WebResourceException
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
@@ -42,11 +43,11 @@ internal class ChatWidgetPresenter internal constructor(
 
                 return@launch
             } catch (cause: Throwable) {
-                println("### ChatWidgetPresenter.init: $cause")
+                Logger.e("Failed to load chat url: $cause", throwable = cause)
+
                 withContext(Dispatchers.Main) {
                     listener?.onError(cause)
                 }
-                cause.printStackTrace()
             }
         }
     }
@@ -109,7 +110,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     private fun printWebViewError(errorCode: Int?, description: String?, failingUrl: String?) {
-        println("Error, code: $errorCode, description: $description, failingUrl: $failingUrl")
+        Logger.e("WebViewError, code: $errorCode, description: $description, failingUrl: $failingUrl")
     }
 
     //TODO: check main thread safety

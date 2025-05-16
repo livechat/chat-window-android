@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget.src
 
 import android.webkit.JavascriptInterface
+import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.models.BridgeMessage
 import com.livechatinc.chatwidget.src.models.ChatMessage
 import com.livechatinc.chatwidget.src.models.MessageType
@@ -23,28 +24,28 @@ internal class ChatWidgetJSBridge internal constructor(
 
     @JavascriptInterface
     fun hasToken(callback: String) {
-        println("### <-- hasToken async ${callback}")
+        Logger.d("### <-- hasToken async ${callback}")
 
         presenter.hasToken(callback)
     }
 
     @JavascriptInterface
     fun getToken(callback: String?) {
-        println("### <-- getToken async ${callback}")
+        Logger.d("### <-- getToken async ${callback}")
 
         presenter.getToken(callback)
     }
 
     @JavascriptInterface
     fun getFreshToken(callback: String) {
-        println("### <-- getFreshToken async ${callback}")
+        Logger.d("### <-- getFreshToken async ${callback}")
 
         presenter.getFreshToken(callback)
     }
 
     @JavascriptInterface
     fun postMessage(messageJson: String) {
-        println("### postMessage: $messageJson")
+        Logger.d("### postMessage: $messageJson")
 
         //TODO: handle exceptions
         val messageType = json.decodeFromString<BridgeMessage>(messageJson)
@@ -63,7 +64,7 @@ internal class ChatWidgetJSBridge internal constructor(
                     )
                 }
             } catch (e: Exception) {
-                println("Message handling failed: $e")
+                Logger.e("Message handling failed", throwable = e)
             }
         }
     }

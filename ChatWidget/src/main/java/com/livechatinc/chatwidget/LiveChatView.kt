@@ -18,6 +18,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
+import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +111,7 @@ class LiveChatView(
     }
 
     override fun postWebViewMessage(callback: String?, data: String) {
-        println("### --> post message: $callback, $data")
+        Logger.d("### --> post message: $callback, $data")
         CoroutineScope(Dispatchers.Main).launch {
             webView.evaluateJavascript("javascript:$callback($data)", null)
         }
