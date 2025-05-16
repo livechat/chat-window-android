@@ -35,8 +35,8 @@ class LiveChatView(
     private var presenter: ChatWidgetPresenter
 
     init {
-        inflate(context, R.layout.chat_widget_internal, this)
-        webView = findViewById(R.id.chat_widget_webview)
+        inflate(context, R.layout.live_chat_widget_internal, this)
+        webView = findViewById(R.id.live_chat_webview)
         presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
 
         configureWebView()

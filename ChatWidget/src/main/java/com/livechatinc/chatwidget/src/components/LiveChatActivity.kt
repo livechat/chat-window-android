@@ -48,7 +48,7 @@ class LiveChatActivity : AppCompatActivity() {
         override fun onFileChooserActivityNotFound() {
             Toast.makeText(
                 this@LiveChatActivity,
-                R.string.chat_widget_file_chooser_not_found,
+                R.string.live_chat_file_chooser_not_found,
                 Toast.LENGTH_SHORT
             ).show()
         }
@@ -57,17 +57,17 @@ class LiveChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_chat_widget)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        setContentView(R.layout.live_chat_activity)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.live_chat_activity_container)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        liveChatView = findViewById(R.id.chat_widget_view)
-        errorView = findViewById(R.id.chat_widget_error_view)
+        liveChatView = findViewById(R.id.live_chat_view)
+        errorView = findViewById(R.id.live_chat_error_view)
         reloadButton = findViewById(R.id.chat_widget_error_button)
-        loadingIndicator = findViewById(R.id.chat_widget_loading_indicator)
+        loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
 
         setupReloadButton()
 

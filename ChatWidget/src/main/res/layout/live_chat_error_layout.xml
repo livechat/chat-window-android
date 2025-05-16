@@ -15,7 +15,7 @@
         android:layout_centerHorizontal="true"
         android:layout_centerInParent="true"
         android:layout_marginTop="24dp"
-        android:text="@string/chat_widget_error_text" />
+        android:text="@string/live_chat_error_text" />
 
     <Button
         android:id="@+id/chat_widget_error_button"
@@ -24,6 +24,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/chat_widget_error_text"
         android:layout_marginTop="48dp"
-        android:text="@string/chat_widget_error_reload_label" />
+        android:text="@string/live_chat_error_reload_label" />
 
 </RelativeLayout>
