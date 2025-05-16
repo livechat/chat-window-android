@@ -44,7 +44,6 @@ internal class FileSharing(
     }
 
     fun selectFile(filePathCallback: ValueCallback<Array<Uri>>?) {
-        //TODO: consider using accept type from chrome client callback
         filesUploadCallback = filePathCallback
 
         try {
