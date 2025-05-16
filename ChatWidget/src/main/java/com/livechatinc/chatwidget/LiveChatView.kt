@@ -11,6 +11,8 @@ import android.webkit.ValueCallback
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.FrameLayout
+import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.LifecycleOwner
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
@@ -29,7 +31,7 @@ import kotlinx.coroutines.launch
 class LiveChatView(
     context: Context,
     attrs: AttributeSet?
-) : FrameLayout(context, attrs), ChatWidgetViewInternal {
+) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
     private var fileSharing: FileSharing? = null
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
@@ -72,14 +74,13 @@ class LiveChatView(
     private fun supportFileSharing() {
         //TODO: check fragment, and regular activity
         //TODO: consider setting by the lib user
-        getActivity().let { activity ->
-            if (activity != null) {
-                fileSharing = FileSharing(
-                    activity.activityResultRegistry,
-                    presenter,
-                )
-                activity.lifecycle.addObserver(fileSharing!!)
-            }
+        getActivity()?.let { activity ->
+            fileSharing = FileSharing(
+                activity.activityResultRegistry,
+                presenter,
+            )
+            activity.lifecycle.addObserver(fileSharing!!)
+            activity.lifecycle.addObserver(this)
         }
     }
 
@@ -115,6 +116,24 @@ class LiveChatView(
         CoroutineScope(Dispatchers.Main).launch {
             webView.evaluateJavascript("javascript:$callback($data)", null)
         }
+    }
+
+    // Lifecycle methods
+
+    override fun onResume(owner: LifecycleOwner) {
+        super.onResume(owner)
+        webView.onResume()
+        webView.resumeTimers()
+    }
+
+    override fun onPause(owner: LifecycleOwner) {
+        webView.onPause()
+        super.onPause(owner)
+    }
+
+    override fun onDetachedFromWindow() {
+        webView.destroy()
+        super.onDetachedFromWindow()
     }
 
     companion object {
