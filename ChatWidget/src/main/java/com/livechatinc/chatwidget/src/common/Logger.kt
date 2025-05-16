@@ -18,6 +18,8 @@ object Logger {
 
     /**
      * Set the log level for the library.
+     *
+     * In order to see HTTP calls logs, you must set the level before [LiveChat.initialize]
      * @param level The desired log level.
      */
     @JvmStatic

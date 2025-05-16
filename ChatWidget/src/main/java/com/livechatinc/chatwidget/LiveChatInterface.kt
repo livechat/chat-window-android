@@ -27,7 +27,7 @@ abstract class LiveChatInterface {
      * Opens full screen activity
      *
      * Limitations:
-     * - no callbacks - [LiveChatView.LiveChatViewCallbackListener]
+     * - no callbacks - [LiveChatViewCallbackListener]
      * */
     abstract fun show(context: Context)
 
