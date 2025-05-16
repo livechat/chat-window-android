@@ -14,7 +14,7 @@ object Logger {
     }
 
     private var logLevel: LogLevel = LogLevel.NONE
-    private const val DEFAULT_TAG = "ChatWidget"
+    private const val DEFAULT_TAG = "LiveChat"
 
     /**
      * Set the log level for the library.

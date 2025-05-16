@@ -46,11 +46,13 @@ internal class ChatWidgetJSBridge internal constructor(
     @JavascriptInterface
     fun postMessage(messageJson: String) {
         Logger.d("### postMessage: $messageJson")
-
-        //TODO: handle exceptions
-        val messageType = json.decodeFromString<BridgeMessage>(messageJson)
-
-        dispatchMessage(messageType.messageType, messageJson)
+        try {
+            json.decodeFromString<BridgeMessage?>(messageJson)?.let {
+                dispatchMessage(it.messageType, messageJson)
+            }
+        } catch (cause: Exception) {
+            Logger.e("Failed to decode message: $messageJson", throwable = cause)
+        }
     }
 
     private fun dispatchMessage(type: MessageType, messageJson: String) {
