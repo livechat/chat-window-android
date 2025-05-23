@@ -1,0 +1,5 @@
+<resources>
+    <string name="live_chat_error_text">Wystąpił błąd. Spróbuj ponownie.</string>
+    <string name="live_chat_error_reload_label">Przeładuj</string>
+    <string name="live_chat_file_chooser_not_found">No file picker app found on this device</string>
+</resources>
