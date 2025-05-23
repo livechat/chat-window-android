@@ -1,7 +1,6 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import androidx.activity.ComponentActivity
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
@@ -76,10 +75,6 @@ class LiveChat : LiveChatInterface() {
     override fun show(context: Context) {
         requireNotNull(licence) { "SDK not initialized. Call initialize() first" }
 
-        if (context !is ComponentActivity) {
-            throw IllegalArgumentException("Context must be ComponentActivity")
-        }
-
         startChatActivity(context)
     }
 
@@ -123,7 +118,7 @@ class LiveChat : LiveChatInterface() {
         )
     }
 
-    private fun startChatActivity(context: ComponentActivity) {
+    private fun startChatActivity(context: Context) {
         LiveChatActivity.start(context)
     }
 
