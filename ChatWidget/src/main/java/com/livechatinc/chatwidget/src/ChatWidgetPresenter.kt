@@ -29,6 +29,7 @@ internal class ChatWidgetPresenter internal constructor(
     private var listener: LiveChatViewCallbackListener? = null
     private lateinit var config: LiveChatConfig
     private val eventDispatcher = LiveChatEventDispatcher()
+    internal var uiReady: Boolean = false
 
     fun addCallbackListener(listener: LiveChatViewCallbackListener) {
         eventDispatcher.addListener(listener)
@@ -70,6 +71,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onUiReady() {
+        uiReady = true;
         eventDispatcher.dispatchOnLoaded()
     }
 

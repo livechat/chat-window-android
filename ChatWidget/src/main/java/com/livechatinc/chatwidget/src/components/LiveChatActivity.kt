@@ -76,7 +76,10 @@ class LiveChatActivity : AppCompatActivity() {
 
             liveChatView.addCallbackListener(callbackListener)
             container.addView(liveChatView)
-            liveChatView.visibility = View.VISIBLE
+            if (liveChatView.isUiLoaded()) {
+                liveChatView.visibility = View.VISIBLE
+            }
+
         } else {
             liveChatView = LiveChatView(this, null).apply {
                 visibility = View.GONE

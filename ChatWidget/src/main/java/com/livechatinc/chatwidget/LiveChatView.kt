@@ -45,6 +45,9 @@ class LiveChatView(
 
         supportFileSharing()
     }
+    fun isUiLoaded(): Boolean {
+        return presenter.uiReady
+    }
 
     private fun configureWebView() {
         val webSettings = webView.settings
