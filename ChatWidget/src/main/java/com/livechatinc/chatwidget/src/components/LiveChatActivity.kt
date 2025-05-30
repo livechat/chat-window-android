@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -77,7 +78,13 @@ class LiveChatActivity : AppCompatActivity() {
             container.addView(liveChatView)
             liveChatView.visibility = View.VISIBLE
         } else {
-            liveChatView = LiveChatView(this, null)
+            liveChatView = LiveChatView(this, null).apply {
+                visibility = View.GONE
+                layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }
             container.addView(liveChatView)
             liveChatView.addCallbackListener(callbackListener)
             liveChatView.init()
