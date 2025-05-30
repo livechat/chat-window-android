@@ -1,6 +1,8 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
+import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
+import com.livechatinc.chatwidget.src.LiveChatViewInitializer
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
@@ -24,9 +26,11 @@ class LiveChat : LiveChatInterface() {
     private var tokenManager: TokenManager = TokenManager(networkClient) {
         identityCallback(it)
     }
+    private var initializer: LiveChatViewInitializer? = null
+
 
     private var licence: String? = null
-    private var applicationContext: Context? = null
+    private lateinit var applicationContext: Context
     private var groupId: String? = null
 
     private var customerInfo: CustomerInfo? = null
@@ -36,6 +40,14 @@ class LiveChat : LiveChatInterface() {
     private var clientId: String? = null
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
+
+    internal var callbackListener: LiveChatViewCallbackListener? = null
+    fun setCallbackListener(listener: LiveChatViewCallbackListener?) {
+        callbackListener = listener
+    }
+
+    internal var liveChatViewLifecycleScope: LiveChatViewLifecycleScope =
+        LiveChatViewLifecycleScope.ACTIVITY
 
     companion object {
         @Volatile
@@ -49,13 +61,31 @@ class LiveChat : LiveChatInterface() {
 
         @JvmStatic
         @JvmOverloads
-        fun initialize(licence: String, context: Context, groupId: String? = null) {
+        fun initialize(
+            licence: String,
+            context: Context,
+            groupId: String? = null,
+            lifecycleScope: LiveChatViewLifecycleScope = LiveChatViewLifecycleScope.ACTIVITY
+        ) {
             getInstance().apply {
                 this.licence = licence
                 this.groupId = groupId
                 this.applicationContext = context.applicationContext
+                this.liveChatViewLifecycleScope = lifecycleScope
             }
         }
+    }
+
+    fun preLoadLiveChatView() {
+        requireNotNull(licence) { "SDK not initialized. Call initialize() first" }
+
+        initializer = LiveChatViewInitializer(applicationContext).also {
+            it.preLoadLiveChat(callbackListener = callbackListener)
+        }
+    }
+
+    internal fun getPreInitializedView(): LiveChatView? {
+        return initializer?.getLiveChatView()
     }
 
     override fun setCustomerInfo(

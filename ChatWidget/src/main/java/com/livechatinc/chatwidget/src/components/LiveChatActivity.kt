@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,12 +12,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsAnimationCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.LiveChatView
 import com.livechatinc.chatwidget.R
 import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.models.ChatMessage
 
 class LiveChatActivity : AppCompatActivity() {
+    private lateinit var container: ViewGroup
     private lateinit var liveChatView: LiveChatView
     private lateinit var errorView: View
     private lateinit var reloadButton: View
@@ -24,6 +27,7 @@ class LiveChatActivity : AppCompatActivity() {
 
     private val callbackListener = object : LiveChatViewCallbackListener {
         override fun onLoaded() {
+            println("### activity on loaded")
             updateViewVisibility(
                 loading = false,
                 chatVisible = true,
@@ -36,6 +40,7 @@ class LiveChatActivity : AppCompatActivity() {
         }
 
         override fun onNewMessage(message: ChatMessage?) {
+            println("### activity on new Message")
         }
 
         override fun onError(cause: Throwable) {
@@ -60,16 +65,31 @@ class LiveChatActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.live_chat_activity)
 
+        container = findViewById(R.id.live_chat_activity_container)
+
+        val preInitializedView = LiveChat.getInstance().getPreInitializedView()
+
+        if (preInitializedView != null) {
+            liveChatView = preInitializedView
+            (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
+
+            liveChatView.addCallbackListener(callbackListener)
+            container.addView(liveChatView)
+            liveChatView.visibility = View.VISIBLE
+        } else {
+            liveChatView = LiveChatView(this, null)
+            container.addView(liveChatView)
+            liveChatView.addCallbackListener(callbackListener)
+            liveChatView.init()
+        }
+
         setUpInsets()
 
-        liveChatView = findViewById(R.id.live_chat_view)
         errorView = findViewById(R.id.live_chat_error_view)
         reloadButton = findViewById(R.id.chat_widget_error_button)
         loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
 
         setupReloadButton()
-
-        liveChatView.init(callbackListener = callbackListener)
     }
 
     private fun setUpInsets() {
@@ -120,7 +140,7 @@ class LiveChatActivity : AppCompatActivity() {
                 errorVisible = false
             )
 
-            liveChatView.init(callbackListener = callbackListener)
+            liveChatView.init()
         }
     }
 
@@ -132,6 +152,11 @@ class LiveChatActivity : AppCompatActivity() {
         loadingIndicator.isVisible = loading
         liveChatView.isVisible = chatVisible
         errorView.isVisible = errorVisible
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        liveChatView.removeCallbackListener(callbackListener)
     }
 
     companion object {

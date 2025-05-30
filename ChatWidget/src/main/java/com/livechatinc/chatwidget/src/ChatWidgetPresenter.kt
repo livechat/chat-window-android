@@ -28,6 +28,15 @@ internal class ChatWidgetPresenter internal constructor(
     private var identityGrant: IdentityGrant? = null
     private var listener: LiveChatViewCallbackListener? = null
     private lateinit var config: LiveChatConfig
+    private val eventDispatcher = LiveChatEventDispatcher()
+
+    fun addCallbackListener(listener: LiveChatViewCallbackListener) {
+        eventDispatcher.addListener(listener)
+    }
+
+    fun removeCallbackListener(listener: LiveChatViewCallbackListener) {
+        eventDispatcher.removeListener(listener)
+    }
 
     fun init(config: LiveChatConfig) {
         this.config = config
@@ -60,20 +69,16 @@ internal class ChatWidgetPresenter internal constructor(
         }
     }
 
-    fun setCallbackListener(callbackListener: LiveChatViewCallbackListener?) {
-        listener = callbackListener
-    }
-
     fun onUiReady() {
-        listener?.onLoaded()
+        eventDispatcher.dispatchOnLoaded()
     }
 
     fun onHideChatWidget() {
-        listener?.onHide()
+        eventDispatcher.dispatchOnHide()
     }
 
     fun onNewMessage(message: ChatMessage?) {
-        listener?.onNewMessage(message)
+        eventDispatcher.dispatchOnNewMessage(message)
     }
 
     fun onShowFileChooser(
@@ -86,13 +91,11 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onFileChooserActivityNotFound() {
-        if (listener != null) {
-            listener!!.onFileChooserActivityNotFound()
-        }
+        eventDispatcher.dispatchOnFileChooserActivityNotFound()
     }
 
     fun onWebResourceError(code: Int, description: String, failingUrl: String) {
-        listener?.onError(WebResourceException(code, description, failingUrl))
+        eventDispatcher.dispatchOnError(WebResourceException(code, description, failingUrl))
         printWebViewError(
             code,
             description,
@@ -101,7 +104,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
-        listener?.onError(WebHttpException(code, description, failingUrl))
+        eventDispatcher.dispatchOnError(WebHttpException(code, description, failingUrl))
         printWebViewError(
             code,
             description,

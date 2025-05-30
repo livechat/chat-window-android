@@ -85,10 +85,20 @@ class LiveChatView(
     }
 
     fun init(callbackListener: LiveChatViewCallbackListener? = null) {
-        presenter.setCallbackListener(callbackListener)
+        if (callbackListener != null) {
+            presenter.addCallbackListener(callbackListener)
+        }
 
         val config = LiveChat.getInstance().createLiveChatConfig()
         presenter.init(config)
+    }
+
+    fun addCallbackListener(listener: LiveChatViewCallbackListener) {
+        presenter.addCallbackListener(listener)
+    }
+
+    fun removeCallbackListener(listener: LiveChatViewCallbackListener) {
+        presenter.removeCallbackListener(listener)
     }
 
     override fun loadUrl(url: String) {
@@ -118,7 +128,7 @@ class LiveChatView(
         }
     }
 
-    // Lifecycle methods
+    // Platform lifecycle methods
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -132,7 +142,11 @@ class LiveChatView(
     }
 
     override fun onDetachedFromWindow() {
-        webView.destroy()
+        if (LiveChat.getInstance().liveChatViewLifecycleScope ==
+            LiveChatViewLifecycleScope.ACTIVITY
+        ) {
+            webView.destroy()
+        }
         super.onDetachedFromWindow()
     }
 

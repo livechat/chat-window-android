@@ -1,7 +1,5 @@
 package com.livechatinc.livechatwidgetexample;
 
-import static java.sql.DriverManager.println;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -89,7 +87,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
             @Override
             public void onError(@NonNull Throwable cause) {
-                println("### onError: " + cause);
                 liveChatView.setVisibility(View.GONE);
                 reloadButton.setVisibility(View.VISIBLE);
                 loadingIndicator.setVisibility(View.GONE);
@@ -97,7 +94,6 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
             @Override
             public void onNewMessage(@Nullable ChatMessage message) {
-                println("### onChatMessage: $message");
             }
 
             @Override
@@ -107,6 +103,11 @@ public class UsingKotlinActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onDestroy() {
+        liveChatView.removeCallbackListener(liveChatViewCallback);
+        super.onDestroy();
+    }
 
     private Unit saveCookieGrantToPreferences(IdentityGrant identityGrant) {
         SharedPreferences sharedPreferences =
