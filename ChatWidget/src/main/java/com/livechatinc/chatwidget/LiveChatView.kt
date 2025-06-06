@@ -91,7 +91,7 @@ class LiveChatView(
 
     fun init(callbackListener: LiveChatViewInitListener? = null) {
         if (callbackListener != null) {
-            presenter.setInitCallbackListener(callbackListener)
+            presenter.setInitListener(callbackListener)
         }
 
         val config = LiveChat.getInstance().createLiveChatConfig()
@@ -123,6 +123,10 @@ class LiveChatView(
         CoroutineScope(Dispatchers.Main).launch {
             webView.evaluateJavascript("javascript:$callback($data)", null)
         }
+    }
+
+    fun clearCallbackListeners() {
+        presenter.setInitListener(null)
     }
 
     // Platform lifecycle methods

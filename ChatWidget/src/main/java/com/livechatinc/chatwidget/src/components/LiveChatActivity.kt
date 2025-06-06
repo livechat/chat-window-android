@@ -148,6 +148,15 @@ class LiveChatActivity : AppCompatActivity() {
         errorView.isVisible = errorVisible
     }
 
+    override fun onDestroy() {
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.KEEP_ALIVE) {
+            liveChatView.clearCallbackListeners()
+            container.removeView(liveChatView)
+        }
+
+        super.onDestroy()
+    }
+
     companion object {
         fun start(context: Context) {
             val intent = Intent(context, LiveChatActivity::class.java)

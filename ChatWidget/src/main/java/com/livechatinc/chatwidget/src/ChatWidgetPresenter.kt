@@ -31,7 +31,7 @@ internal class ChatWidgetPresenter internal constructor(
 
     // Init callback listener
     private var initListener: LiveChatViewInitListener? = null
-    fun setInitCallbackListener(callbackListener: LiveChatViewInitListener) {
+    fun setInitListener(callbackListener: LiveChatViewInitListener?) {
         initListener = callbackListener
     }
 
