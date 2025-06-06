@@ -26,7 +26,6 @@ internal class ChatWidgetPresenter internal constructor(
     private val networkClient: NetworkClient,
 ) {
     private var identityGrant: IdentityGrant? = null
-    private var listener: LiveChatViewCallbackListener? = null
     private lateinit var config: LiveChatConfig
     internal var uiReady: Boolean = false
 
@@ -100,7 +99,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     internal fun onFileChooserActivityNotFound() {
-        listener?.onFileChooserActivityNotFound()
+        LiveChat.getInstance().fileChooserNotFoundListener?.onFileChooserActivityNotFound()
     }
 
     internal fun onWebResourceError(code: Int, description: String, failingUrl: String) {

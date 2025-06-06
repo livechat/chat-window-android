@@ -1,6 +1,7 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
+import com.livechatinc.chatwidget.src.FileChooserActivityNotFoundListener
 import com.livechatinc.chatwidget.src.LiveChatViewManager
 import com.livechatinc.chatwidget.src.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
@@ -46,6 +47,11 @@ class LiveChat : LiveChatInterface() {
     internal var newMessageListener: NewMessageListener? = null
     fun setNewMessageListener(listener: NewMessageListener?) {
         newMessageListener = listener
+    }
+
+    internal var fileChooserNotFoundListener: FileChooserActivityNotFoundListener? = null
+    fun setNewMessageListener(listener: FileChooserActivityNotFoundListener?) {
+        fileChooserNotFoundListener = listener
     }
 
     internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope
