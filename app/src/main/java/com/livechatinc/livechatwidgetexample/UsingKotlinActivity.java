@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.LiveChatView;
-import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener;
+import com.livechatinc.chatwidget.src.LiveChatViewInitListener;
 import com.livechatinc.chatwidget.src.models.IdentityGrant;
 
 import kotlin.Unit;
@@ -25,7 +25,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
     public View loadingIndicator;
     public Button showChatButton;
     public Button reloadButton;
-    private LiveChatViewInitCallbackListener liveChatViewCallback;
+    private LiveChatViewInitListener liveChatViewCallback;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,8 +69,8 @@ public class UsingKotlinActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private LiveChatViewInitCallbackListener liveChatCallback() {
-        return new LiveChatViewInitCallbackListener() {
+    private LiveChatViewInitListener liveChatCallback() {
+        return new LiveChatViewInitListener() {
             @Override
             public void onHide() {
                 liveChatView.setVisibility(View.INVISIBLE);

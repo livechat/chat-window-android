@@ -19,7 +19,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
-import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener
+import com.livechatinc.chatwidget.src.LiveChatViewInitListener
 import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.FileChooserMode
@@ -37,6 +37,7 @@ class LiveChatView(
     private var presenter: ChatWidgetPresenter
 
     init {
+        Logger.d("### LiveChatView constructor")
         inflate(context, R.layout.live_chat_widget_internal, this)
         webView = findViewById(R.id.live_chat_webview)
         presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
@@ -46,7 +47,7 @@ class LiveChatView(
         supportFileSharing()
     }
 
-    fun isUiLoaded(): Boolean {
+    fun isUIReady(): Boolean {
         return presenter.uiReady
     }
 
@@ -88,7 +89,7 @@ class LiveChatView(
         }
     }
 
-    fun init(callbackListener: LiveChatViewInitCallbackListener? = null) {
+    fun init(callbackListener: LiveChatViewInitListener? = null) {
         if (callbackListener != null) {
             presenter.setInitCallbackListener(callbackListener)
         }
@@ -138,6 +139,7 @@ class LiveChatView(
     }
 
     override fun onDetachedFromWindow() {
+        Logger.d("### onDetachedFromWindow")
         if (LiveChat.getInstance().liveChatViewLifecycleScope ==
             LiveChatViewLifecycleScope.WHEN_SHOWN
         ) {

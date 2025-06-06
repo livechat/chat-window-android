@@ -2,7 +2,7 @@ package com.livechatinc.chatwidget.src
 
 import androidx.annotation.MainThread
 
-interface LiveChatViewInitCallbackListener {
+interface LiveChatViewInitListener {
     @MainThread
     fun onUIReady()
 

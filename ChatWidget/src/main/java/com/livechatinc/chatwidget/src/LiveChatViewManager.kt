@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.livechatinc.chatwidget.LiveChatView
 
-class LiveChatViewInitializer(private val context: Context) {
+internal class LiveChatViewManager(private val context: Context) {
     private var liveChatView: LiveChatView? = null
 
     fun getLiveChatView(): LiveChatView {

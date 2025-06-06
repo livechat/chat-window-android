@@ -1,7 +1,7 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import com.livechatinc.chatwidget.src.LiveChatViewInitializer
+import com.livechatinc.chatwidget.src.LiveChatViewManager
 import com.livechatinc.chatwidget.src.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
@@ -26,7 +26,10 @@ class LiveChat : LiveChatInterface() {
     private var tokenManager: TokenManager = TokenManager(networkClient) {
         identityCallback(it)
     }
-    private var initializer: LiveChatViewInitializer? = null
+
+    private val viewManager: LiveChatViewManager by lazy {
+        LiveChatViewManager(applicationContext)
+    }
 
     private var licence: String? = null
     private lateinit var applicationContext: Context
@@ -96,12 +99,12 @@ class LiveChat : LiveChatInterface() {
     }
 
     override suspend fun signOutCustomer() {
-        //TODO: destroy view if its alive
+        //TODO: destroy view if its KEEP_ALIVE
         ChatWidgetUtils.clearSession()
     }
 
     internal fun getLiveChatView(): LiveChatView {
-        return (initializer ?: LiveChatViewInitializer(applicationContext)).getLiveChatView()
+        return viewManager.getLiveChatView()
     }
 
     override fun configureIdentityProvider(

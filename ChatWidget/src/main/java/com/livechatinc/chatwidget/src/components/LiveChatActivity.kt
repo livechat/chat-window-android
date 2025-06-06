@@ -16,7 +16,7 @@ import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.LiveChatView
 import com.livechatinc.chatwidget.LiveChatViewLifecycleScope
 import com.livechatinc.chatwidget.R
-import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener
+import com.livechatinc.chatwidget.src.LiveChatViewInitListener
 
 class LiveChatActivity : AppCompatActivity() {
     private lateinit var container: ViewGroup
@@ -25,7 +25,7 @@ class LiveChatActivity : AppCompatActivity() {
     private lateinit var reloadButton: View
     private lateinit var loadingIndicator: View
 
-    private val initCallbackListener = object : LiveChatViewInitCallbackListener {
+    private val initCallbackListener = object : LiveChatViewInitListener {
         override fun onUIReady() {
             updateViewVisibility(
                 loading = false,
@@ -62,7 +62,7 @@ class LiveChatActivity : AppCompatActivity() {
 
             liveChatView.init(initCallbackListener)
             container.addView(liveChatView)
-            if (liveChatView.isUiLoaded()) {
+            if (liveChatView.isUIReady()) {
                 liveChatView.visibility = View.VISIBLE
             }
         } else {

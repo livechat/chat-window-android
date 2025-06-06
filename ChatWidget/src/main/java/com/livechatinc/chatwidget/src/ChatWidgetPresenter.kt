@@ -30,31 +30,34 @@ internal class ChatWidgetPresenter internal constructor(
     private lateinit var config: LiveChatConfig
     internal var uiReady: Boolean = false
 
-    //Init callback listener
-    private var initListener: LiveChatViewInitCallbackListener? = null
-    fun setInitCallbackListener(callbackListener: LiveChatViewInitCallbackListener) {
+    // Init callback listener
+    private var initListener: LiveChatViewInitListener? = null
+    fun setInitCallbackListener(callbackListener: LiveChatViewInitListener) {
         initListener = callbackListener
     }
 
     fun init(config: LiveChatConfig) {
+        Logger.d("### ChatWidgetPresenter.init()")
         this.config = config
         this.identityGrant = config.customIdentityConfig?.identityGrant
 
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                val chatUrl = chatUrl()
+        if (!uiReady) {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val chatUrl = chatUrl()
 
-                withContext(Dispatchers.Main) {
-                    view.loadUrl(chatUrl)
-                }
+                    withContext(Dispatchers.Main) {
+                        view.loadUrl(chatUrl)
+                    }
 
-                return@launch
-            } catch (cause: Throwable) {
-                //TODO: potentially redundant error log message
-                Logger.e("Failed to load chat url: $cause", throwable = cause)
+                    return@launch
+                } catch (cause: Throwable) {
+                    //TODO: potentially redundant error log message
+                    Logger.e("Failed to load chat url: $cause", throwable = cause)
 
-                withContext(Dispatchers.Main) {
-                    onError(cause)
+                    withContext(Dispatchers.Main) {
+                        onError(cause)
+                    }
                 }
             }
         }
