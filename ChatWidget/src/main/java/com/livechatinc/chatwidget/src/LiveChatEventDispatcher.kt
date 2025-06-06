@@ -18,19 +18,19 @@ class LiveChatEventDispatcher {
     }
 
     fun dispatchOnLoaded() {
-        listeners.forEach { it.onLoaded() }
+//        listeners.forEach { it.onLoaded() }
     }
 
     fun dispatchOnHide() {
-        listeners.forEach { it.onHide() }
+//        listeners.forEach { it.onHide() }
     }
 
     fun dispatchOnNewMessage(message: ChatMessage?) {
-        listeners.forEach { it.onNewMessage(message) }
+//        listeners.forEach { it.onNewMessage(message) }
     }
 
     fun dispatchOnError(cause: Throwable) {
-        listeners.forEach { it.onError(cause) }
+//        listeners.forEach { it.onError(cause) }
     }
 
     fun dispatchOnFileChooserActivityNotFound() {

@@ -1,8 +1,8 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.LiveChatViewInitializer
+import com.livechatinc.chatwidget.src.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
@@ -40,9 +40,9 @@ class LiveChat : LiveChatInterface() {
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
 
-    private var callbackListener: LiveChatViewCallbackListener? = null
-    fun setCallbackListener(listener: LiveChatViewCallbackListener?) {
-        callbackListener = listener
+    internal var newMessageListener: NewMessageListener? = null
+    fun setNewMessageListener(listener: NewMessageListener?) {
+        newMessageListener = listener
     }
 
     internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope

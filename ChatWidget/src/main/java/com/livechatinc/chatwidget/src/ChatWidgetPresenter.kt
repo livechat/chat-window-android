@@ -59,10 +59,11 @@ internal class ChatWidgetPresenter internal constructor(
 
                 return@launch
             } catch (cause: Throwable) {
+                //TODO: potentially redundant error log message
                 Logger.e("Failed to load chat url: $cause", throwable = cause)
 
                 withContext(Dispatchers.Main) {
-                    listener?.onError(cause)
+                    onError(cause)
                 }
             }
         }
@@ -76,22 +77,29 @@ internal class ChatWidgetPresenter internal constructor(
         }
     }
 
-    fun onUiReady() {
-        uiReady = true;
+    internal fun onUiReady() {
+        uiReady = true
         initListener?.onUIReady()
         eventDispatcher.dispatchOnLoaded()
     }
 
-    fun onHideChatWidget() {
+    internal fun onHideChatWidget() {
         initListener?.onHide()
         eventDispatcher.dispatchOnHide()
     }
 
-    fun onNewMessage(message: ChatMessage?) {
+    private fun onError(cause: Throwable) {
+        initListener?.onError(cause)
+
+        Logger.e("${cause.javaClass}, ${cause.message}")
+    }
+
+    internal fun onNewMessage(message: ChatMessage?) {
+        LiveChat.getInstance().newMessageListener?.onNewMessage(message)
         eventDispatcher.dispatchOnNewMessage(message)
     }
 
-    fun onShowFileChooser(
+    internal fun onShowFileChooser(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: WebChromeClient.FileChooserParams?
     ): Boolean {
@@ -100,32 +108,16 @@ internal class ChatWidgetPresenter internal constructor(
         return true
     }
 
-    fun onFileChooserActivityNotFound() {
+    internal fun onFileChooserActivityNotFound() {
         eventDispatcher.dispatchOnFileChooserActivityNotFound()
     }
 
-    fun onWebResourceError(code: Int, description: String, failingUrl: String) {
-        initListener?.onError(WebResourceException(code, description, failingUrl))
-        eventDispatcher.dispatchOnError(WebResourceException(code, description, failingUrl))
-        printWebViewError(
-            code,
-            description,
-            failingUrl
-        )
+    internal fun onWebResourceError(code: Int, description: String, failingUrl: String) {
+        onError(WebResourceException(code, description, failingUrl))
     }
 
-    fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
-        initListener?.onError(WebResourceException(code, description, failingUrl))
-        eventDispatcher.dispatchOnError(WebHttpException(code, description, failingUrl))
-        printWebViewError(
-            code,
-            description,
-            failingUrl
-        )
-    }
-
-    private fun printWebViewError(errorCode: Int?, description: String?, failingUrl: String?) {
-        Logger.e("WebViewError, code: $errorCode, description: $description, failingUrl: $failingUrl")
+    internal fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
+        onError(WebResourceException(code, description, failingUrl))
     }
 
     //TODO: check main thread safety
