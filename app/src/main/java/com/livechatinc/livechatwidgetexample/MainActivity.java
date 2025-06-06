@@ -5,6 +5,7 @@ import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -51,6 +52,12 @@ public class MainActivity extends AppCompatActivity {
                         licenceInfoTv.setText(windowConfig.toString());
                     }
                 });
+
+        LiveChat.getInstance().setNewMessageListener(
+                newMessage -> {
+                    Log.i("MainActivity", "### new message: " + newMessage.getText());
+                }
+        );
     }
 
 

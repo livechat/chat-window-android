@@ -67,6 +67,7 @@ class LiveChatActivity : AppCompatActivity() {
             }
         } else {
             liveChatView = LiveChatView(this, null).apply {
+                visibility = View.GONE
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT

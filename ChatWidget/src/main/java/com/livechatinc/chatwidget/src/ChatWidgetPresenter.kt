@@ -28,21 +28,12 @@ internal class ChatWidgetPresenter internal constructor(
     private var identityGrant: IdentityGrant? = null
     private var listener: LiveChatViewCallbackListener? = null
     private lateinit var config: LiveChatConfig
-    private val eventDispatcher = LiveChatEventDispatcher()
     internal var uiReady: Boolean = false
 
     //Init callback listener
     private var initListener: LiveChatViewInitCallbackListener? = null
     fun setInitCallbackListener(callbackListener: LiveChatViewInitCallbackListener) {
         initListener = callbackListener
-    }
-
-    fun addCallbackListener(listener: LiveChatViewCallbackListener) {
-        eventDispatcher.addListener(listener)
-    }
-
-    fun removeCallbackListener(listener: LiveChatViewCallbackListener) {
-        eventDispatcher.removeListener(listener)
     }
 
     fun init(config: LiveChatConfig) {
@@ -80,12 +71,10 @@ internal class ChatWidgetPresenter internal constructor(
     internal fun onUiReady() {
         uiReady = true
         initListener?.onUIReady()
-        eventDispatcher.dispatchOnLoaded()
     }
 
     internal fun onHideChatWidget() {
         initListener?.onHide()
-        eventDispatcher.dispatchOnHide()
     }
 
     private fun onError(cause: Throwable) {
@@ -96,7 +85,6 @@ internal class ChatWidgetPresenter internal constructor(
 
     internal fun onNewMessage(message: ChatMessage?) {
         LiveChat.getInstance().newMessageListener?.onNewMessage(message)
-        eventDispatcher.dispatchOnNewMessage(message)
     }
 
     internal fun onShowFileChooser(
@@ -109,7 +97,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     internal fun onFileChooserActivityNotFound() {
-        eventDispatcher.dispatchOnFileChooserActivityNotFound()
+        listener?.onFileChooserActivityNotFound()
     }
 
     internal fun onWebResourceError(code: Int, description: String, failingUrl: String) {
@@ -117,7 +105,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     internal fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
-        onError(WebResourceException(code, description, failingUrl))
+        onError(WebHttpException(code, description, failingUrl))
     }
 
     //TODO: check main thread safety

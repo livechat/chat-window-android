@@ -13,7 +13,6 @@ import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
 import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
 import com.livechatinc.chatwidget.src.ChatWidgetPresenter
@@ -96,14 +95,6 @@ class LiveChatView(
 
         val config = LiveChat.getInstance().createLiveChatConfig()
         presenter.init(config)
-    }
-
-    fun addCallbackListener(listener: LiveChatViewCallbackListener) {
-        presenter.addCallbackListener(listener)
-    }
-
-    fun removeCallbackListener(listener: LiveChatViewCallbackListener) {
-        presenter.removeCallbackListener(listener)
     }
 
     override fun loadUrl(url: String) {
