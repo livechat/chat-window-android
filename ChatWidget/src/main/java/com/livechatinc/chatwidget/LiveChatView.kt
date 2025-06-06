@@ -20,6 +20,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
+import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener
 import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.FileChooserMode
@@ -45,6 +46,7 @@ class LiveChatView(
 
         supportFileSharing()
     }
+
     fun isUiLoaded(): Boolean {
         return presenter.uiReady
     }
@@ -87,9 +89,9 @@ class LiveChatView(
         }
     }
 
-    fun init(callbackListener: LiveChatViewCallbackListener? = null) {
+    fun init(callbackListener: LiveChatViewInitCallbackListener? = null) {
         if (callbackListener != null) {
-            presenter.addCallbackListener(callbackListener)
+            presenter.setInitCallbackListener(callbackListener)
         }
 
         val config = LiveChat.getInstance().createLiveChatConfig()
@@ -146,7 +148,7 @@ class LiveChatView(
 
     override fun onDetachedFromWindow() {
         if (LiveChat.getInstance().liveChatViewLifecycleScope ==
-            LiveChatViewLifecycleScope.ACTIVITY
+            LiveChatViewLifecycleScope.WHEN_SHOWN
         ) {
             webView.destroy()
         }

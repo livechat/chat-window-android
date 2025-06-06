@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -15,9 +14,9 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.LiveChatView
+import com.livechatinc.chatwidget.LiveChatViewLifecycleScope
 import com.livechatinc.chatwidget.R
-import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
-import com.livechatinc.chatwidget.src.models.ChatMessage
+import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener
 
 class LiveChatActivity : AppCompatActivity() {
     private lateinit var container: ViewGroup
@@ -26,9 +25,8 @@ class LiveChatActivity : AppCompatActivity() {
     private lateinit var reloadButton: View
     private lateinit var loadingIndicator: View
 
-    private val callbackListener = object : LiveChatViewCallbackListener {
-        override fun onLoaded() {
-            println("### activity on loaded")
+    private val initCallbackListener = object : LiveChatViewInitCallbackListener {
+        override fun onUIReady() {
             updateViewVisibility(
                 loading = false,
                 chatVisible = true,
@@ -40,10 +38,6 @@ class LiveChatActivity : AppCompatActivity() {
             finish()
         }
 
-        override fun onNewMessage(message: ChatMessage?) {
-            println("### activity on new Message")
-        }
-
         override fun onError(cause: Throwable) {
             updateViewVisibility(
                 loading = false,
@@ -52,13 +46,6 @@ class LiveChatActivity : AppCompatActivity() {
             )
         }
 
-        override fun onFileChooserActivityNotFound() {
-            Toast.makeText(
-                this@LiveChatActivity,
-                R.string.live_chat_file_chooser_not_found,
-                Toast.LENGTH_SHORT
-            ).show()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,29 +55,25 @@ class LiveChatActivity : AppCompatActivity() {
 
         container = findViewById(R.id.live_chat_activity_container)
 
-        val preInitializedView = LiveChat.getInstance().getPreInitializedView()
 
-        if (preInitializedView != null) {
-            liveChatView = preInitializedView
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.KEEP_ALIVE) {
+            liveChatView = LiveChat.getInstance().getLiveChatView()
             (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
 
-            liveChatView.addCallbackListener(callbackListener)
+            liveChatView.init(initCallbackListener)
             container.addView(liveChatView)
             if (liveChatView.isUiLoaded()) {
                 liveChatView.visibility = View.VISIBLE
             }
-
         } else {
             liveChatView = LiveChatView(this, null).apply {
-                visibility = View.GONE
                 layoutParams = FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT
                 )
             }
             container.addView(liveChatView)
-            liveChatView.addCallbackListener(callbackListener)
-            liveChatView.init()
+            liveChatView.init(initCallbackListener)
         }
 
         setUpInsets()
@@ -162,11 +145,6 @@ class LiveChatActivity : AppCompatActivity() {
         loadingIndicator.isVisible = loading
         liveChatView.isVisible = chatVisible
         errorView.isVisible = errorVisible
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        liveChatView.removeCallbackListener(callbackListener)
     }
 
     companion object {

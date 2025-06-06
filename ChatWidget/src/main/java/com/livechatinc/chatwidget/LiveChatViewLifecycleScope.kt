@@ -1,5 +1,5 @@
 package com.livechatinc.chatwidget
 
 enum class LiveChatViewLifecycleScope {
-    APPLICATION, ACTIVITY
+    KEEP_ALIVE, WHEN_SHOWN,
 }

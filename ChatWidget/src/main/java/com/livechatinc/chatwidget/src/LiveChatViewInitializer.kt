@@ -9,18 +9,21 @@ import com.livechatinc.chatwidget.LiveChatView
 class LiveChatViewInitializer(private val context: Context) {
     private var liveChatView: LiveChatView? = null
 
-    fun preLoadLiveChat(callbackListener: LiveChatViewCallbackListener? = null) {
-        liveChatView = LiveChatView(context, null).apply {
+    fun getLiveChatView(): LiveChatView {
+        return liveChatView ?: inflate(context).also {
+            liveChatView = it
+        }
+    }
+
+    private fun inflate(context: Context): LiveChatView {
+        return LiveChatView(context, null).apply {
             visibility = View.GONE
             layoutParams = FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
-            init(callbackListener)
         }
     }
-
-    fun getLiveChatView(): LiveChatView? = liveChatView
 
     fun cleanup() {
         liveChatView = null

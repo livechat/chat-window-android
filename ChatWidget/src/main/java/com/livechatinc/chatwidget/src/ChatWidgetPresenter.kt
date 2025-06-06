@@ -31,6 +31,12 @@ internal class ChatWidgetPresenter internal constructor(
     private val eventDispatcher = LiveChatEventDispatcher()
     internal var uiReady: Boolean = false
 
+    //Init callback listener
+    private var initListener: LiveChatViewInitCallbackListener? = null
+    fun setInitCallbackListener(callbackListener: LiveChatViewInitCallbackListener) {
+        initListener = callbackListener
+    }
+
     fun addCallbackListener(listener: LiveChatViewCallbackListener) {
         eventDispatcher.addListener(listener)
     }
@@ -72,10 +78,12 @@ internal class ChatWidgetPresenter internal constructor(
 
     fun onUiReady() {
         uiReady = true;
+        initListener?.onUIReady()
         eventDispatcher.dispatchOnLoaded()
     }
 
     fun onHideChatWidget() {
+        initListener?.onHide()
         eventDispatcher.dispatchOnHide()
     }
 
@@ -97,6 +105,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onWebResourceError(code: Int, description: String, failingUrl: String) {
+        initListener?.onError(WebResourceException(code, description, failingUrl))
         eventDispatcher.dispatchOnError(WebResourceException(code, description, failingUrl))
         printWebViewError(
             code,
@@ -106,6 +115,7 @@ internal class ChatWidgetPresenter internal constructor(
     }
 
     fun onWebViewHttpError(code: Int, description: String, failingUrl: String) {
+        initListener?.onError(WebResourceException(code, description, failingUrl))
         eventDispatcher.dispatchOnError(WebHttpException(code, description, failingUrl))
         printWebViewError(
             code,

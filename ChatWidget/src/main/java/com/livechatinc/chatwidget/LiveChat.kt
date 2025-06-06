@@ -28,7 +28,6 @@ class LiveChat : LiveChatInterface() {
     }
     private var initializer: LiveChatViewInitializer? = null
 
-
     private var licence: String? = null
     private lateinit var applicationContext: Context
     private var groupId: String? = null
@@ -41,13 +40,12 @@ class LiveChat : LiveChatInterface() {
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
 
-    internal var callbackListener: LiveChatViewCallbackListener? = null
+    private var callbackListener: LiveChatViewCallbackListener? = null
     fun setCallbackListener(listener: LiveChatViewCallbackListener?) {
         callbackListener = listener
     }
 
-    internal var liveChatViewLifecycleScope: LiveChatViewLifecycleScope =
-        LiveChatViewLifecycleScope.ACTIVITY
+    internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope
 
     companion object {
         @Volatile
@@ -65,27 +63,16 @@ class LiveChat : LiveChatInterface() {
             licence: String,
             context: Context,
             groupId: String? = null,
-            lifecycleScope: LiveChatViewLifecycleScope = LiveChatViewLifecycleScope.ACTIVITY
+            lifecycleScope: LiveChatViewLifecycleScope? = null
         ) {
             getInstance().apply {
                 this.licence = licence
                 this.groupId = groupId
                 this.applicationContext = context.applicationContext
-                this.liveChatViewLifecycleScope = lifecycleScope
+                this.liveChatViewLifecycleScope =
+                    lifecycleScope ?: LiveChatViewLifecycleScope.KEEP_ALIVE
             }
         }
-    }
-
-    fun preLoadLiveChatView() {
-        requireNotNull(licence) { "SDK not initialized. Call initialize() first" }
-
-        initializer = LiveChatViewInitializer(applicationContext).also {
-            it.preLoadLiveChat(callbackListener = callbackListener)
-        }
-    }
-
-    internal fun getPreInitializedView(): LiveChatView? {
-        return initializer?.getLiveChatView()
     }
 
     override fun setCustomerInfo(
@@ -109,7 +96,12 @@ class LiveChat : LiveChatInterface() {
     }
 
     override suspend fun signOutCustomer() {
+        //TODO: destroy view if its alive
         ChatWidgetUtils.clearSession()
+    }
+
+    internal fun getLiveChatView(): LiveChatView {
+        return (initializer ?: LiveChatViewInitializer(applicationContext)).getLiveChatView()
     }
 
     override fun configureIdentityProvider(

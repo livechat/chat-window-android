@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,8 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.LiveChatView;
-import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener;
-import com.livechatinc.chatwidget.src.models.ChatMessage;
+import com.livechatinc.chatwidget.src.LiveChatViewInitCallbackListener;
 import com.livechatinc.chatwidget.src.models.IdentityGrant;
 
 import kotlin.Unit;
@@ -27,7 +25,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
     public View loadingIndicator;
     public Button showChatButton;
     public Button reloadButton;
-    private LiveChatViewCallbackListener liveChatViewCallback;
+    private LiveChatViewInitCallbackListener liveChatViewCallback;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +69,8 @@ public class UsingKotlinActivity extends AppCompatActivity {
     }
 
     @NonNull
-    private LiveChatViewCallbackListener liveChatCallback() {
-        return new LiveChatViewCallbackListener() {
+    private LiveChatViewInitCallbackListener liveChatCallback() {
+        return new LiveChatViewInitCallbackListener() {
             @Override
             public void onHide() {
                 liveChatView.setVisibility(View.INVISIBLE);
@@ -80,7 +78,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onLoaded() {
+            public void onUIReady() {
                 loadingIndicator.setVisibility(View.GONE);
                 liveChatView.setVisibility(View.VISIBLE);
             }
@@ -91,22 +89,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
                 reloadButton.setVisibility(View.VISIBLE);
                 loadingIndicator.setVisibility(View.GONE);
             }
-
-            @Override
-            public void onNewMessage(@Nullable ChatMessage message) {
-            }
-
-            @Override
-            public void onFileChooserActivityNotFound() {
-                Toast.makeText(UsingKotlinActivity.this, "File chooser activity not found", Toast.LENGTH_SHORT).show();
-            }
         };
-    }
-
-    @Override
-    protected void onDestroy() {
-        liveChatView.removeCallbackListener(liveChatViewCallback);
-        super.onDestroy();
     }
 
     private Unit saveCookieGrantToPreferences(IdentityGrant identityGrant) {
