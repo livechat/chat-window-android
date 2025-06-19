@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.gson.Gson;
 import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.LiveChatView;
-import com.livechatinc.chatwidget.src.LiveChatViewInitListener;
+import com.livechatinc.chatwidget.src.listeners.LiveChatViewInitListener;
 import com.livechatinc.chatwidget.src.models.IdentityGrant;
 
 import kotlin.Unit;

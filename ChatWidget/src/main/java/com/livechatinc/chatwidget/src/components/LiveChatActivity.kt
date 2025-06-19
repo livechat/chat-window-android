@@ -16,7 +16,7 @@ import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.LiveChatView
 import com.livechatinc.chatwidget.LiveChatViewLifecycleScope
 import com.livechatinc.chatwidget.R
-import com.livechatinc.chatwidget.src.LiveChatViewInitListener
+import com.livechatinc.chatwidget.src.listeners.LiveChatViewInitListener
 
 class LiveChatActivity : AppCompatActivity() {
     private lateinit var container: ViewGroup

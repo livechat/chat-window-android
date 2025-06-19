@@ -1,9 +1,9 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import com.livechatinc.chatwidget.src.FileChooserActivityNotFoundListener
+import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
 import com.livechatinc.chatwidget.src.LiveChatViewManager
-import com.livechatinc.chatwidget.src.NewMessageListener
+import com.livechatinc.chatwidget.src.listeners.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.ChatWidgetUtils

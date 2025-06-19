@@ -1,7 +1,7 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import com.livechatinc.chatwidget.src.LiveChatViewCallbackListener
+import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 
 abstract class LiveChatInterface {
@@ -27,7 +27,7 @@ abstract class LiveChatInterface {
      * Opens full screen activity
      *
      * Limitations:
-     * - no callbacks - [LiveChatViewCallbackListener]
+     * - no callbacks - [FileChooserActivityNotFoundListener]
      * */
     abstract fun show(context: Context)
 
@@ -47,7 +47,7 @@ abstract class LiveChatInterface {
     /**
      * Callback listener for live chat view
      *
-     * @see [LiveChatViewCallbackListener]
+     * @see [FileChooserActivityNotFoundListener]
      * */
 
 

@@ -19,7 +19,7 @@ import com.livechatinc.chatwidget.src.ChatWidgetPresenter
 import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
 import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
-import com.livechatinc.chatwidget.src.LiveChatViewInitListener
+import com.livechatinc.chatwidget.src.listeners.LiveChatViewInitListener
 import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.extensions.getActivity
 import com.livechatinc.chatwidget.src.models.FileChooserMode
