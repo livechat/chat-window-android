@@ -1,5 +1,6 @@
 package com.livechatinc.chatwidget.src
 
+import android.net.Uri
 import android.os.Build
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -13,6 +14,11 @@ internal class ChatWidgetWebViewClient(private val presenter: ChatWidgetPresente
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
         return presenter.handleUrl(request?.url)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+        return presenter.handleUrl(Uri.parse(url))
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

@@ -13,6 +13,7 @@ import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
+import com.livechatinc.chatwidget.src.listeners.UrlHandler
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CustomerInfo
@@ -54,6 +55,11 @@ class LiveChat : LiveChatInterface() {
     internal var fileChooserNotFoundListener: FileChooserActivityNotFoundListener? = null
     fun setNewMessageListener(listener: FileChooserActivityNotFoundListener?) {
         fileChooserNotFoundListener = listener
+    }
+
+    internal var urlHandler: UrlHandler? = null
+    fun setUrlHandler(handler: UrlHandler?) {
+        urlHandler = handler
     }
 
     internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope

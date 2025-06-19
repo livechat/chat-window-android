@@ -111,18 +111,16 @@ internal class ChatWidgetPresenter internal constructor(
         onError(WebHttpException(code, description, failingUrl))
     }
 
-    //TODO: check main thread safety
     fun handleUrl(uri: Uri?): Boolean {
-        //TODO bring back opening links in external browser
-        return false
-//        if (uri == null) {
-//            return false
-//        }
-//
-//        //TODO: test dal/fra licences
-//        view.launchExternalBrowser(uri)
-//
-//        return true
+        if (uri == null) {
+            return false
+        }
+
+        return LiveChat.getInstance().urlHandler?.handleUrl(uri) ?: run {
+            view.launchExternalBrowser(uri)
+
+            true
+        }
     }
 
     fun hasToken(callback: String) {
