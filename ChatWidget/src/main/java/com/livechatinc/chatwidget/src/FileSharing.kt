@@ -8,6 +8,7 @@ import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import com.livechatinc.chatwidget.LiveChat
 
 
 internal class FileSharing(
@@ -16,7 +17,9 @@ internal class FileSharing(
 ) : DefaultLifecycleObserver {
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null
-    private var filesUploadCallback: ValueCallback<Array<Uri>>? = null
+
+    val filesUploadCallback: ValueCallback<Array<Uri>>?
+        get() = LiveChat.getInstance().filesUploadCallback
 
     override fun onCreate(owner: LifecycleOwner) {
         registerSingleContentContract(owner)
@@ -40,11 +43,13 @@ internal class FileSharing(
             "liveChatMultipleFilesResultRegistryKey",
             owner,
             ActivityResultContracts.GetMultipleContents()
-        ) { value -> filesUploadCallback?.onReceiveValue(value.toTypedArray()) }
+        ) { value ->
+            filesUploadCallback?.onReceiveValue(value.toTypedArray())
+        }
     }
 
     fun selectFile(filePathCallback: ValueCallback<Array<Uri>>?) {
-        filesUploadCallback = filePathCallback
+        LiveChat.getInstance().setFileUploadCallback(filePathCallback)
 
         try {
             getContent!!.launch("*/*")
@@ -55,7 +60,7 @@ internal class FileSharing(
     }
 
     fun selectFiles(filePathCallback: ValueCallback<Array<Uri>>?) {
-        filesUploadCallback = filePathCallback
+        LiveChat.getInstance().setFileUploadCallback(filePathCallback)
 
         try {
             getMultipleContent!!.launch("*/*")

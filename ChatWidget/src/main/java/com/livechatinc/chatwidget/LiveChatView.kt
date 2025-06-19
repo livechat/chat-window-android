@@ -42,7 +42,6 @@ class LiveChatView(
         get() = presenter.uiReady
 
     init {
-        Logger.d("### LiveChatView constructor")
         inflate(context, R.layout.live_chat_widget_internal, this)
         webView = findViewById(R.id.live_chat_webview)
         presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
@@ -87,7 +86,7 @@ class LiveChatView(
         supportFileSharing(activity)
     }
 
-   private fun supportFileSharing(activity: AppCompatActivity) {
+    private fun supportFileSharing(activity: AppCompatActivity) {
         fileSharing = FileSharing(
             activity.activityResultRegistry,
             presenter,
@@ -145,18 +144,26 @@ class LiveChatView(
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
+
         webView.onResume()
         webView.resumeTimers()
     }
 
     override fun onPause(owner: LifecycleOwner) {
         webView.onPause()
+
         super.onPause(owner)
     }
 
-    override fun onStop(owner: LifecycleOwner) {
+    override fun onDestroy(owner: LifecycleOwner) {
         activityContextRef?.clear()
         activityContextRef = null
+
+        fileSharing?.let {
+            owner.lifecycle.removeObserver(it)
+            fileSharing = null
+        }
+        owner.lifecycle.removeObserver(this)
 
         super.onStop(owner)
     }
@@ -166,8 +173,13 @@ class LiveChatView(
         if (LiveChat.getInstance().liveChatViewLifecycleScope ==
             LiveChatViewLifecycleScope.WHEN_SHOWN
         ) {
-            webView.destroy()
+            webView.apply {
+                removeJavascriptInterface(ChatWidgetJSBridge.INTERFACE_NAME)
+                webChromeClient = null
+                destroy()
+            }
         }
+
         super.onDetachedFromWindow()
     }
 

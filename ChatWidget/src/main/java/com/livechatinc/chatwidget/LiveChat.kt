@@ -1,6 +1,8 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
+import android.net.Uri
+import android.webkit.ValueCallback
 import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
 import com.livechatinc.chatwidget.src.LiveChatViewManager
 import com.livechatinc.chatwidget.src.listeners.NewMessageListener
@@ -163,5 +165,11 @@ class LiveChat : LiveChatInterface() {
 
     internal suspend fun getFreshToken(): ChatWidgetToken? {
         return tokenManager.getFreshToken(createLiveChatConfig())
+    }
+
+    internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
+
+    internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {
+        filesUploadCallback = filePathCallback
     }
 }
