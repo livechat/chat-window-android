@@ -61,7 +61,7 @@ class LiveChatActivity : AppCompatActivity() {
             (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
 
             container.addView(liveChatView)
-            if (liveChatView.isUIReady()) {
+            if (liveChatView.isUIReady) {
                 liveChatView.visibility = View.VISIBLE
             }
         } else {
@@ -75,7 +75,7 @@ class LiveChatActivity : AppCompatActivity() {
             container.addView(liveChatView)
         }
 
-        liveChatView.supportFileSharing(this)
+        liveChatView.setActivityContextOnCreate(this)
         liveChatView.init(initCallbackListener)
 
 

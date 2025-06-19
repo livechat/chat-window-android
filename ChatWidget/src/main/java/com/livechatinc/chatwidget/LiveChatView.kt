@@ -26,6 +26,7 @@ import com.livechatinc.chatwidget.src.models.FileChooserMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 
 @SuppressLint("SetJavaScriptEnabled")
 class LiveChatView(
@@ -35,6 +36,10 @@ class LiveChatView(
     private var fileSharing: FileSharing? = null
     private var webView: WebView
     private var presenter: ChatWidgetPresenter
+    private var activityContextRef: WeakReference<Context>? = null
+
+    val isUIReady: Boolean
+        get() = presenter.uiReady
 
     init {
         Logger.d("### LiveChatView constructor")
@@ -43,10 +48,6 @@ class LiveChatView(
         presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
 
         configureWebView()
-    }
-
-    fun isUIReady(): Boolean {
-        return presenter.uiReady
     }
 
     private fun configureWebView() {
@@ -74,13 +75,24 @@ class LiveChatView(
         )
     }
 
-    fun supportFileSharing(activity: AppCompatActivity) {
+    /**
+     * Sets the Activity context during the onCreate phase of the Activity lifecycle.
+     * This ensures the context is available for operations requiring an Activity.
+     */
+    fun setActivityContextOnCreate(activity: AppCompatActivity) {
+        activityContextRef = WeakReference(activity)
+
+        activity.lifecycle.addObserver(this)
+
+        supportFileSharing(activity)
+    }
+
+   private fun supportFileSharing(activity: AppCompatActivity) {
         fileSharing = FileSharing(
             activity.activityResultRegistry,
             presenter,
         )
         activity.lifecycle.addObserver(fileSharing!!)
-        activity.lifecycle.addObserver(this)
     }
 
     fun init(callbackListener: LiveChatViewInitListener? = null) {
@@ -115,7 +127,7 @@ class LiveChatView(
     override fun launchExternalBrowser(uri: Uri) {
         val intent = Intent(Intent.ACTION_VIEW, uri)
 
-        context.startActivity(intent)
+        activityContextRef?.get()?.startActivity(intent)
     }
 
     override fun postWebViewMessage(callback: String?, data: String) {
@@ -140,6 +152,13 @@ class LiveChatView(
     override fun onPause(owner: LifecycleOwner) {
         webView.onPause()
         super.onPause(owner)
+    }
+
+    override fun onStop(owner: LifecycleOwner) {
+        activityContextRef?.clear()
+        activityContextRef = null
+
+        super.onStop(owner)
     }
 
     override fun onDetachedFromWindow() {
