@@ -65,6 +65,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
         LiveChat.getInstance().logInCustomer(identityRestorationGrant);
 
+        liveChatView.supportFileSharing(this);
         liveChatView.init(liveChatViewCallback);
     }
 

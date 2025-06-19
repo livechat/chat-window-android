@@ -11,6 +11,7 @@ import android.webkit.ValueCallback
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.FrameLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
@@ -43,8 +44,6 @@ class LiveChatView(
         presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
 
         configureWebView()
-
-        supportFileSharing()
     }
 
     fun isUIReady(): Boolean {
@@ -76,17 +75,13 @@ class LiveChatView(
         )
     }
 
-    private fun supportFileSharing() {
-        //TODO: check fragment, and regular activity
-        //TODO: consider setting by the lib user
-        getActivity()?.let { activity ->
-            fileSharing = FileSharing(
-                activity.activityResultRegistry,
-                presenter,
-            )
-            activity.lifecycle.addObserver(fileSharing!!)
-            activity.lifecycle.addObserver(this)
-        }
+    fun supportFileSharing(activity: AppCompatActivity) {
+        fileSharing = FileSharing(
+            activity.activityResultRegistry,
+            presenter,
+        )
+        activity.lifecycle.addObserver(fileSharing!!)
+        activity.lifecycle.addObserver(this)
     }
 
     fun init(callbackListener: LiveChatViewInitListener? = null) {
@@ -106,6 +101,12 @@ class LiveChatView(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserMode: FileChooserMode,
     ) {
+        if (fileSharing == null) {
+            Logger.e("File sharing is not set up. Call supportFileSharing() first.")
+
+            return
+        }
+
         when (fileChooserMode) {
             FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
             FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)

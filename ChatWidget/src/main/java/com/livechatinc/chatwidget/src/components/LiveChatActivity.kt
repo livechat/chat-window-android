@@ -60,7 +60,6 @@ class LiveChatActivity : AppCompatActivity() {
             liveChatView = LiveChat.getInstance().getLiveChatView()
             (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
 
-            liveChatView.init(initCallbackListener)
             container.addView(liveChatView)
             if (liveChatView.isUIReady()) {
                 liveChatView.visibility = View.VISIBLE
@@ -74,8 +73,11 @@ class LiveChatActivity : AppCompatActivity() {
                 )
             }
             container.addView(liveChatView)
-            liveChatView.init(initCallbackListener)
         }
+
+        liveChatView.supportFileSharing(this)
+        liveChatView.init(initCallbackListener)
+
 
         setUpInsets()
 
