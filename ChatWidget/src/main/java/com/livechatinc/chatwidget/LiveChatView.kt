@@ -52,18 +52,10 @@ class LiveChatView(
     private fun configureWebView() {
         val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
-        //TODO: test set need for initial focus
-        //webSettings.setNeedInitialFocus(false)
 
-        //TODO: check need for dom storage
         webSettings.domStorageEnabled = true
-        //TODO: investigate message sounds without user gesture
         webSettings.mediaPlaybackRequiresUserGesture = false
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
-
-        // TODO: Check if clearCache interrupts with resuming the session
-        // Seems to be needed for CIP callbacks
-//        webView.clearCache(true)
 
         webView.webChromeClient = ChatWidgetChromeClient(presenter)
         webView.webViewClient = ChatWidgetWebViewClient(presenter)

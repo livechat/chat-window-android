@@ -62,6 +62,11 @@ class LiveChat : LiveChatInterface() {
         urlHandler = handler
     }
 
+    internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
+    internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {
+        filesUploadCallback = filePathCallback
+    }
+
     internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope
 
     companion object {
@@ -171,11 +176,5 @@ class LiveChat : LiveChatInterface() {
 
     internal suspend fun getFreshToken(): ChatWidgetToken? {
         return tokenManager.getFreshToken(createLiveChatConfig())
-    }
-
-    internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
-
-    internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {
-        filesUploadCallback = filePathCallback
     }
 }

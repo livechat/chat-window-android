@@ -3,7 +3,9 @@ package com.livechatinc.livechatwidgetexample;
 import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,14 +17,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
+import com.google.gson.Gson;
 import com.livechatinc.chatwidget.LiveChat;
+import com.livechatinc.chatwidget.src.models.IdentityGrant;
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
 import com.livechatinc.inappchat.ChatWindowUtils;
 
 import java.util.Collections;
 
+import kotlin.Unit;
+
 public class MainActivity extends AppCompatActivity {
+    private final Gson gson = new Gson();
 
     String licenseNumber = BuildConfig.LICENSE == null ? "1520" : BuildConfig.LICENSE;
     ChatWindowConfiguration windowConfig = new ChatWindowConfiguration.Builder()
@@ -60,6 +67,31 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    private void enableCIP() {
+        LiveChat.getInstance().configureIdentityProvider(
+                BuildConfig.LICENSE_ID,
+                BuildConfig.CLIENT_ID,
+                identityGrant -> {
+//                    saveCookieGrantToPreferences(cookieGrant);
+                    Log.i("UsingKotlinActivity", "### new cookie grant: " + identityGrant);
+                    return Unit.INSTANCE;
+                }
+        );
+        final IdentityGrant identityRestorationGrant = readTokenCookiesFromPreferences();
+
+        LiveChat.getInstance().logInCustomer(identityRestorationGrant);
+    }
+
+    private IdentityGrant readTokenCookiesFromPreferences() {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+
+        final String cookieGrant = sharedPreferences.getString("cookieGrant", null);
+        if (cookieGrant == null) {
+            return null;
+        }
+
+        return gson.fromJson(cookieGrant, IdentityGrant.class);
+    }
 
     private void startChatActivity() {
         Intent intent = new Intent(this, ChatWindowActivity.class);
