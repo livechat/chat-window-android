@@ -82,7 +82,7 @@ class LiveChatActivity : AppCompatActivity() {
         setUpInsets()
 
         errorView = findViewById(R.id.live_chat_error_view)
-        reloadButton = findViewById(R.id.chat_widget_error_button)
+        reloadButton = findViewById(R.id.live_chat_error_button)
         loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
 
         setupReloadButton()
