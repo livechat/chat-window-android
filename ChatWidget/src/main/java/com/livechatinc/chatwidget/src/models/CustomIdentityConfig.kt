@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class CustomIdentityConfig(
-    val licenceId: String,
+    val licenseId: String,
     val clientId: String,
     val identityGrant: IdentityGrant?,
 )

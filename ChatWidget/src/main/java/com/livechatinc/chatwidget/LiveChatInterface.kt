@@ -7,11 +7,11 @@ import com.livechatinc.chatwidget.src.models.IdentityGrant
 abstract class LiveChatInterface {
 
     /**
-     * Stores licence number
+     * Stores license number
      * Stores application scope context
      * Potentially fetches chat url
      * */
-    suspend fun initialize(licence: String, context: Context) {}
+    suspend fun initialize(license: String, context: Context) {}
 
     /**
      * Stores params that are used when initializing chat
@@ -58,7 +58,7 @@ abstract class LiveChatInterface {
      * Needs to be called before [logInCustomer] and launching chat window
      * */
     abstract fun configureIdentityProvider(
-        licenceId: String,
+        licenseId: String,
         clientId: String,
         onIdentityGrantChange: (IdentityGrant) -> Unit
     )
@@ -122,6 +122,6 @@ abstract class LiveChatInterface {
 //    1. Naming convention
 //      - package name - to decide closer to the release
 //      - how to name cookieGrant - RestorationGrant
-//      - licence or licenceNumber?
+//      - license or licenseNumber?
 
 }

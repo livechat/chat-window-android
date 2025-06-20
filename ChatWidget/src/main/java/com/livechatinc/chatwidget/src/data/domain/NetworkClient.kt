@@ -8,7 +8,7 @@ internal interface NetworkClient {
 
     suspend fun getCustomerToken(
         license: String,
-        licenceId: String,
+        licenseId: String,
         clientId: String,
         identityGrant: IdentityGrant? = null,
     ): Result<CustomerTokenResponse>

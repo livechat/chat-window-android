@@ -46,7 +46,7 @@ internal class TokenManager(
 
         return networkClient.getCustomerToken(
             config.license,
-            identityConfig.licenceId,
+            identityConfig.licenseId,
             identityConfig.clientId,
             identityConfig.identityGrant,
         )

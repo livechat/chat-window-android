@@ -58,7 +58,7 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
 
     override suspend fun getCustomerToken(
         license: String,
-        licenceId: String,
+        licenseId: String,
         clientId: String,
         identityGrant: IdentityGrant?,
     ): Result<CustomerTokenResponse> {
@@ -87,7 +87,7 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
                         grantType = "cookie",
                         responseType = "token",
                         clientId = clientId,
-                        licenceId = licenceId
+                        licenseId = licenseId
                     )
                 )
             })

@@ -15,7 +15,7 @@ import com.livechatinc.inappchat.ChatWindowConfiguration;
 import java.util.Objects;
 
 public class EditConfigurationActivity extends AppCompatActivity {
-    EditText licenceNumber;
+    EditText licenseNumber;
     EditText groupId;
     EditText visitorName;
     EditText visitorEmail;
@@ -29,8 +29,8 @@ public class EditConfigurationActivity extends AppCompatActivity {
         final ChatWindowConfiguration config =
                 ChatWindowConfiguration.fromBundle(Objects.requireNonNull(getIntent().getExtras()));
 
-        licenceNumber = findViewById(R.id.licence_number);
-        licenceNumber.setText(config.licenceNumber);
+        licenseNumber = findViewById(R.id.license_number);
+        licenseNumber.setText(config.licenceNumber);
         groupId = findViewById(R.id.group_id);
         groupId.setText(config.groupId);
         visitorName = findViewById(R.id.visitor_name);
@@ -42,7 +42,7 @@ public class EditConfigurationActivity extends AppCompatActivity {
     public void submitConfig(View view) {
         Intent data = new Intent();
         final ChatWindowConfiguration config = new ChatWindowConfiguration.Builder()
-                .setLicenceNumber(licenceNumber.getText().toString())
+                .setLicenceNumber(licenseNumber.getText().toString())
                 .setGroupId(groupId.getText().toString())
                 .setVisitorName(visitorName.getText().toString())
                 .setVisitorEmail(visitorEmail.getText().toString())

@@ -35,14 +35,14 @@ class LiveChat : LiveChatInterface() {
         LiveChatViewManager(applicationContext)
     }
 
-    private var licence: String? = null
+    private var license: String? = null
     private lateinit var applicationContext: Context
     private var groupId: String? = null
 
     private var customerInfo: CustomerInfo? = null
 
     // Custom Identity Provider
-    private var licenceId: String? = null
+    private var licenseId: String? = null
     private var clientId: String? = null
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
@@ -77,13 +77,13 @@ class LiveChat : LiveChatInterface() {
         @JvmStatic
         @JvmOverloads
         fun initialize(
-            licence: String,
+            license: String,
             context: Context,
             groupId: String? = null,
             lifecycleScope: LiveChatViewLifecycleScope? = null
         ) {
             getInstance().apply {
-                this.licence = licence
+                this.license = license
                 this.groupId = groupId
                 this.applicationContext = context.applicationContext
                 this.liveChatViewLifecycleScope =
@@ -107,7 +107,7 @@ class LiveChat : LiveChatInterface() {
     }
 
     override fun show(context: Context) {
-        requireNotNull(licence) { "SDK not initialized. Call initialize() first" }
+        requireNotNull(license) { "SDK not initialized. Call initialize() first" }
 
         startChatActivity(context)
     }
@@ -122,11 +122,11 @@ class LiveChat : LiveChatInterface() {
     }
 
     override fun configureIdentityProvider(
-        licenceId: String,
+        licenseId: String,
         clientId: String,
         onIdentityGrantChange: (IdentityGrant) -> Unit,
     ) {
-        this.licenceId = licenceId
+        this.licenseId = licenseId
         this.clientId = clientId
         identityCallback = onIdentityGrantChange
     }
@@ -138,7 +138,7 @@ class LiveChat : LiveChatInterface() {
 
     internal fun createLiveChatConfig(): LiveChatConfig {
         return LiveChatConfig(
-            license = requireNotNull(licence),
+            license = requireNotNull(license),
             groupId = groupId ?: LiveChatConfig.DEFAULT_GROUP_ID,
             customerInfo = customerInfo,
             customIdentityConfig = createIdentityProvider(),
@@ -146,12 +146,12 @@ class LiveChat : LiveChatInterface() {
     }
 
     private fun createIdentityProvider(): CustomIdentityConfig? {
-        if (licenceId.isNullOrEmpty() || clientId.isNullOrEmpty()) {
+        if (licenseId.isNullOrEmpty() || clientId.isNullOrEmpty()) {
             return null
         }
 
         return CustomIdentityConfig(
-            licenceId = requireNotNull(licenceId),
+            licenseId = requireNotNull(licenseId),
             clientId = requireNotNull(clientId),
             identityGrant = identityGrant,
         )

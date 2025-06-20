@@ -11,13 +11,13 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Licence Number">
+        android:hint="License Number">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/licence_number"
+            android:id="@+id/license_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Licence Number" />
+            android:hint="License Number" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

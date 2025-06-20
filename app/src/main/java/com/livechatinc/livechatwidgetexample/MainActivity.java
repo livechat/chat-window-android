@@ -24,12 +24,12 @@ import java.util.Collections;
 
 public class MainActivity extends AppCompatActivity {
 
-    String licenceNumber = BuildConfig.LICENCE == null ? "1520" : BuildConfig.LICENCE;
+    String licenseNumber = BuildConfig.LICENSE == null ? "1520" : BuildConfig.LICENSE;
     ChatWindowConfiguration windowConfig = new ChatWindowConfiguration.Builder()
-            .setLicenceNumber(licenceNumber)
+            .setLicenceNumber(licenseNumber)
             .build();
 
-    TextView licenceInfoTv;
+    TextView licenseInfoTv;
     ActivityResultLauncher<Intent> editConfigActivityResultLauncher;
 
     @Override
@@ -40,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        licenceInfoTv = findViewById(R.id.licence_info);
-        licenceInfoTv.setText(windowConfig.toString());
+        licenseInfoTv = findViewById(R.id.license_info);
+        licenseInfoTv.setText(windowConfig.toString());
 
         editConfigActivityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         Intent data = result.getData();
                         windowConfig = (ChatWindowConfiguration.fromBundle(data.getExtras()));
-                        licenceInfoTv.setText(windowConfig.toString());
+                        licenseInfoTv.setText(windowConfig.toString());
                     }
                 });
 

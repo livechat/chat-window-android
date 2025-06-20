@@ -45,7 +45,7 @@ internal class RetrofitNetworkClient(json: Json, private val buildInfo: BuildInf
 
     override suspend fun getCustomerToken(
         license: String,
-        licenceId: String,
+        licenseId: String,
         clientId: String,
         identityGrant: IdentityGrant?
     ): Result<CustomerTokenResponse> {

@@ -10,10 +10,10 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        String licence = BuildConfig.LICENCE == null ? "1520" : BuildConfig.LICENCE;
+        String license = BuildConfig.LICENSE == null ? "1520" : BuildConfig.LICENSE;
 
         // To get HTTP calls logs, logger lever must be set before LiveChat.initialize
         Logger.setLogLevel(Logger.LogLevel.VERBOSE);
-        LiveChat.initialize(licence, this);
+        LiveChat.initialize(license, this);
     }
 }

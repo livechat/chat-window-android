@@ -54,7 +54,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
         final IdentityGrant identityRestorationGrant = readTokenCookiesFromPreferences();
 
         LiveChat.getInstance().configureIdentityProvider(
-                BuildConfig.LICENCE_ID,
+                BuildConfig.LICENSE_ID,
                 BuildConfig.CLIENT_ID,
                 identityGrant -> {
 //                    saveCookieGrantToPreferences(cookieGrant);

@@ -23,8 +23,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "LICENCE", localProperties['licence'] ?: "null")
-        buildConfigField("String", "LICENCE_ID", localProperties['licenceId'] ?: "null")
+        buildConfigField("String", "LICENSE", localProperties['license'] ?: "null")
+        buildConfigField("String", "LICENSE_ID", localProperties['licenseId'] ?: "null")
         buildConfigField("String", "CLIENT_ID", localProperties['clientId'] ?: "null")
     }
 

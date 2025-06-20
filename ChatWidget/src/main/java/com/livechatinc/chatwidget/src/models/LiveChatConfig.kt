@@ -11,7 +11,7 @@ internal data class LiveChatConfig @JvmOverloads constructor(
 ) {
     val isCustomIdentityEnabled: Boolean
         get() = customIdentityConfig != null &&
-                customIdentityConfig.licenceId.isNotEmpty() &&
+                customIdentityConfig.licenseId.isNotEmpty() &&
                 customIdentityConfig.clientId.isNotEmpty()
 
     internal companion object {
