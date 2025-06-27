@@ -4,12 +4,13 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.ValueCallback
 import androidx.annotation.VisibleForTesting
+import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManager
 import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
-import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManagerImpl
-import com.livechatinc.chatwidget.src.SessionManager
-import com.livechatinc.chatwidget.src.TokenManager
+import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManagerImpl
+import com.livechatinc.chatwidget.src.managers.SessionManager
+import com.livechatinc.chatwidget.src.managers.TokenManager
 import com.livechatinc.chatwidget.src.listeners.NewMessageListener
-import com.livechatinc.chatwidget.src.TokenManagerImpl
+import com.livechatinc.chatwidget.src.managers.TokenManagerImpl
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
@@ -17,6 +18,7 @@ import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
 import com.livechatinc.chatwidget.src.listeners.ErrorListener
 import com.livechatinc.chatwidget.src.listeners.UrlHandler
+import com.livechatinc.chatwidget.src.managers.SessionManagerImpl
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.CustomerInfo

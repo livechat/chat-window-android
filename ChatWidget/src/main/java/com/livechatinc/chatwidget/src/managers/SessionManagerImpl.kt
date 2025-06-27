@@ -1,6 +1,5 @@
-package com.livechatinc.chatwidget
+package com.livechatinc.chatwidget.src.managers
 
-import com.livechatinc.chatwidget.src.SessionManager
 import com.livechatinc.chatwidget.src.common.LiveChatUtils
 
 class SessionManagerImpl : SessionManager {

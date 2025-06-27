@@ -1,4 +1,4 @@
-package com.livechatinc.chatwidget.src
+package com.livechatinc.chatwidget.src.managers
 
 import com.livechatinc.chatwidget.src.common.Logger
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient

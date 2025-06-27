@@ -1,4 +1,4 @@
-package com.livechatinc.chatwidget.src
+package com.livechatinc.chatwidget.src.view
 
 import android.net.Uri
 import android.webkit.ConsoleMessage

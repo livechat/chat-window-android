@@ -1,4 +1,4 @@
-package com.livechatinc.chatwidget.src
+package com.livechatinc.chatwidget.src.managers
 
 interface SessionManager {
     fun clearSession()

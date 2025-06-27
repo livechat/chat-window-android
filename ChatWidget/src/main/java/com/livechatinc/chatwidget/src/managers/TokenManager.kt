@@ -1,4 +1,4 @@
-package com.livechatinc.chatwidget.src
+package com.livechatinc.chatwidget.src.managers
 
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
