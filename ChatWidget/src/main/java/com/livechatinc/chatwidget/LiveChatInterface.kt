@@ -36,7 +36,7 @@ abstract class LiveChatInterface {
      * Clears cookieGrant, customerToken and chatWidgetToken
      * Unregisters push token
      * */
-    abstract suspend fun signOutCustomer()
+    abstract fun signOutCustomer()
 
     /******* Embedding view mode *******/
     /**

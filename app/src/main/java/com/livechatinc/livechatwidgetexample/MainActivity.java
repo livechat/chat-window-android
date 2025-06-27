@@ -22,7 +22,6 @@ import com.livechatinc.chatwidget.LiveChat;
 import com.livechatinc.chatwidget.src.models.IdentityGrant;
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
-import com.livechatinc.inappchat.ChatWindowUtils;
 
 import java.util.Collections;
 
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void clearChatSession(View view) {
-        ChatWindowUtils.clearSession();
+        LiveChat.getInstance().signOutCustomer();
     }
 
     public void startKotlinVersion(View view) {

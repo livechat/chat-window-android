@@ -8,7 +8,7 @@ import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManager
 import com.livechatinc.chatwidget.src.listeners.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
-import com.livechatinc.chatwidget.src.common.ChatWidgetUtils
+import com.livechatinc.chatwidget.src.common.LiveChatUtils
 import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
@@ -115,15 +115,27 @@ class LiveChat : LiveChatInterface() {
         startChatActivity(context)
     }
 
-    override suspend fun signOutCustomer() {
-        //TODO: destroy view if its KEEP_ALIVE
-        ChatWidgetUtils.clearSession()
+    /**
+     * Clears cookies and web storage discarding user's chat session
+     * Removes [LiveChatView] when created in [LiveChatViewLifecycleScope.APP] scope
+     */
+    override fun signOutCustomer() {
+        destroyLiveChatView()
+        LiveChatUtils.clearSession()
     }
 
+    /**
+     * Should be used with [LiveChatViewLifecycleScope.APP] scope
+     * Creates [LiveChatView] instance or returns existing one
+     * */
     fun getLiveChatView(): LiveChatView {
         return viewManager.getLiveChatView()
     }
 
+    /**
+     * Should be used with [LiveChatViewLifecycleScope.APP] scope
+     * Removes [LiveChatView] from parent and destroys it
+     * */
     fun destroyLiveChatView() {
         viewManager.destroyLiveChatView()
     }
