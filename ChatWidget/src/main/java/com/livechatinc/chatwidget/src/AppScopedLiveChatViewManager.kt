@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.livechatinc.chatwidget.LiveChatView
 
-internal class LiveChatViewManager(private val context: Context) {
+internal class AppScopedLiveChatViewManager(private val applicationContext: Context) {
     private var liveChatView: LiveChatView? = null
 
     fun getLiveChatView(): LiveChatView {
-        return liveChatView ?: inflate(context).also {
+        return liveChatView ?: inflate(applicationContext).also {
             liveChatView = it
         }
     }
@@ -25,7 +25,10 @@ internal class LiveChatViewManager(private val context: Context) {
         }
     }
 
-    fun cleanup() {
-        liveChatView = null
+    fun destroyLiveChatView() {
+        liveChatView?.let {
+            (it.parent as? ViewGroup)?.removeView(it)
+            liveChatView = null
+        }
     }
 }

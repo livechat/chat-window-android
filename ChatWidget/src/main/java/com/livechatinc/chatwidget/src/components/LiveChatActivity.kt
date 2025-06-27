@@ -56,7 +56,7 @@ class LiveChatActivity : AppCompatActivity() {
         container = findViewById(R.id.live_chat_activity_container)
 
 
-        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.KEEP_ALIVE) {
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
             liveChatView = LiveChat.getInstance().getLiveChatView()
             (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
 
@@ -151,7 +151,7 @@ class LiveChatActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.KEEP_ALIVE) {
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
             liveChatView.clearCallbackListeners()
             container.removeView(liveChatView)
         }

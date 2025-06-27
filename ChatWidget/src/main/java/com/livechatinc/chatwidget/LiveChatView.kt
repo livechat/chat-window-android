@@ -163,7 +163,7 @@ class LiveChatView(
     override fun onDetachedFromWindow() {
         Logger.d("### onDetachedFromWindow")
         if (LiveChat.getInstance().liveChatViewLifecycleScope ==
-            LiveChatViewLifecycleScope.WHEN_SHOWN
+            LiveChatViewLifecycleScope.ACTIVITY
         ) {
             webView.apply {
                 removeJavascriptInterface(ChatWidgetJSBridge.INTERFACE_NAME)

@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.ValueCallback
 import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
-import com.livechatinc.chatwidget.src.LiveChatViewManager
+import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManager
 import com.livechatinc.chatwidget.src.listeners.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.common.BuildInfo
@@ -31,8 +31,8 @@ class LiveChat : LiveChatInterface() {
         identityCallback(it)
     }
 
-    private val viewManager: LiveChatViewManager by lazy {
-        LiveChatViewManager(applicationContext)
+    private val viewManager: AppScopedLiveChatViewManager by lazy {
+        AppScopedLiveChatViewManager(applicationContext)
     }
 
     private var license: String? = null
@@ -92,7 +92,7 @@ class LiveChat : LiveChatInterface() {
                 this.groupId = groupId
                 this.applicationContext = context.applicationContext
                 this.liveChatViewLifecycleScope =
-                    lifecycleScope ?: LiveChatViewLifecycleScope.KEEP_ALIVE
+                    lifecycleScope ?: LiveChatViewLifecycleScope.APP
             }
         }
     }
@@ -122,8 +122,12 @@ class LiveChat : LiveChatInterface() {
         ChatWidgetUtils.clearSession()
     }
 
-    internal fun getLiveChatView(): LiveChatView {
+    fun getLiveChatView(): LiveChatView {
         return viewManager.getLiveChatView()
+    }
+
+    fun destroyLiveChatView() {
+        viewManager.destroyLiveChatView()
     }
 
     override fun configureIdentityProvider(
