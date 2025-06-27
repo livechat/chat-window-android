@@ -6,11 +6,11 @@ import android.webkit.ValueCallback
 import androidx.annotation.VisibleForTesting
 import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
 import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManagerImpl
+import com.livechatinc.chatwidget.src.SessionManager
 import com.livechatinc.chatwidget.src.TokenManager
 import com.livechatinc.chatwidget.src.listeners.NewMessageListener
 import com.livechatinc.chatwidget.src.TokenManagerImpl
 import com.livechatinc.chatwidget.src.common.BuildInfo
-import com.livechatinc.chatwidget.src.common.LiveChatUtils
 import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
@@ -34,6 +34,7 @@ class LiveChat private constructor(
     ),
     private val tokenManagerProvider: (() -> TokenManager)? = null,
     private val viewManagerProvider: (() -> AppScopedLiveChatViewManager)? = null,
+    private val sessionManager: SessionManager = SessionManagerImpl()
 ) : LiveChatInterface() {
     private val tokenManager: TokenManager by lazy {
         tokenManagerProvider?.invoke() ?: TokenManagerImpl(networkClient) {
@@ -115,11 +116,13 @@ class LiveChat private constructor(
             networkClient: NetworkClient,
             tokenManager: TokenManager,
             viewManager: AppScopedLiveChatViewManager,
+            sessionManager: SessionManager,
         ): LiveChat {
             return LiveChat(
                 networkClient,
                 { tokenManager },
                 { viewManager },
+                sessionManager,
             ).apply { this.license = license }
         }
     }
@@ -150,7 +153,7 @@ class LiveChat private constructor(
      */
     override fun signOutCustomer() {
         destroyLiveChatView()
-        LiveChatUtils.clearSession()
+        sessionManager.clearSession()
     }
 
     /**
