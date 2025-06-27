@@ -28,6 +28,7 @@ A Android SDK for integrating LiveChat functionality into your mobile applicatio
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-modes)
    1. [Embedding LiveChatView](#embedding-livechatview)
+1. [Legacy version](#legacy-version)
 
 
 
@@ -88,18 +89,19 @@ That's it! Your customer can already start chatting with you.
 
 ## Customer information
 
-Pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and provide customer details to your agents by setting customer information before initializing the chat:
+Pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and provide customer details to your agents by setting customer information.
+All information is optional. Group ID defaults to 0 if not provided.
 
 ```kotlin
 LiveChat.getInstance().setCustomerInfo(
             "Joe", // Name
             "joe@mail.com", // Email
-            "0", // Group ID
+            "0", // Group ID, defaults to "0"
             Collections.singletonMap("internalCustomerId", "ABC123") // Any additional custom parameters
         )
 ```
 
-> Note: You must provide this information before calling `LiveChat.show()` 
+> **Note:** You must provide this information before calling `LiveChat.show()` 
 
 ## Unread message counter
 
@@ -123,7 +125,7 @@ All strings can be found [here](https://github.com/livechat/chat-window-android/
 ### Custom error view
 
 To completely change the error view, you can also override the default one by including `live_chat_error_layout.xml` in your app's layout resources.
-> Note: Your custom view must contain a `View` with `live_chat_error_button` id
+> **Note:** Your custom view must contain a `View` with `live_chat_error_button` id
 
 ### Customizing Activity
 
@@ -174,7 +176,7 @@ You should specify the mode when initializing.
 LiveChat.initialize("<LICENSE_NUMBER>", this, LiveChatViewLifecycleMode.WHEN_SHOWN)
 ```
 
-> Note: Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible.
+> **Note:** Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible.
 
 ### Embedding LiveChatView
 
@@ -194,7 +196,7 @@ During `onCreate` of your Activity, provide activity context
 liveChatView.setActivityContextOnCreate(this)
 ```
 
-> Note: this is required to properly handle the lifecycle of the view, support file sharing and launch links in default external browser
+> **Note:** this is required to properly handle the lifecycle of the view, support file sharing and launch links in default external browser
 
 #### React to visibility events
 
@@ -203,3 +205,7 @@ Provide `LiveChatViewInitListener` when initializing the view
 ```kotlin
 liveChatView.init(initCallbackListener)
 ```
+
+## Legacy version
+
+Old versions of the library are still available on JitPack. You can find documentation in the (README_legacy.md)[README_legacy.md] file
