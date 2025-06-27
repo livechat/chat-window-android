@@ -1,7 +1,9 @@
 package com.livechatinc.chatwidget
 
-import com.livechatinc.chatwidget.src.TokenManager
+import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManager
+import com.livechatinc.chatwidget.src.managers.TokenManager
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
+import com.livechatinc.chatwidget.src.managers.SessionManager
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
@@ -11,6 +13,7 @@ class LiveChatTest {
     private lateinit var mockNetworkClient: NetworkClient
     private lateinit var mockTokenManager: TokenManager
     private lateinit var mockViewManager: AppScopedLiveChatViewManager
+    private lateinit var sessionManager: SessionManager
     private lateinit var liveChat: LiveChat
 
     @Before
@@ -19,6 +22,7 @@ class LiveChatTest {
         mockNetworkClient = mock(NetworkClient::class.java)
         mockTokenManager = mock(TokenManager::class.java)
         mockViewManager = mock(AppScopedLiveChatViewManager::class.java)
+        sessionManager = mock(SessionManager::class.java)
 
         // Create LiveChat instance with mocks
         liveChat = LiveChat.createForTesting(
@@ -26,6 +30,7 @@ class LiveChatTest {
             mockNetworkClient,
             mockTokenManager,
             mockViewManager,
+            sessionManager,
         )
     }
 
