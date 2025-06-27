@@ -208,4 +208,4 @@ liveChatView.init(initCallbackListener)
 
 ## Legacy version
 
-Old versions of the library are still available on JitPack. You can find documentation in the (README_legacy.md)[README_legacy.md] file
+Old versions of the library are still available on JitPack. You can find documentation in the [README_legacy.md](README_legacy.md) file

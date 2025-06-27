@@ -7,19 +7,6 @@ Embedding mobile chat window in Android application for
 
 **LiveChat:** https://developers.livechat.com/docs/getting-started/installing-livechat/android-widget/
 
-## Table of contents
-
-1.  [Getting started](#getting-started)
-    1. [Requirements](#requirements)
-2.  [Usage](#usage)
-    1. [Requirements](#requirements)
-3.  [Sending your fchat-window-android
-    ===============
-
-Embedding mobile chat window in Android application for
-
-**LiveChat:** https://developers.livechat.com/docs/getting-started/installing-livechat/android-widget/
-
 # Installation
 
 [![Release](https://jitpack.io/v/livechat/chat-window-android.svg)](https://jitpack.io/#livechat/chat-window-android)
