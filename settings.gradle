@@ -1,2 +1,3 @@
 include ':inappchat'
 include ':ChatWidget'
+include ':app'
