@@ -84,12 +84,10 @@ class LiveChat : LiveChatInterface() {
         fun initialize(
             license: String,
             context: Context,
-            groupId: String? = null,
             lifecycleScope: LiveChatViewLifecycleScope? = null
         ) {
             getInstance().apply {
                 this.license = license
-                this.groupId = groupId
                 this.applicationContext = context.applicationContext
                 this.liveChatViewLifecycleScope =
                     lifecycleScope ?: LiveChatViewLifecycleScope.APP
