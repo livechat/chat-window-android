@@ -7,8 +7,8 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import com.livechatinc.chatwidget.src.common.Logger
 
-internal class ChatWidgetChromeClient(
-    val presenter: ChatWidgetPresenter
+internal class LiveChatViewChromeClient(
+    val presenter: LiveChatViewPresenter
 ) : WebChromeClient() {
     override fun onShowFileChooser(
         webView: WebView?,

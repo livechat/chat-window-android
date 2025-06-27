@@ -9,7 +9,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 
-internal class ChatWidgetWebViewClient(private val presenter: ChatWidgetPresenter) :
+internal class LiveChatViewWebViewClient(private val presenter: LiveChatViewPresenter) :
     WebViewClient() {
 
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {

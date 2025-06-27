@@ -14,11 +14,11 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import com.livechatinc.chatwidget.src.ChatWidgetChromeClient
-import com.livechatinc.chatwidget.src.ChatWidgetJSBridge
-import com.livechatinc.chatwidget.src.ChatWidgetPresenter
-import com.livechatinc.chatwidget.src.ChatWidgetViewInternal
-import com.livechatinc.chatwidget.src.ChatWidgetWebViewClient
+import com.livechatinc.chatwidget.src.LiveChatViewChromeClient
+import com.livechatinc.chatwidget.src.LiveChatViewJSBridge
+import com.livechatinc.chatwidget.src.LiveChatViewPresenter
+import com.livechatinc.chatwidget.src.LiveChatViewInternal
+import com.livechatinc.chatwidget.src.LiveChatViewWebViewClient
 import com.livechatinc.chatwidget.src.FileSharing
 import com.livechatinc.chatwidget.src.listeners.LiveChatViewInitListener
 import com.livechatinc.chatwidget.src.common.Logger
@@ -32,10 +32,10 @@ import java.lang.ref.WeakReference
 class LiveChatView(
     context: Context,
     attrs: AttributeSet?
-) : FrameLayout(context, attrs), ChatWidgetViewInternal, DefaultLifecycleObserver {
+) : FrameLayout(context, attrs), LiveChatViewInternal, DefaultLifecycleObserver {
     private var fileSharing: FileSharing? = null
     private var webView: WebView
-    private var presenter: ChatWidgetPresenter
+    private var presenter: LiveChatViewPresenter
     private var activityContextRef: WeakReference<Context>? = null
 
     val isUIReady: Boolean
@@ -44,7 +44,7 @@ class LiveChatView(
     init {
         inflate(context, R.layout.live_chat_widget_internal, this)
         webView = findViewById(R.id.live_chat_webview)
-        presenter = ChatWidgetPresenter(this, LiveChat.getInstance().networkClient)
+        presenter = LiveChatViewPresenter(this, LiveChat.getInstance().networkClient)
 
         configureWebView()
     }
@@ -57,12 +57,12 @@ class LiveChatView(
         webSettings.mediaPlaybackRequiresUserGesture = false
         webSettings.cacheMode = WebSettings.LOAD_DEFAULT
 
-        webView.webChromeClient = ChatWidgetChromeClient(presenter)
-        webView.webViewClient = ChatWidgetWebViewClient(presenter)
+        webView.webChromeClient = LiveChatViewChromeClient(presenter)
+        webView.webViewClient = LiveChatViewWebViewClient(presenter)
 
         webView.addJavascriptInterface(
-            ChatWidgetJSBridge(presenter),
-            ChatWidgetJSBridge.INTERFACE_NAME,
+            LiveChatViewJSBridge(presenter),
+            LiveChatViewJSBridge.INTERFACE_NAME,
         )
     }
 
@@ -166,7 +166,7 @@ class LiveChatView(
             LiveChatViewLifecycleScope.ACTIVITY
         ) {
             webView.apply {
-                removeJavascriptInterface(ChatWidgetJSBridge.INTERFACE_NAME)
+                removeJavascriptInterface(LiveChatViewJSBridge.INTERFACE_NAME)
                 webChromeClient = null
                 destroy()
             }

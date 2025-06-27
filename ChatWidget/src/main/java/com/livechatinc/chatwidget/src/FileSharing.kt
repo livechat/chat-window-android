@@ -13,7 +13,7 @@ import com.livechatinc.chatwidget.LiveChat
 
 internal class FileSharing(
     private val registry: ActivityResultRegistry,
-    private val presenter: ChatWidgetPresenter
+    private val presenter: LiveChatViewPresenter
 ) : DefaultLifecycleObserver {
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null

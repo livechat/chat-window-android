@@ -12,8 +12,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 
-internal class ChatWidgetJSBridge internal constructor(
-    private val presenter: ChatWidgetPresenter
+internal class LiveChatViewJSBridge internal constructor(
+    private val presenter: LiveChatViewPresenter
 ) {
     private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
 
@@ -57,7 +57,7 @@ internal class ChatWidgetJSBridge internal constructor(
             try {
                 when (type) {
                     MessageType.UI_READY -> presenter.onUiReady()
-                    MessageType.HIDE_CHAT_WINDOW -> presenter.onHideChatWidget()
+                    MessageType.HIDE_CHAT_WINDOW -> presenter.onHideLiveChat()
                     MessageType.NEW_MESSAGE -> presenter.onNewMessage(
                         json.decodeFromString<ChatMessage>(messageJson)
                     )

@@ -22,8 +22,8 @@ import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
-internal class ChatWidgetPresenter internal constructor(
-    private var view: ChatWidgetViewInternal,
+internal class LiveChatViewPresenter internal constructor(
+    private var view: LiveChatViewInternal,
     private val networkClient: NetworkClient,
 ) {
     private var identityGrant: IdentityGrant? = null
@@ -73,7 +73,7 @@ internal class ChatWidgetPresenter internal constructor(
         initListener?.onUIReady()
     }
 
-    internal fun onHideChatWidget() {
+    internal fun onHideLiveChat() {
         initListener?.onHide()
     }
 

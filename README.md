@@ -137,7 +137,7 @@ Activity will follow your activity's theme. To change activity configuration you
 Chat window uses WebView's cookies to store the session. To clear the chat session, you can call:
 
 ```kotlin
-ChatWidgetUtils.clearSession()
+LiveChat.clearSession()
 ```
 
 ## Handling links

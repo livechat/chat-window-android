@@ -4,7 +4,7 @@ import android.net.Uri
 import android.webkit.ValueCallback
 import com.livechatinc.chatwidget.src.models.FileChooserMode
 
-internal interface ChatWidgetViewInternal {
+internal interface LiveChatViewInternal {
     fun loadUrl(url: String)
 
     fun startFilePicker(
