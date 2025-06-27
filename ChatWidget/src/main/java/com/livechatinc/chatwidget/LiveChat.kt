@@ -3,10 +3,12 @@ package com.livechatinc.chatwidget
 import android.content.Context
 import android.net.Uri
 import android.webkit.ValueCallback
+import androidx.annotation.VisibleForTesting
 import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
-import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManager
-import com.livechatinc.chatwidget.src.listeners.NewMessageListener
+import com.livechatinc.chatwidget.src.AppScopedLiveChatViewManagerImpl
 import com.livechatinc.chatwidget.src.TokenManager
+import com.livechatinc.chatwidget.src.listeners.NewMessageListener
+import com.livechatinc.chatwidget.src.TokenManagerImpl
 import com.livechatinc.chatwidget.src.common.BuildInfo
 import com.livechatinc.chatwidget.src.common.LiveChatUtils
 import com.livechatinc.chatwidget.src.common.JsonProvider
@@ -21,19 +23,26 @@ import com.livechatinc.chatwidget.src.models.CustomerInfo
 import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomIdentityConfig
 
-class LiveChat : LiveChatInterface() {
-    private val buildInfo: BuildInfo = BuildInfo(
-        mobileConfigHost = "https://cdn.livechatinc.com/",
-        mobileConfigPath = "app/mobile/urls.json",
-        accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
-    )
-    internal val networkClient: NetworkClient = KtorNetworkClient(JsonProvider.instance, buildInfo)
-    private var tokenManager: TokenManager = TokenManager(networkClient) {
-        identityCallback(it)
+class LiveChat private constructor(
+    internal val networkClient: NetworkClient = KtorNetworkClient(
+        JsonProvider.instance,
+        BuildInfo(
+            mobileConfigHost = "https://cdn.livechatinc.com/",
+            mobileConfigPath = "app/mobile/urls.json",
+            accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
+        ),
+    ),
+    private val tokenManagerProvider: (() -> TokenManager)? = null,
+    private val viewManagerProvider: (() -> AppScopedLiveChatViewManager)? = null,
+) : LiveChatInterface() {
+    private val tokenManager: TokenManager by lazy {
+        tokenManagerProvider?.invoke() ?: TokenManagerImpl(networkClient) {
+            identityCallback(it)
+        }
     }
 
     private val viewManager: AppScopedLiveChatViewManager by lazy {
-        AppScopedLiveChatViewManager(applicationContext)
+        viewManagerProvider?.invoke() ?: AppScopedLiveChatViewManagerImpl(applicationContext)
     }
 
     private var license: String? = null
@@ -98,6 +107,20 @@ class LiveChat : LiveChatInterface() {
                 this.liveChatViewLifecycleScope =
                     lifecycleScope ?: LiveChatViewLifecycleScope.APP
             }
+        }
+
+        @VisibleForTesting
+        internal fun createForTesting(
+            license: String,
+            networkClient: NetworkClient,
+            tokenManager: TokenManager,
+            viewManager: AppScopedLiveChatViewManager,
+        ): LiveChat {
+            return LiveChat(
+                networkClient,
+                { tokenManager },
+                { viewManager },
+            ).apply { this.license = license }
         }
     }
 
