@@ -24,6 +24,7 @@ A Android SDK for integrating LiveChat functionality into your mobile applicatio
 1. [Clearing chat session](#clearing-chat-session)
 1. [Handling links](#handling-links)
 1. [Troubleshooting](#troubleshooting)
+   1. [Reacting to errors](#reacting-to-errors)
    1. [Logger](#logger)
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-modes)
@@ -145,10 +146,29 @@ By default, links sent between your Agents and Customers are opened in the defau
 If you want to intercept the link and handle it in your app, provide your `UriHandler`
 
 ```kotlin
-LiveChat.getInstance().setUrlHandler()
+LiveChat.getInstance().setUrlHandler(object : UriHandler {
+    override fun handleUri(uri: Uri): Boolean {
+        // Return true if handled, false to open in default browser
+        return false
+    }
+})
 ```
 
 ## Troubleshooting
+
+### React to errors
+
+To monitor and handle issues related to loading the chat view, you can set an error listener. This allows you to capture and respond to errors in a centralized way. 
+Common use cases include reporting errors to analytics platforms or implementing custom error handling logic.
+
+```kotlin
+LiveChat.getInstance().setErrorListener(object : ErrorListener {
+    override fun onError(error: Error) {
+        // Handle the error
+    }
+})
+```
+
 
 ### Logger
 

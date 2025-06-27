@@ -13,6 +13,7 @@ import com.livechatinc.chatwidget.src.common.JsonProvider
 import com.livechatinc.chatwidget.src.components.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
+import com.livechatinc.chatwidget.src.listeners.ErrorListener
 import com.livechatinc.chatwidget.src.listeners.UrlHandler
 import com.livechatinc.chatwidget.src.models.LiveChatConfig
 import com.livechatinc.chatwidget.src.models.ChatWidgetToken
@@ -46,6 +47,11 @@ class LiveChat : LiveChatInterface() {
     private var clientId: String? = null
     private var identityGrant: IdentityGrant? = null
     internal var identityCallback: (IdentityGrant) -> Unit = { }
+
+    internal var errorListener: ErrorListener? = null
+    fun setErrorListener(listener: ErrorListener?) {
+        errorListener = listener
+    }
 
     internal var newMessageListener: NewMessageListener? = null
     fun setNewMessageListener(listener: NewMessageListener?) {

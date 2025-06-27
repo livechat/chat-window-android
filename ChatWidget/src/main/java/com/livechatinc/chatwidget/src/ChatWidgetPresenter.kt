@@ -52,9 +52,6 @@ internal class ChatWidgetPresenter internal constructor(
 
                     return@launch
                 } catch (cause: Throwable) {
-                    //TODO: potentially redundant error log message
-                    Logger.e("Failed to load chat url: $cause", throwable = cause)
-
                     withContext(Dispatchers.Main) {
                         onError(cause)
                     }
@@ -82,8 +79,9 @@ internal class ChatWidgetPresenter internal constructor(
 
     private fun onError(cause: Throwable) {
         initListener?.onError(cause)
+        LiveChat.getInstance().errorListener?.onError(cause)
 
-        Logger.e("${cause.javaClass}, ${cause.message}")
+        Logger.e("${cause.javaClass}, ${cause.message}", throwable = cause)
     }
 
     internal fun onNewMessage(message: ChatMessage?) {

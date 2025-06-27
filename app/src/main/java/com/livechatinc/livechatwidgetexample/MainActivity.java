@@ -59,6 +59,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        LiveChat.getInstance().setErrorListener(
+                error -> {
+                    Log.e("MainActivity", "### LiveChat error: " + error, error);
+                }
+        );
+
         LiveChat.getInstance().setNewMessageListener(
                 newMessage -> {
                     Log.i("MainActivity", "### new message: " + newMessage.getText());
