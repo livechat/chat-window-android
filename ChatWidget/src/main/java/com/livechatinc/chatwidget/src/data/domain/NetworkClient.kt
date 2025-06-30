@@ -1,7 +1,7 @@
 package com.livechatinc.chatwidget.src.data.domain
 
-import com.livechatinc.chatwidget.src.models.IdentityGrant
-import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
+import com.livechatinc.chatwidget.src.domain.models.IdentityGrant
+import com.livechatinc.chatwidget.src.domain.models.CustomerTokenResponse
 
 internal interface NetworkClient {
     suspend fun fetchChatUrl(): String

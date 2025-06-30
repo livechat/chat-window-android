@@ -4,7 +4,7 @@
     android:id="@+id/live_chat_activity_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".src.components.LiveChatActivity">
+    tools:context=".src.presentation.LiveChatActivity">
 
     <include
         android:id="@+id/live_chat_error_view"

@@ -4,26 +4,28 @@ import android.content.Context
 import android.net.Uri
 import android.webkit.ValueCallback
 import androidx.annotation.VisibleForTesting
-import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManager
-import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
-import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManagerImpl
-import com.livechatinc.chatwidget.src.managers.SessionManager
-import com.livechatinc.chatwidget.src.managers.TokenManager
-import com.livechatinc.chatwidget.src.listeners.NewMessageListener
-import com.livechatinc.chatwidget.src.managers.TokenManagerImpl
-import com.livechatinc.chatwidget.src.common.BuildInfo
-import com.livechatinc.chatwidget.src.common.JsonProvider
-import com.livechatinc.chatwidget.src.components.LiveChatActivity
+import com.livechatinc.chatwidget.src.core.LiveChatViewLifecycleScope
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.AppScopedLiveChatViewManager
+import com.livechatinc.chatwidget.src.domain.interfaces.FileChooserActivityNotFoundListener
+import com.livechatinc.chatwidget.src.core.managers.AppScopedLiveChatViewManagerImpl
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.SessionManager
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.TokenManager
+import com.livechatinc.chatwidget.src.core.managers.TokenManagerImpl
+import com.livechatinc.chatwidget.src.domain.models.BuildInfo
+import com.livechatinc.chatwidget.src.utils.JsonProvider
+import com.livechatinc.chatwidget.src.presentation.LiveChatActivity
 import com.livechatinc.chatwidget.src.data.core.KtorNetworkClient
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.listeners.ErrorListener
-import com.livechatinc.chatwidget.src.listeners.UrlHandler
-import com.livechatinc.chatwidget.src.managers.SessionManagerImpl
-import com.livechatinc.chatwidget.src.models.LiveChatConfig
-import com.livechatinc.chatwidget.src.models.ChatWidgetToken
-import com.livechatinc.chatwidget.src.models.CustomerInfo
-import com.livechatinc.chatwidget.src.models.IdentityGrant
-import com.livechatinc.chatwidget.src.models.CustomIdentityConfig
+import com.livechatinc.chatwidget.src.domain.interfaces.ErrorListener
+import com.livechatinc.chatwidget.src.domain.interfaces.UrlHandler
+import com.livechatinc.chatwidget.src.core.managers.SessionManagerImpl
+import com.livechatinc.chatwidget.src.domain.interfaces.NewMessageListener
+import com.livechatinc.chatwidget.src.domain.models.LiveChatConfig
+import com.livechatinc.chatwidget.src.domain.models.ChatWidgetToken
+import com.livechatinc.chatwidget.src.domain.models.CustomerInfo
+import com.livechatinc.chatwidget.src.domain.models.IdentityGrant
+import com.livechatinc.chatwidget.src.domain.models.CustomIdentityConfig
+import com.livechatinc.chatwidget.src.presentation.LiveChatView
 
 class LiveChat private constructor(
     private val license: String,

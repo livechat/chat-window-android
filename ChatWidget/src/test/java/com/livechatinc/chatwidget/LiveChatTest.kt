@@ -1,9 +1,9 @@
 package com.livechatinc.chatwidget
 
-import com.livechatinc.chatwidget.src.managers.AppScopedLiveChatViewManager
-import com.livechatinc.chatwidget.src.managers.TokenManager
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.AppScopedLiveChatViewManager
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.TokenManager
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.managers.SessionManager
+import com.livechatinc.chatwidget.src.domain.interfaces.managers.SessionManager
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*

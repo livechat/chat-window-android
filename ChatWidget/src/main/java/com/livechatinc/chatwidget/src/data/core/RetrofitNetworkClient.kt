@@ -1,10 +1,10 @@
 package com.livechatinc.chatwidget.src.data.core
 
-import com.livechatinc.chatwidget.src.common.BuildInfo
+import com.livechatinc.chatwidget.src.domain.models.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
-import com.livechatinc.chatwidget.src.models.IdentityGrant
-import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
+import com.livechatinc.chatwidget.src.domain.models.ChatWidgetUrls
+import com.livechatinc.chatwidget.src.domain.models.IdentityGrant
+import com.livechatinc.chatwidget.src.domain.models.CustomerTokenResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json

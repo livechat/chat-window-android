@@ -1,15 +1,15 @@
 package com.livechatinc.chatwidget.src.data.core
 
-import com.livechatinc.chatwidget.src.common.BuildInfo
+import com.livechatinc.chatwidget.src.domain.models.BuildInfo
 import com.livechatinc.chatwidget.src.data.domain.NetworkClient
-import com.livechatinc.chatwidget.src.models.CustomerTokenRequest
-import com.livechatinc.chatwidget.src.models.ChatWidgetUrls
-import com.livechatinc.chatwidget.src.models.Cookie
-import com.livechatinc.chatwidget.src.models.IdentityGrant
-import com.livechatinc.chatwidget.src.models.CustomerToken
-import com.livechatinc.chatwidget.src.models.CustomerTokenResponse
-import com.livechatinc.chatwidget.src.models.toChatWidgetToken
-import com.livechatinc.chatwidget.src.common.Logger as InternalLogger
+import com.livechatinc.chatwidget.src.domain.models.CustomerTokenRequest
+import com.livechatinc.chatwidget.src.domain.models.ChatWidgetUrls
+import com.livechatinc.chatwidget.src.domain.models.Cookie
+import com.livechatinc.chatwidget.src.domain.models.IdentityGrant
+import com.livechatinc.chatwidget.src.domain.models.CustomerToken
+import com.livechatinc.chatwidget.src.domain.models.CustomerTokenResponse
+import com.livechatinc.chatwidget.src.domain.models.toChatWidgetToken
+import com.livechatinc.chatwidget.src.utils.Logger as InternalLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO

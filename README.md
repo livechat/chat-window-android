@@ -76,7 +76,7 @@ Add Internet permission to AndroidManifest.xml:
 Initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance
 
 ```kotlin
-LiveChat.initialize("<LICENSE_NUMBER>", this)
+LiveChat.initialize("<LICENSE>", this)
 ```
 
 #### Show Chat
@@ -106,7 +106,7 @@ LiveChat.getInstance().setCustomerInfo(
 
 ## Unread message counter
 
-Use [`com.livechatinc.chatwidget.src.listeners.NewMessageListener`](ChatWidget/src/main/java/com/livechatinc/chatwidget/src/listeners/NewMessageListener.kt) to get notified about new messages in the chat
+Use [`com.livechatinc.chatwidget.src.domain.listeners.NewMessageListener`](ChatWidget/src/main/java/com/livechatinc/chatwidget/src/domain/interfaces/NewMessageListener.kt) to get notified about new messages in the chat
 
 Set it wherever you want to react on new message, like increase badge count
 
@@ -193,7 +193,7 @@ If you don't need that feature and want to free up memory once chat is no longer
 You should specify the mode when initializing.
 
 ```kotlin
-LiveChat.initialize("<LICENSE_NUMBER>", this, LiveChatViewLifecycleMode.WHEN_SHOWN)
+LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleMode.WHEN_SHOWN)
 ```
 
 > **Note:** Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible.

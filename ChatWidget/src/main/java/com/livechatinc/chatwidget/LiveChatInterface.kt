@@ -1,8 +1,8 @@
 package com.livechatinc.chatwidget
 
 import android.content.Context
-import com.livechatinc.chatwidget.src.listeners.FileChooserActivityNotFoundListener
-import com.livechatinc.chatwidget.src.models.IdentityGrant
+import com.livechatinc.chatwidget.src.domain.interfaces.FileChooserActivityNotFoundListener
+import com.livechatinc.chatwidget.src.domain.models.IdentityGrant
 
 abstract class LiveChatInterface {
 

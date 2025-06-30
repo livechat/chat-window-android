@@ -1,0 +1,13 @@
+package com.livechatinc.chatwidget.src.domain.models
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class CustomerTokenRequest(
+    @SerialName("grant_type") val grantType: String? = null,
+    @SerialName("response_type") val responseType: String? = null,
+    @SerialName("client_id") val clientId: String? = null,
+    //TODO: organization id instead of license id?
+    @SerialName("organization_id") val licenseId: String? = null,
+)

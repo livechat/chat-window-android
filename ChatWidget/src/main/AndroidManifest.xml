@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name=".src.components.LiveChatActivity"
+            android:name=".src.presentation.LiveChatActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
     </application>
