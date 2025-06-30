@@ -24,7 +24,7 @@ class LiveChatActivity : AppCompatActivity() {
     private lateinit var errorView: View
     private lateinit var reloadButton: View
     private lateinit var loadingIndicator: View
-    private var insetsAnimationRunning = false
+    private lateinit var insetManager: WindowInsetManager
 
     private val initCallbackListener = object : LiveChatViewInitListener {
         override fun onUIReady() {
@@ -77,66 +77,14 @@ class LiveChatActivity : AppCompatActivity() {
         liveChatView.setActivityContextOnCreate(this)
         liveChatView.init(initCallbackListener)
 
-
-        setUpInsets()
+        insetManager = WindowInsetManager(container)
+        insetManager.setupInsets()
 
         errorView = findViewById(R.id.live_chat_error_view)
         reloadButton = findViewById(R.id.live_chat_error_button)
         loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
 
         setupReloadButton()
-    }
-
-    private fun setUpInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(container) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-
-            if (ime.bottom == 0 && !insetsAnimationRunning) {
-                container.setPadding(
-                    systemBars.left,
-                    systemBars.top,
-                    systemBars.right,
-                    systemBars.bottom
-                )
-            }
-            insets
-        }
-
-        // Synchronize container paddings with keyboard animation
-        ViewCompat.setWindowInsetsAnimationCallback(
-            container,
-            object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
-                override fun onPrepare(animation: WindowInsetsAnimationCompat) {
-                    super.onPrepare(animation)
-                    insetsAnimationRunning = true
-                }
-
-                override fun onProgress(
-                    insets: WindowInsetsCompat,
-                    runningAnimations: List<WindowInsetsAnimationCompat>
-                ): WindowInsetsCompat {
-                    val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                    val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
-                    val targetBottomPadding =
-                        if (ime.bottom > systemBars.bottom) ime.bottom else systemBars.bottom
-
-                    container.setPadding(
-                        systemBars.left,
-                        systemBars.top,
-                        systemBars.right,
-                        targetBottomPadding
-                    )
-
-                    return insets
-                }
-
-                override fun onEnd(animation: WindowInsetsAnimationCompat) {
-                    insetsAnimationRunning = false
-                    super.onEnd(animation)
-                }
-            }
-        )
     }
 
     private fun setupReloadButton() {
