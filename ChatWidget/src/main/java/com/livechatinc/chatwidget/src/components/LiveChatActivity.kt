@@ -24,6 +24,7 @@ class LiveChatActivity : AppCompatActivity() {
     private lateinit var errorView: View
     private lateinit var reloadButton: View
     private lateinit var loadingIndicator: View
+    private var insetsAnimationRunning = false
 
     private val initCallbackListener = object : LiveChatViewInitListener {
         override fun onUIReady() {
@@ -45,7 +46,6 @@ class LiveChatActivity : AppCompatActivity() {
                 errorVisible = true
             )
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,7 +54,6 @@ class LiveChatActivity : AppCompatActivity() {
         setContentView(R.layout.live_chat_activity)
 
         container = findViewById(R.id.live_chat_activity_container)
-
 
         if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
             liveChatView = LiveChat.getInstance().getLiveChatView()
@@ -89,23 +88,30 @@ class LiveChatActivity : AppCompatActivity() {
     }
 
     private fun setUpInsets() {
-        val container = findViewById<View>(R.id.live_chat_activity_container)
-
         ViewCompat.setOnApplyWindowInsetsListener(container) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(
-                systemBars.left,
-                systemBars.top,
-                systemBars.right,
-                systemBars.bottom
-            )
-            ViewCompat.setOnApplyWindowInsetsListener(container, null)
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            if (ime.bottom == 0 && !insetsAnimationRunning) {
+                container.setPadding(
+                    systemBars.left,
+                    systemBars.top,
+                    systemBars.right,
+                    systemBars.bottom
+                )
+            }
             insets
         }
 
         // Synchronize container paddings with keyboard animation
-        ViewCompat.setWindowInsetsAnimationCallback(container,
+        ViewCompat.setWindowInsetsAnimationCallback(
+            container,
             object : WindowInsetsAnimationCompat.Callback(DISPATCH_MODE_CONTINUE_ON_SUBTREE) {
+                override fun onPrepare(animation: WindowInsetsAnimationCompat) {
+                    super.onPrepare(animation)
+                    insetsAnimationRunning = true
+                }
+
                 override fun onProgress(
                     insets: WindowInsetsCompat,
                     runningAnimations: List<WindowInsetsAnimationCompat>
@@ -123,6 +129,11 @@ class LiveChatActivity : AppCompatActivity() {
                     )
 
                     return insets
+                }
+
+                override fun onEnd(animation: WindowInsetsAnimationCompat) {
+                    insetsAnimationRunning = false
+                    super.onEnd(animation)
                 }
             }
         )
