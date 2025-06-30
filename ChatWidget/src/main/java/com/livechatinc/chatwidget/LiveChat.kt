@@ -26,6 +26,7 @@ import com.livechatinc.chatwidget.src.models.IdentityGrant
 import com.livechatinc.chatwidget.src.models.CustomIdentityConfig
 
 class LiveChat private constructor(
+    private val license: String,
     internal val networkClient: NetworkClient = KtorNetworkClient(
         JsonProvider.instance,
         BuildInfo(
@@ -35,7 +36,7 @@ class LiveChat private constructor(
         ),
     ),
     private val tokenManagerProvider: (() -> TokenManager)? = null,
-    private val viewManagerProvider: (() -> AppScopedLiveChatViewManager)? = null,
+    private val viewManagerProvider: (() -> AppScopedLiveChatViewManager),
     private val sessionManager: SessionManager = SessionManagerImpl()
 ) : LiveChatInterface() {
     private val tokenManager: TokenManager by lazy {
@@ -45,11 +46,9 @@ class LiveChat private constructor(
     }
 
     private val viewManager: AppScopedLiveChatViewManager by lazy {
-        viewManagerProvider?.invoke() ?: AppScopedLiveChatViewManagerImpl(applicationContext)
+        viewManagerProvider.invoke()
     }
 
-    private var license: String? = null
-    private lateinit var applicationContext: Context
     private var groupId: String? = null
 
     private var customerInfo: CustomerInfo? = null
@@ -93,9 +92,8 @@ class LiveChat private constructor(
 
         @JvmStatic
         fun getInstance(): LiveChat =
-            instance ?: synchronized(this) {
-                instance ?: LiveChat().also { instance = it }
-            }
+            instance ?: throw IllegalStateException("SDK not initialized. Call initialize() first")
+
 
         @JvmStatic
         @JvmOverloads
@@ -104,11 +102,16 @@ class LiveChat private constructor(
             context: Context,
             lifecycleScope: LiveChatViewLifecycleScope? = null
         ) {
-            getInstance().apply {
-                this.license = license
-                this.applicationContext = context.applicationContext
-                this.liveChatViewLifecycleScope =
-                    lifecycleScope ?: LiveChatViewLifecycleScope.APP
+            require(license.isNotBlank()) { "License cannot be empty" }
+
+            synchronized(this) {
+                instance = LiveChat(
+                    license = license,
+                    viewManagerProvider = { AppScopedLiveChatViewManagerImpl(context) },
+                ).apply {
+                    this.liveChatViewLifecycleScope =
+                        lifecycleScope ?: LiveChatViewLifecycleScope.APP
+                }
             }
         }
 
@@ -121,11 +124,12 @@ class LiveChat private constructor(
             sessionManager: SessionManager,
         ): LiveChat {
             return LiveChat(
+                license,
                 networkClient,
                 { tokenManager },
                 { viewManager },
                 sessionManager,
-            ).apply { this.license = license }
+            )
         }
     }
 
