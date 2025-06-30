@@ -123,7 +123,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     fun hasToken(callback: String) {
-        val hasToken = LiveChat.getInstance().hasToken();
+        val hasToken = LiveChat.getInstance().hasToken()
 
         view.postWebViewMessage(callback, (hasToken).toString())
     }

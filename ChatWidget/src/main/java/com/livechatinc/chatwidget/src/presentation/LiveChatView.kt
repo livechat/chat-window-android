@@ -183,7 +183,7 @@ class LiveChatView(
         private const val KEY_SUPER_STATE = "superState"
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val superState = super.onSaveInstanceState()
         return Bundle().apply {
             putParcelable(KEY_SUPER_STATE, superState)
