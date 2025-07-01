@@ -36,6 +36,7 @@ android {
         dev {
             dimension "flavor-type"
             applicationIdSuffix = ".dev"
+            versionNameSuffix = " Dev"
         }
     }
 
