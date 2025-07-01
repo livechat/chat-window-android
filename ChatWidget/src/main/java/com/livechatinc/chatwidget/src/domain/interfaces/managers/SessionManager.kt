@@ -1,5 +1,5 @@
 package com.livechatinc.chatwidget.src.domain.interfaces.managers
 
-interface SessionManager {
+internal interface SessionManager {
     fun clearSession()
 }

@@ -24,7 +24,7 @@ A Android SDK for integrating LiveChat functionality into your mobile applicatio
 1. [Clearing chat session](#clearing-chat-session)
 1. [Handling links](#handling-links)
 1. [Troubleshooting](#troubleshooting)
-   1. [Reacting to errors](#reacting-to-errors)
+   1. [Reacting to errors](#react-to-errors)
    1. [Logger](#logger)
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-modes)
