@@ -3,6 +3,7 @@ package com.livechatinc.chatwidget.src.presentation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -79,6 +80,17 @@ class LiveChatView(
         activity.lifecycle.addObserver(this)
 
         supportFileSharing(activity)
+
+        setWebViewBackgroundColor(activity)
+    }
+
+    private fun setWebViewBackgroundColor(context: Context) {
+        val typedArray =
+            context.obtainStyledAttributes(intArrayOf(android.R.attr.windowBackground))
+        val backgroundColor = typedArray.getColor(0, Color.WHITE)
+        typedArray.recycle()
+
+        webView.setBackgroundColor(backgroundColor)
     }
 
     private fun supportFileSharing(activity: AppCompatActivity) {
