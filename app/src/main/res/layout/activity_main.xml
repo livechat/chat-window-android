@@ -16,15 +16,13 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:background="@color/primary"
         android:elevation="4dp"
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primary_light">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -42,8 +40,7 @@
                 <TextView
                     android:id="@+id/license_info"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/primary_text" />
+                    android:layout_height="wrap_content" />
 
                 <ImageButton
                     android:layout_width="40dp"
@@ -53,21 +50,18 @@
             </LinearLayout>
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="startFullScreenWindowExample"
                 android:text="Full Screen launched from activity" />
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="startEmbeddedWindowExample"
                 android:text="Embedded using fragment" />
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="startOwnActivityExample"
@@ -78,7 +72,6 @@
                 android:layout_height="48dp" />
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="startKotlinVersion"
@@ -89,14 +82,12 @@
                 android:layout_height="48dp" />
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="startFromSingleton"
                 android:text="LiveChat SDK" />
 
             <Button
-                style="@style/ExampleButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:onClick="clearChatSession"

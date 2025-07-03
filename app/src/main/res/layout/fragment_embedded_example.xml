@@ -3,12 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    android:background="@color/primary_light"
     android:orientation="vertical">
 
     <Button
         android:id="@+id/embedded_start_chat"
-        style="@style/ExampleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -16,7 +14,6 @@
 
     <Button
         android:id="@+id/embedded_reload_chat"
-        style="@style/ExampleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
