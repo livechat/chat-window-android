@@ -19,7 +19,7 @@ import com.livechatinc.inappchat.ChatWindowView;
 import com.livechatinc.inappchat.models.NewMessageModel;
 
 public class EmbeddedChatWindowFragmentExample extends Fragment implements ChatWindowEventsListener,
-        MainActivity.OnBackPressedListener {
+        LegacyActivity.OnBackPressedListener {
     private static final String START_CHAT_TEXT = "Show chat";
     private Button startChatBtn;
     private Button reloadChatBtn;

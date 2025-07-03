@@ -11,9 +11,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
-        android:alwaysRetainTaskState="true"
         android:name=".BaseApplication"
         android:allowBackup="true"
+        android:alwaysRetainTaskState="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -21,14 +21,18 @@
 
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:exported="true">
+            android:exported="true"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".LegacyActivity"
+            android:exported="false" />
 
         <activity
             android:name=".FullScreenWindowActivityExample"
@@ -45,8 +49,8 @@
 
         <activity
             android:name=".UsingKotlinActivity"
-            android:launchMode="singleTop"
-            android:exported="false" />
+            android:exported="false"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>
