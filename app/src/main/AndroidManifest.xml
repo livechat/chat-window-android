@@ -11,15 +11,17 @@
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
+        android:alwaysRetainTaskState="true"
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:name=".BaseApplication"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
         <activity
             android:name=".MainActivity"
+            android:launchMode="singleTop"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -43,7 +45,7 @@
 
         <activity
             android:name=".UsingKotlinActivity"
-            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTop"
             android:exported="false" />
     </application>
 

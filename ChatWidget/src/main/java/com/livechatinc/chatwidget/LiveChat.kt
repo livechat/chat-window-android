@@ -150,8 +150,6 @@ class LiveChat private constructor(
     }
 
     override fun show(context: Context) {
-        requireNotNull(license) { "SDK not initialized. Call initialize() first" }
-
         startChatActivity(context)
     }
 
