@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startCurrentExample(View view) {
-        Intent intent = new Intent(this, LegacyActivity.class);
+        Intent intent = new Intent(this, HomeActivity.class);
 
         startActivity(intent);
     }

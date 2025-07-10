@@ -18,7 +18,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity
+            android:name=".HomeActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -29,24 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LegacyActivity"
             android:exported="false" />
-
         <activity
             android:name=".FullScreenWindowActivityExample"
             android:exported="false" />
-
         <activity
             android:name=".EditConfigurationActivity"
             android:exported="false" />
-
         <activity
             android:name="com.livechatinc.inappchat.ChatWindowActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
-
         <activity
             android:name=".UsingKotlinActivity"
             android:exported="false"
