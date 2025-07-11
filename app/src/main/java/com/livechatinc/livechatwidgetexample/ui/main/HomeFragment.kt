@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.livechatinc.livechatwidgetexample.BuildConfig
@@ -15,7 +15,7 @@ import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentMainBinding
 
 class HomeFragment : Fragment() {
-    private val viewModel: MainViewModel by viewModels()
+    private val viewModel: MainViewModel by activityViewModels()
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -47,11 +47,23 @@ class HomeFragment : Fragment() {
 
             binding.customerInfoSettings.text = settings.toString()
         }
+
+        viewModel.messageCounter.observe(viewLifecycleOwner, ::updateBadgeCount)
+    }
+
+    private fun updateBadgeCount(count: Int) {
+        if (count <= 0) {
+            binding.messageCounter.visibility = View.GONE
+        } else {
+            binding.messageCounter.visibility = View.VISIBLE
+            binding.messageCounter.text = if (count > 99) "99+" else count.toString()
+        }
     }
 
     private val showChatCallback = {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             (requireActivity() as HomeActivity).showChat()
+            viewModel.onShowChat()
         }
     }
 
