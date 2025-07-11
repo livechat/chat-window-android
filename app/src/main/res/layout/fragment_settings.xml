@@ -16,6 +16,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/lifecycle_mode_switch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Keep LiveChatView in memory"
+            android:textAppearance="?attr/textAppearanceBody1" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

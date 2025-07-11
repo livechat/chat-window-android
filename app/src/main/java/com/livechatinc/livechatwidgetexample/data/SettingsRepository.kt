@@ -6,22 +6,28 @@ import com.livechatinc.chatwidget.LiveChat
 class SettingsRepository {
     val data = MutableLiveData<CurrentSettings>()
 
-    fun updateSettings(
+    fun updateCustomerInfo(
         customerName: String,
         customerEmail: String,
         groupId: String,
         customParams: Map<String, String>? = null
     ) {
-        val newSettings = CurrentSettings(
+        val currentSettings = data.value ?: CurrentSettings()
+
+        data.value = currentSettings.copy(
             customerName = customerName,
             customerEmail = customerEmail,
             groupId = groupId,
             customParams = customParams
         )
-        data.value = newSettings
 
         LiveChat.getInstance().setCustomerInfo(customerName, customerEmail, groupId, customParams)
         LiveChat.getInstance().destroyLiveChatView()
+    }
+
+    fun updateLifecycleScopeMode(enabled: Boolean) {
+        val currentSettings = data.value ?: CurrentSettings()
+        data.value = currentSettings.copy(keepLiveChatViewInMemory = enabled)
     }
 
     companion object {
@@ -36,12 +42,11 @@ class SettingsRepository {
 }
 
 data class CurrentSettings(
-    val customerName: String?,
-    val customerEmail: String?,
+    val customerName: String? = null,
+    val customerEmail: String? = null,
     val groupId: String = "0",
-    val customParams: Map<String, String>? = null
-
-
+    val customParams: Map<String, String>? = null,
+    val keepLiveChatViewInMemory: Boolean = true,
 ) {
     override fun toString(): String {
         return "CurrentSettings(\n" +
@@ -49,6 +54,7 @@ data class CurrentSettings(
                 "customerName=$customerName,\n" +
                 "groupId='$groupId',\n" +
                 "customParams=$customParams\n" +
+                "keepLiveChatViewInMemory= $keepLiveChatViewInMemory\n" +
                 ")"
     }
 }

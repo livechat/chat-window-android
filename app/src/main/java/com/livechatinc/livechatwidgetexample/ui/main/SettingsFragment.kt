@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputEditText
 import com.livechatinc.chatwidget.LiveChat
+import com.livechatinc.chatwidget.src.core.LiveChatViewLifecycleScope
+import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentSettingsBinding
 
@@ -64,6 +66,26 @@ class SettingsFragment : Fragment() {
         }
 
         binding.clearSessionButton.setOnClickListener { LiveChat.getInstance().signOutCustomer() }
+
+        setupModeToggleSetting()
+    }
+
+    private fun setupModeToggleSetting() {
+        binding.lifecycleModeSwitch.isChecked =
+            viewModel.settings.value?.keepLiveChatViewInMemory ?: true
+
+        binding.lifecycleModeSwitch.setOnCheckedChangeListener { view, isChecked ->
+            viewModel.updateLifecycleScopeMode(isChecked)
+            val viewLifecycleScope = if (isChecked) {
+                LiveChatViewLifecycleScope.APP
+            } else {
+                LiveChatViewLifecycleScope.ACTIVITY
+            }
+
+            LiveChat.initialize(
+                BuildConfig.LICENSE, view.context.applicationContext, viewLifecycleScope
+            )
+        }
     }
 
     private fun clearCustomParamRows() {
@@ -78,7 +100,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun updateCustomerInfo() {
-        viewModel.updateSettings(
+        viewModel.updateCustomerInfo(
             customerName = binding.customerName.text.toString(),
             customerEmail = binding.customerEmail.text.toString(),
             groupId = binding.groupId.text.toString(),

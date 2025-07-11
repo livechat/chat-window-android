@@ -14,6 +14,8 @@ public class BaseApplication extends Application {
 
         // To get HTTP calls logs, logger lever must be set before LiveChat.initialize
         Logger.setLogLevel(Logger.LogLevel.VERBOSE);
+
+        // When changing lifecycle scope, change default value in [SettingsFragment.kt]
         LiveChat.initialize(license, this);
     }
 }
