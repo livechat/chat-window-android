@@ -44,6 +44,7 @@ class HomeFragment : Fragment() {
         binding.showChat.setOnClickListener { showChatCallback() }
         binding.showSettings.setOnClickListener { showSettingsCallback() }
         binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
+        binding.sdkVersion.text = "SDK Version: ${com.livechatinc.chatwidget.BuildConfig.VERSION_NAME}"
     }
 
     private val showChatCallback = {
