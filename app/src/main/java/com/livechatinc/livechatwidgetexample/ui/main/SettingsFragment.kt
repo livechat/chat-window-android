@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.android.material.textfield.TextInputEditText
+import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentSettingsBinding
 
@@ -61,6 +62,8 @@ class SettingsFragment : Fragment() {
         binding.addParamButton.setOnClickListener {
             addCustomParamRow()
         }
+
+        binding.clearSessionButton.setOnClickListener { LiveChat.getInstance().signOutCustomer() }
     }
 
     private fun clearCustomParamRows() {
