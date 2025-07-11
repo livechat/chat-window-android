@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.HomeActivity
+import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentMainBinding
 
 class HomeFragment : Fragment() {
@@ -51,9 +53,7 @@ class HomeFragment : Fragment() {
     }
 
     private val showSettingsCallback = {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            (requireActivity() as HomeActivity).showSettings()
-        }
+        findNavController().navigate(R.id.navigate_to_settings)
     }
 
     override fun onDestroyView() {

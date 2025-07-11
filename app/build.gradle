@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
 }
 
 def localProperties = new Properties()
@@ -64,6 +65,8 @@ android {
 }
 
 dependencies {
+    def nav_version = "2.9.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -75,6 +78,8 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1'
     implementation 'androidx.fragment:fragment-ktx:1.8.8'
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     testImplementation 'junit:junit:4.13.2'
 }
