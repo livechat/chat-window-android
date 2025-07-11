@@ -72,7 +72,7 @@ class LiveChat private constructor(
     }
 
     internal var fileChooserNotFoundListener: FileChooserActivityNotFoundListener? = null
-    fun setNewMessageListener(listener: FileChooserActivityNotFoundListener?) {
+    fun setFileChooserNotFoundListener(listener: FileChooserActivityNotFoundListener?) {
         fileChooserNotFoundListener = listener
     }
 
@@ -158,8 +158,8 @@ class LiveChat private constructor(
      * Removes [LiveChatView] when created in [LiveChatViewLifecycleScope.APP] scope
      */
     override fun signOutCustomer() {
-        destroyLiveChatView()
         sessionManager.clearSession()
+        destroyLiveChatView()
     }
 
     /**
