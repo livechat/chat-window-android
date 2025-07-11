@@ -34,4 +34,9 @@ class MainViewModel : ViewModel() {
     fun onShowChat() {
         messageCounter.value = 0
     }
+
+    override fun onCleared() {
+        LiveChat.getInstance().setNewMessageListener(null)
+        super.onCleared()
+    }
 }
