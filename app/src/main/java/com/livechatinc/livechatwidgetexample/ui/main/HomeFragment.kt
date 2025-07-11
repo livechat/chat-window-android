@@ -39,6 +39,12 @@ class HomeFragment : Fragment() {
             "SDK Version: ${com.livechatinc.chatwidget.BuildConfig.VERSION_NAME}"
 
         viewModel.settings.observe(viewLifecycleOwner) { settings ->
+            binding.customerInfoSettings.visibility = if (settings != null) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
             binding.customerInfoSettings.text = settings.toString()
         }
     }
