@@ -1,13 +1,14 @@
 package com.livechatinc.livechatwidgetexample.ui.main
 
-import androidx.fragment.app.viewModels
+import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.livechatinc.chatwidget.LiveChat
-
+import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.databinding.FragmentMainBinding
 
 class HomeFragment : Fragment() {
@@ -33,10 +34,12 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         binding.startChat.setOnClickListener { LiveChat.getInstance().show(view.context) }
+        binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
     }
 
     override fun onDestroyView() {
