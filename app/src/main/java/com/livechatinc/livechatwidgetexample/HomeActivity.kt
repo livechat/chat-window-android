@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.commit
 import androidx.fragment.app.replace
+import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.livechatwidgetexample.ui.main.HomeFragment
 
 class HomeActivity : AppCompatActivity() {
@@ -17,5 +18,13 @@ class HomeActivity : AppCompatActivity() {
                 replace<HomeFragment>(R.id.container)
             }
         }
+    }
+
+    fun showChat() {
+        LiveChat.getInstance().show(this)
+    }
+
+    fun showSettings() {
+
     }
 }

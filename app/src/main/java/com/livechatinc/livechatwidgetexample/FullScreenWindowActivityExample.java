@@ -47,7 +47,7 @@ public class FullScreenWindowActivityExample extends AppCompatActivity implement
         chatWindow.supportFileSharing(getActivityResultRegistry(), getLifecycle(), this);
         chatWindow.init(config);
 
-        startChatBtn = findViewById(R.id.start_chat);
+        startChatBtn = findViewById(R.id.show_chat);
         startChatBtn.setOnClickListener(view -> showChatWindow());
         chatBadgeTv = findViewById(R.id.chat_badge);
         clearSessionBtn = findViewById(R.id.clear_session_btn);

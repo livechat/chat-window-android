@@ -7,8 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.livechatinc.chatwidget.LiveChat
+import androidx.lifecycle.Lifecycle
 import com.livechatinc.livechatwidgetexample.BuildConfig
+import com.livechatinc.livechatwidgetexample.HomeActivity
 import com.livechatinc.livechatwidgetexample.databinding.FragmentMainBinding
 
 class HomeFragment : Fragment() {
@@ -38,8 +39,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.startChat.setOnClickListener { LiveChat.getInstance().show(view.context) }
+        binding.showChat.setOnClickListener { showChatCallback() }
+        binding.showSettings.setOnClickListener { showSettingsCallback() }
         binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
+    }
+
+    private val showChatCallback = {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            (requireActivity() as HomeActivity).showChat()
+        }
+    }
+
+    private val showSettingsCallback = {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            (requireActivity() as HomeActivity).showSettings()
+        }
     }
 
     override fun onDestroyView() {
