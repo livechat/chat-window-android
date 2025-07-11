@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,17 +34,34 @@ class SettingsFragment : Fragment() {
             binding.groupId.setText(settings?.groupId)
         }
 
-        binding.updateInfoButton.setOnClickListener {
-            viewModel.updateSettings(
-                customerName = binding.customerName.text.toString(),
-                customerEmail = binding.customerEmail.text.toString(),
-                groupId = binding.groupId.text.toString(),
-            )
-
-            val imm =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(view.windowToken, 0)
+        binding.updateInfoButton.setOnClickListener { button ->
+            updateCustomerInfo()
+            hideKeyboard(button)
         }
+
+        binding.customerEmail.setOnEditorActionListener { editView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEND) {
+                updateCustomerInfo()
+                hideKeyboard(editView)
+                true
+            } else {
+                false
+            }
+        }
+    }
+
+    private fun hideKeyboard(view: View) {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    private fun updateCustomerInfo() {
+        viewModel.updateSettings(
+            customerName = binding.customerName.text.toString(),
+            customerEmail = binding.customerEmail.text.toString(),
+            groupId = binding.groupId.text.toString(),
+        )
     }
 
     override fun onDestroyView() {

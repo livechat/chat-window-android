@@ -40,4 +40,15 @@ data class CurrentSettings(
     val customerEmail: String?,
     val groupId: String = "0",
     val customParams: Map<String, String>? = null
-)
+
+
+) {
+    override fun toString(): String {
+        return "CurrentSettings(\n" +
+                "customerEmail=$customerEmail,\n" +
+                "customerName=$customerName,\n" +
+                "groupId='$groupId',\n" +
+                "customParams=$customParams\n" +
+                ")"
+    }
+}

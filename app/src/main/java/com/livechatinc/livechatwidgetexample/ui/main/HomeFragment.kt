@@ -15,18 +15,9 @@ import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentMainBinding
 
 class HomeFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = HomeFragment()
-    }
-
     private val viewModel: MainViewModel by viewModels()
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,7 +35,12 @@ class HomeFragment : Fragment() {
         binding.showChat.setOnClickListener { showChatCallback() }
         binding.showSettings.setOnClickListener { showSettingsCallback() }
         binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
-        binding.sdkVersion.text = "SDK Version: ${com.livechatinc.chatwidget.BuildConfig.VERSION_NAME}"
+        binding.sdkVersion.text =
+            "SDK Version: ${com.livechatinc.chatwidget.BuildConfig.VERSION_NAME}"
+
+        viewModel.settings.observe(viewLifecycleOwner) { settings ->
+            binding.customerInfoSettings.text = settings.toString()
+        }
     }
 
     private val showChatCallback = {

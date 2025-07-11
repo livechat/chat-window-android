@@ -25,7 +25,10 @@
                 android:id="@+id/group_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Group ID" />
+                android:hint="Group ID"
+                android:imeOptions="actionNext"
+                android:inputType="numberSigned"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -39,7 +42,10 @@
                 android:id="@+id/customer_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Customer Name" />
+                android:hint="Customer Name"
+                android:inputType="text"
+                android:imeOptions="actionNext"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -52,7 +58,10 @@
                 android:id="@+id/customer_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Customer Email" />
+                android:hint="Customer Email"
+                android:imeOptions="actionSend"
+                android:inputType="textEmailAddress"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

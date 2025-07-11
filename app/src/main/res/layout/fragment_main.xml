@@ -27,6 +27,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SDK Version: " />
+
+        <TextView
+            android:id="@+id/customer_info_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customer Info: " />
     </LinearLayout>
 
 
