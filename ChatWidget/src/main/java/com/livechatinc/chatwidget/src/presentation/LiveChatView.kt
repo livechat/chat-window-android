@@ -43,6 +43,7 @@ class LiveChatView(
     private var webView: WebView
     private var presenter: LiveChatViewPresenter
     private var activityContextRef: WeakReference<Context>? = null
+    private var currentLifecycleOwner: LifecycleOwner? = null
 
     val isUIReady: Boolean
         get() = presenter.uiReady
@@ -81,7 +82,10 @@ class LiveChatView(
      * Must be called in the Activity's `onCreate`
      */
     fun attachTo(activity: ComponentActivity) {
+        detachCurrentLifecycleOwner()
+
         activityContextRef = WeakReference(activity)
+        currentLifecycleOwner = activity
         activity.lifecycle.addObserver(this)
 
         setupFileSharing(activity, activity.lifecycle)
@@ -97,12 +101,28 @@ class LiveChatView(
         val activity = fragment.requireActivity() as? ComponentActivity
             ?: throw IllegalArgumentException("Fragment must be attached to a ComponentActivity")
 
-        activityContextRef = WeakReference(activity)
+        detachCurrentLifecycleOwner()
 
+        activityContextRef = WeakReference(activity)
+        currentLifecycleOwner = fragment
         activity.lifecycle.addObserver(this)
 
         setupFileSharing(activity, fragment.lifecycle)
         setWebViewBackgroundColor(fragment.requireContext())
+    }
+
+    private fun detachCurrentLifecycleOwner() {
+        activityContextRef?.clear()
+        activityContextRef = null
+
+        currentLifecycleOwner?.let { owner ->
+            owner.lifecycle.removeObserver(this)
+            fileSharing?.let { fs ->
+                owner.lifecycle.removeObserver(fs)
+            }
+        }
+        fileSharing = null
+        currentLifecycleOwner = null
     }
 
     private fun setupFileSharing(activity: ComponentActivity, lifecycle: Lifecycle) {
@@ -184,14 +204,9 @@ class LiveChatView(
     }
 
     override fun onDestroy(owner: LifecycleOwner) {
-        activityContextRef?.clear()
-        activityContextRef = null
-
-        fileSharing?.let {
-            owner.lifecycle.removeObserver(it)
-            fileSharing = null
+        if (owner == currentLifecycleOwner) {
+            detachCurrentLifecycleOwner()
         }
-        owner.lifecycle.removeObserver(this)
 
         super.onStop(owner)
     }
