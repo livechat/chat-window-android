@@ -33,6 +33,7 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.showChat.setOnClickListener { showChatCallback() }
+        binding.showChatUsingFragment.setOnClickListener { showChatUsingFragmentCallback() }
         binding.showSettings.setOnClickListener { showSettingsCallback() }
         binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
         binding.sdkVersion.text =
@@ -65,6 +66,10 @@ class HomeFragment : Fragment() {
             (requireActivity() as HomeActivity).showChat()
             viewModel.onShowChat()
         }
+    }
+
+    private val showChatUsingFragmentCallback = {
+        (requireActivity() as HomeActivity).showChatUsingFragment()
     }
 
     private val showSettingsCallback = {

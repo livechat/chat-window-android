@@ -48,6 +48,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/show_chat_using_fragment"
+        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Surface"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:clickable="true"
+        android:src="@android:drawable/ic_menu_set_as"
+        android:text="Using fragment"
+        app:icon="@drawable/ic_chat"
+        app:layout_constraintEnd_toStartOf="@id/show_chat"
+        app:layout_constraintTop_toTopOf="@id/show_chat" />
+
     <TextView
         android:id="@+id/message_counter"
         android:layout_width="24dp"

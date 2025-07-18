@@ -18,6 +18,9 @@ class MainViewModel : ViewModel() {
     val settings = repository.data
     val messageCounter = MutableLiveData(0)
 
+    val keepLiveChatViewInMemory: Boolean
+        get() = settings.value?.keepLiveChatViewInMemory != false
+
     fun updateCustomerInfo(
         groupId: String,
         customerName: String,

@@ -12,8 +12,10 @@ import android.webkit.ValueCallback
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.FrameLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.livechatinc.chatwidget.LiveChat
 import com.livechatinc.chatwidget.src.core.LiveChatViewLifecycleScope
@@ -72,16 +74,43 @@ class LiveChatView(
 
     /**
      * Sets the Activity context during the onCreate phase of the Activity lifecycle.
-     * This ensures the context is available for operations requiring an Activity.
+     * This ensures the context is available for operations requiring an Activity:
+     * - file sharing
+     * - showing external browser on link clicks
+     * - setting the WebView background color
+     * Must be called in the Activity's `onCreate`
      */
-    fun setActivityContextOnCreate(activity: AppCompatActivity) {
+    fun attachTo(activity: ComponentActivity) {
+        activityContextRef = WeakReference(activity)
+        activity.lifecycle.addObserver(this)
+
+        setupFileSharing(activity, activity.lifecycle)
+        setWebViewBackgroundColor(activity)
+    }
+
+    /**
+     * Same as [attachTo] but for Fragments.
+     * Must be called in the Fragment's `onCreate`
+     * Fragment must be attached to a [ComponentActivity].
+     */
+    fun attachTo(fragment: Fragment) {
+        val activity = fragment.requireActivity() as? ComponentActivity
+            ?: throw IllegalArgumentException("Fragment must be attached to a ComponentActivity")
+
         activityContextRef = WeakReference(activity)
 
         activity.lifecycle.addObserver(this)
 
-        supportFileSharing(activity)
+        setupFileSharing(activity, fragment.lifecycle)
+        setWebViewBackgroundColor(fragment.requireContext())
+    }
 
-        setWebViewBackgroundColor(activity)
+    private fun setupFileSharing(activity: ComponentActivity, lifecycle: Lifecycle) {
+        fileSharing = FileSharing(
+            activity.activityResultRegistry,
+            presenter
+        )
+        lifecycle.addObserver(fileSharing!!)
     }
 
     private fun setWebViewBackgroundColor(context: Context) {
@@ -91,14 +120,6 @@ class LiveChatView(
         typedArray.recycle()
 
         webView.setBackgroundColor(backgroundColor)
-    }
-
-    private fun supportFileSharing(activity: AppCompatActivity) {
-        fileSharing = FileSharing(
-            activity.activityResultRegistry,
-            presenter,
-        )
-        activity.lifecycle.addObserver(fileSharing!!)
     }
 
     fun init(callbackListener: LiveChatViewInitListener? = null) {
@@ -176,7 +197,6 @@ class LiveChatView(
     }
 
     override fun onDetachedFromWindow() {
-        Logger.d("### onDetachedFromWindow")
         if (LiveChat.getInstance().liveChatViewLifecycleScope ==
             LiveChatViewLifecycleScope.ACTIVITY
         ) {

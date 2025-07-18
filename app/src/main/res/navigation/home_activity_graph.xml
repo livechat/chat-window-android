@@ -17,10 +17,30 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+            android:id="@+id/navigate_from_home_to_live_chat_activity"
+            app:destination="@id/liveChatFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
     </fragment>
 
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.livechatinc.livechatwidgetexample.ui.main.SettingsFragment"
         android:label="SettingsFragment" />
+
+    <fragment
+        android:id="@+id/liveChatFragment"
+        android:name="com.livechatinc.livechatwidgetexample.ui.main.LiveChatFragment"
+        android:label="LiveChatFragment">
+        <action
+            android:id="@+id/navigate_from_live_chat_to_settings"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+    </fragment>
 </navigation>

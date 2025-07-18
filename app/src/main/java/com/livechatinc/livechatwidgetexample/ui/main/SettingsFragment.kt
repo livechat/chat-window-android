@@ -71,8 +71,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupModeToggleSetting() {
-        binding.lifecycleModeSwitch.isChecked =
-            viewModel.settings.value?.keepLiveChatViewInMemory ?: true
+        binding.lifecycleModeSwitch.isChecked = viewModel.keepLiveChatViewInMemory
 
         binding.lifecycleModeSwitch.setOnCheckedChangeListener { view, isChecked ->
             viewModel.updateLifecycleScopeMode(isChecked)

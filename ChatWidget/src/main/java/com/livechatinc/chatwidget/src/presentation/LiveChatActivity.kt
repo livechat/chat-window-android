@@ -71,7 +71,7 @@ class LiveChatActivity : AppCompatActivity() {
             container.addView(liveChatView)
         }
 
-        liveChatView.setActivityContextOnCreate(this)
+        liveChatView.attachTo(this)
         liveChatView.init(initCallbackListener)
 
         insetManager = WindowInsetManager(container)

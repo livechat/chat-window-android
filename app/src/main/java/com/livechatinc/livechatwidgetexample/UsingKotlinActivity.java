@@ -65,7 +65,7 @@ public class UsingKotlinActivity extends AppCompatActivity {
 
         LiveChat.getInstance().logInCustomer(identityRestorationGrant);
 
-        liveChatView.setActivityContextOnCreate(this);
+        liveChatView.attachTo(this);
         liveChatView.init(liveChatViewCallback);
     }
 
