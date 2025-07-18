@@ -49,6 +49,12 @@ class HomeActivity : AppCompatActivity() {
         findNavController(R.id.main_content).navigate(R.id.navigate_from_home_to_live_chat_activity)
     }
 
+    override fun onDestroy() {
+        LiveChat.getInstance().setUrlHandler(null)
+
+        super.onDestroy()
+    }
+
     private fun restoreShowChatMode(savedInstanceState: Bundle?) {
         savedInstanceState?.let {
             val modeName = it.getString(KEY_SHOW_CHAT_MODE)

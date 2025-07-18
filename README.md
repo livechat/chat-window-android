@@ -84,7 +84,7 @@ LiveChat.initialize("<LICENSE>", this)
 Show the the chat to a customer
 
 ```kotlin
-LiveChat.show()
+LiveChat.getInstance().show()
 ```
 That's it! Your customer can already start chatting with you.
 
@@ -204,16 +204,16 @@ You can directly embed `LiveChatView` in your layout, instead of showing it in a
 There are additional steps and requirements you need to follow to take full advantage of chat window.
 Generally you can refer to `LiveChatActivity` for the implementation details, but here is a quick overview of the steps you need to take.
 
-#### Embedding in you layout
+#### Embed in your layout
 
 Add `<com.livechatinc.chatwidget.LiveChatView />` your layout XML file
 
-#### Provide activity context
+#### Provide activity or fragment context
 
-During `onCreate` of your Activity, provide activity context
+During `onCreate` of your `Activity` or `Fragment` call
 
 ```kotlin
-liveChatView.setActivityContextOnCreate(this)
+liveChatView.attachTo(this)
 ```
 
 > **Note:** this is required to properly handle the lifecycle of the view, support file sharing and launch links in default external browser
