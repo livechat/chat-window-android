@@ -19,7 +19,7 @@ internal class FileSharing(
     private var getContent: ActivityResultLauncher<String>? = null
     private var getMultipleContent: ActivityResultLauncher<String>? = null
 
-    val filesUploadCallback: ValueCallback<Array<Uri>>?
+    private val filesUploadCallback: ValueCallback<Array<Uri>>?
         get() = LiveChat.getInstance().filesUploadCallback
 
     override fun onCreate(owner: LifecycleOwner) {

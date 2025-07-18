@@ -7,7 +7,7 @@ import com.livechatinc.chatwidget.LiveChat
 
 class HomeActivity : AppCompatActivity() {
 
-    var showChatMode: ShowChatMode? = null
+    private var showChatMode: ShowChatMode? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -17,14 +17,21 @@ class HomeActivity : AppCompatActivity() {
 
         LiveChat.getInstance().setUrlHandler { url ->
             if (url.host.equals("app.settings.example.com")) {
-                if (showChatMode == ShowChatMode.ACTIVITY) {
-                    // Show desired Activity
-                } else if (showChatMode == ShowChatMode.FRAGMENT) {
-                    findNavController(R.id.main_content).navigate(R.id.navigate_from_live_chat_to_settings)
-                } else {
-                    return@setUrlHandler false
+                when (showChatMode) {
+                    ShowChatMode.ACTIVITY -> {
+                        // Show desired Activity
+                        return@setUrlHandler true
+                    }
+
+                    ShowChatMode.FRAGMENT -> {
+                        findNavController(R.id.main_content).navigate(R.id.navigate_from_live_chat_to_settings)
+                        return@setUrlHandler true
+                    }
+
+                    else -> {
+                        return@setUrlHandler false
+                    }
                 }
-                return@setUrlHandler true
             }
 
             return@setUrlHandler false
