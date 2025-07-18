@@ -111,15 +111,17 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     fun handleUrl(uri: Uri?): Boolean {
-        if (uri == null) {
-            return false
+        uri ?: return false
+
+        LiveChat.getInstance().urlHandler?.let { handler ->
+            if (handler.handleUrl(uri)) {
+                return true
+            }
         }
 
-        return LiveChat.getInstance().urlHandler?.handleUrl(uri) ?: run {
-            view.launchExternalBrowser(uri)
+        view.launchExternalBrowser(uri)
 
-            true
-        }
+        return true
     }
 
     fun hasToken(callback: String) {
