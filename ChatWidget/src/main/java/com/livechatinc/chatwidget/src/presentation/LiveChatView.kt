@@ -184,6 +184,10 @@ class LiveChatView(
         }
     }
 
+    override fun isChatShown(): Boolean {
+        return isShown
+    }
+
     fun clearCallbackListeners() {
         presenter.setInitListener(null)
     }

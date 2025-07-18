@@ -8,8 +8,10 @@ import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 class MainViewModel : ViewModel() {
 
     init {
-        LiveChat.getInstance().setNewMessageListener { _ ->
-            messageCounter.value = (messageCounter.value ?: 0) + 1
+        LiveChat.getInstance().setNewMessageListener { _, isChatShown ->
+            if (!isChatShown) {
+                messageCounter.value = (messageCounter.value ?: 0) + 1
+            }
         }
     }
 

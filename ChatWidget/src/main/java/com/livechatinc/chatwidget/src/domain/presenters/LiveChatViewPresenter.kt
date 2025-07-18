@@ -86,7 +86,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     internal fun onNewMessage(message: ChatMessage?) {
-        LiveChat.getInstance().newMessageListener?.onNewMessage(message)
+        LiveChat.getInstance().newMessageListener?.onNewMessage(message, view.isChatShown())
     }
 
     internal fun onShowFileChooser(

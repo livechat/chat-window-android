@@ -15,4 +15,6 @@ internal interface LiveChatViewInternal {
     fun launchExternalBrowser(uri: Uri)
 
     fun postWebViewMessage(callback: String?, data: String)
+
+    fun isChatShown(): Boolean
 }

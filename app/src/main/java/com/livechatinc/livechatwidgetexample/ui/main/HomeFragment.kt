@@ -70,6 +70,7 @@ class HomeFragment : Fragment() {
 
     private val showChatUsingFragmentCallback = {
         (requireActivity() as HomeActivity).showChatUsingFragment()
+        viewModel.onShowChat()
     }
 
     private val showSettingsCallback = {

@@ -66,7 +66,7 @@ public class LegacyActivity extends AppCompatActivity {
         );
 
         LiveChat.getInstance().setNewMessageListener(
-                newMessage -> {
+                (newMessage, isChatShown) -> {
                     Log.i("MainActivity", "### new message: " + newMessage.getText());
                 }
         );
