@@ -62,8 +62,8 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     private suspend fun chatUrl(): String {
-        return if (BuildConfig.CHAT_URL != null && BuildConfig.CHAT_URL.isNotBlank()) {
-            BuildConfig.CHAT_URL
+        return if (!BuildConfig.CHAT_URL.isNullOrBlank()) {
+            BuildConfig.CHAT_URL.buildChatUrl(config)
         } else {
             networkClient.fetchChatUrl().buildChatUrl(config)
         }
