@@ -2,15 +2,22 @@ LiveChat Android SDK example app
 ===============
 
 Example app for LiveChat Android SDK demonstrating LiveChat SDK integration into
-an Android application, showcasing different approaches
+an Android application
 
-### Configuration
+## Setup
 
-In `settings.gradle` add example app module -> `include ':ChatWidget', ':app'`
+In `settings.gradle` add example app module 
+```gradle
+include ':ChatWidget', ':app'
+```
 
-You can change license in `BaseApplication.kt` file for prod environment or with `local.properties` for more options
+Configure your license in one of two ways:
+* For production: Edit the license in `BaseApplication.kt`
+* For production or development: Use `local.properties` (see below)
 
-In project root add `local.properties` file with the following content:
+### License and environment configuration
+
+Create a `local.properties` file in the project root with:
 
 ```
 license="<YOUR_LICENSE>"
@@ -19,33 +26,59 @@ clientId="<YOUR_CLIENT_ID_FROM_DEVELOPERS_CONSOLE>" # Used for CIP
 licenseId="<YOUR_LICENSE_ID_FROM_DEVELOPERS_CONSOLE>" # Used for CIP
 ```
 
-### Connecting to locally hosted environment
+> **Note:** `chatUrl` must contain `{%license%}` and `{%group%}` placeholders
+
+### Locally development environment
 
 * Add `android:usesCleartextTraffic="true"` to application tag in `app/src/main/AndroidManifest.xml`
-* (optional) Add http://10.0.2.2:3000 to Redirect URI whitelist in Developers console for App Authorization - more about emulator networking here
-* Create a link to your dev machine local ost: http://10.0.2.2:3000/iframe.html?group=0&license_id=100370559&webview_widget=1 put it in `local.properties`
+* Create a link to your dev machine local host in `local.properties`: 
+http://10.0.2.2:3000/iframe.html?group=0&license_id=100370559&webview_widget=1 put it in
+* (required for CIP) Add http://10.0.2.2:3000 to Redirect URI whitelist in Developers console for App
+  Authorization - more about emulator networking [here](https://developer.android.com/studio/run/emulator-networking)
 
+### Debugging
 
-### Inspecting webView in chrome://inspect
+#### Inspecting WebView in Chrome DevTools
 
-You can inspect the webView in Chrome DevTools once chat is loaded. But if you want to have it running before, you can do the following:
-* You must use `LiveChatViewLifecycleScope.APP` scope
-* Load empty document `webView.loadUrl("data:text/html,<html></html>")` at the end of `LiveChatView.configureWebView()`
-* Initiate LiveChatView at the end of `HomeFragment.onViewCreated()` method with `LiveChat.getInstance().getLiveChatView()`
+To inspect the WebView before chat is loaded:
 
+* Use `LiveChatViewLifecycleScope.APP` scope
+* Load empty document during webview configuration in `LiveChatView.configureWebView()` 
+```kotlin
+    private fun configureWebView() {
+        ...
+
+        webView.loadUrl("data:text/html,<html></html>")
+    }
+```
+* Initialize LiveChatView at the end of `HomeFragment.onViewCreated()` 
+
+```kotlin
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        ...
+
+        LiveChat.getInstance().getLiveChatView()
+    }
+```
+* Navigate to `chrome://inspect` - you should see your WebView listed there once you reach current library home screen
 
 ### Build issues
 
-In case you see issue during initial Sync or Build, you might want to try to:
+If you encounter build issues during initial sync:
 
+Set Gradle JDK:
 * `cmd + ,` → search Gradle → select jbr-17 for Gradle JDK
-* `cmd + ;` -> Modules -> select app module -> set Source Compatibility and Target Compatibility to Java 1.8. Same for library module
 
+Update Java compatibility:
+* `cmd + ;` -> Modules -> select app module -> set Source Compatibility and Target Compatibility to
+  Java 1.8. Same for library module
 
-### Run on real device
+### Testing on Physical Devices
 
-Connecting with local widget might be tricky, but test and prod environment config will work normally
+To run the app on a real device:
 
-* enable developer options on android device
+* enable [developer options](https://developer.android.com/studio/debug/dev-options) on android device
 * connect via usb
 * select your device - same place where you select Android Emulator
+
+> Note: When testing on a physical device, local widget connections might be challenging, but test and production environment configurations should work fine
