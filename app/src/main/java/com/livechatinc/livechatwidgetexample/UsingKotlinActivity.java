@@ -12,10 +12,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.livechatinc.chatwidget.LiveChat;
-import com.livechatinc.chatwidget.src.domain.interfaces.LiveChatViewInitListener;
-import com.livechatinc.chatwidget.src.domain.models.IdentityGrant;
-import com.livechatinc.chatwidget.src.presentation.LiveChatView;
+import com.livechatinc.chatsdk.LiveChat;
+import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener;
+import com.livechatinc.chatsdk.src.domain.models.IdentityGrant;
+import com.livechatinc.chatsdk.src.presentation.LiveChatView;
 
 import kotlin.Unit;
 

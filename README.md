@@ -61,7 +61,7 @@ allprojects {
 Add dependency to your app's `build.gradle`:
 ```
 dependencies {
-    implementation 'com.github.livechat:com.livechatinc.chatwidget:3.0.0'
+    implementation 'com.github.livechat:com.livechatinc.chatsdk:3.0.0'
 }
 ```
 
@@ -106,7 +106,7 @@ LiveChat.getInstance().setCustomerInfo(
 
 ## Unread message counter
 
-Use [`com.livechatinc.chatwidget.src.domain.listeners.NewMessageListener`](ChatWidget/src/main/java/com/livechatinc/chatwidget/src/domain/interfaces/NewMessageListener.kt) to get notified about new messages in the chat
+Use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](ChatSDK/src/main/java/com/livechatinc/chatsdk/src/domain/interfaces/NewMessageListener.kt) to get notified about new messages in the chat
 
 Set it wherever you want to react on new message, like increase badge count
 
@@ -121,7 +121,7 @@ While chat appearance and language settings are managed through the Agent App, y
 ### Localizing text
 
 You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`.
-All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/ChatWidget/src/main/res/values/strings.xml)
+All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/ChatSDK/src/main/res/values/strings.xml)
 
 ### Custom error view
 
@@ -173,7 +173,7 @@ LiveChat.getInstance().setErrorListener(object : ErrorListener {
 ### Logger
 
 Configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
-Refer to [Logger](https://github.com/livechat/chat-window-android/blob/master/ChatWidget/src/main/java/com/livechatinc/chatwidget/src/common/Logger.kt) for available log levels.
+Refer to [Logger](https://github.com/livechat/chat-window-android/blob/master/ChatSDK/src/main/java/com/livechatinc/chatsdk/src/common/Logger.kt) for available log levels.
 
 ```kotlin
 Logger.setLogLevel(Logger.LogLevel.VERBOSE);
@@ -206,7 +206,7 @@ Generally you can refer to `LiveChatActivity` for the implementation details, bu
 
 #### Embed in your layout
 
-Add `<com.livechatinc.chatwidget.LiveChatView />` your layout XML file
+Add `<com.livechatinc.chatsdk.LiveChatView />` your layout XML file
 
 #### Provide activity or fragment context
 

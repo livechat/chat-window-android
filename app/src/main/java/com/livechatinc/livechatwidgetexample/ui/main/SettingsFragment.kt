@@ -11,8 +11,8 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputEditText
-import com.livechatinc.chatwidget.LiveChat
-import com.livechatinc.chatwidget.src.core.LiveChatViewLifecycleScope
+import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
 import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentSettingsBinding

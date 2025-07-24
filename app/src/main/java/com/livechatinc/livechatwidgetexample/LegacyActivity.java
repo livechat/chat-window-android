@@ -18,8 +18,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.livechatinc.chatwidget.LiveChat;
-import com.livechatinc.chatwidget.src.domain.models.IdentityGrant;
+import com.livechatinc.chatsdk.LiveChat;
+import com.livechatinc.chatsdk.src.domain.models.IdentityGrant;
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
 

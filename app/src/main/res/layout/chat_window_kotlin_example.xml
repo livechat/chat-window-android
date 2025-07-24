@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.livechatinc.chatwidget.src.presentation.LiveChatView
+    <com.livechatinc.chatsdk.src.presentation.LiveChatView
         android:id="@+id/chat_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

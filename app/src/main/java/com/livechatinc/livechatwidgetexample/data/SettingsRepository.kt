@@ -1,7 +1,7 @@
 package com.livechatinc.livechatwidgetexample.data
 
 import androidx.lifecycle.MutableLiveData
-import com.livechatinc.chatwidget.LiveChat
+import com.livechatinc.chatsdk.LiveChat
 
 class SettingsRepository {
     val data = MutableLiveData<CurrentSettings>()

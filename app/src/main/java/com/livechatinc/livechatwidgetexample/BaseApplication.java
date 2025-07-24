@@ -2,8 +2,8 @@ package com.livechatinc.livechatwidgetexample;
 
 import android.app.Application;
 
-import com.livechatinc.chatwidget.LiveChat;
-import com.livechatinc.chatwidget.src.utils.Logger;
+import com.livechatinc.chatsdk.LiveChat;
+import com.livechatinc.chatsdk.src.utils.Logger;
 
 public class BaseApplication extends Application {
     @Override

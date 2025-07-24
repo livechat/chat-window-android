@@ -2,7 +2,7 @@ package com.livechatinc.livechatwidgetexample.ui.main
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.livechatinc.chatwidget.LiveChat
+import com.livechatinc.chatsdk.LiveChat
 import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 
 class MainViewModel : ViewModel() {

@@ -37,7 +37,7 @@ class HomeFragment : Fragment() {
         binding.showSettings.setOnClickListener { showSettingsCallback() }
         binding.licenseNumber.text = "License: ${BuildConfig.LICENSE}"
         binding.sdkVersion.text =
-            "SDK Version: ${com.livechatinc.chatwidget.BuildConfig.VERSION_NAME}"
+            "SDK Version: ${com.livechatinc.chatsdk.BuildConfig.VERSION_NAME}"
 
         viewModel.settings.observe(viewLifecycleOwner) { settings ->
             binding.customerInfoSettings.visibility = if (settings != null) {

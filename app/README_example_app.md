@@ -8,7 +8,7 @@ an Android application
 
 In `settings.gradle` add example app module 
 ```gradle
-include ':ChatWidget', ':app'
+include ':ChatSDK', ':app'
 ```
 
 Configure your license in one of two ways:

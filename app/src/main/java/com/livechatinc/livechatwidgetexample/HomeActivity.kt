@@ -3,7 +3,7 @@ package com.livechatinc.livechatwidgetexample
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
-import com.livechatinc.chatwidget.LiveChat
+import com.livechatinc.chatsdk.LiveChat
 
 class HomeActivity : AppCompatActivity() {
 

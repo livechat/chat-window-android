@@ -9,10 +9,10 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.livechatinc.chatwidget.LiveChat
-import com.livechatinc.chatwidget.R
-import com.livechatinc.chatwidget.src.domain.interfaces.LiveChatViewInitListener
-import com.livechatinc.chatwidget.src.presentation.LiveChatView
+import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.R
+import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
+import com.livechatinc.chatsdk.src.presentation.LiveChatView
 
 class LiveChatFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
