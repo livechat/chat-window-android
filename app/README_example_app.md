@@ -1,8 +1,7 @@
 LiveChat Android SDK example app
 ===============
 
-Example app for LiveChat Android SDK demonstrating LiveChat SDK integration into
-an Android application
+Example app for **ChatSDK** demonstrating integration and usage
 
 ## Setup
 
