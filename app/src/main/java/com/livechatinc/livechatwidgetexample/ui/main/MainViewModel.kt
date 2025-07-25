@@ -3,9 +3,12 @@ package com.livechatinc.livechatwidgetexample.ui.main
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.domain.models.IdentityGrant
+import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 
 class MainViewModel : ViewModel() {
+    private val repository = SettingsRepository.getInstance()
 
     init {
         LiveChat.getInstance().setNewMessageListener { _, isChatShown ->
@@ -15,7 +18,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    private val repository = SettingsRepository.getInstance()
 
     val settings = repository.data
     val messageCounter = MutableLiveData(0)
@@ -43,5 +45,22 @@ class MainViewModel : ViewModel() {
     override fun onCleared() {
         LiveChat.getInstance().setNewMessageListener(null)
         super.onCleared()
+    }
+
+    fun checkIdentityProviderConfig() {
+        repository.updateIdentitySettings(
+            licenseId = BuildConfig.LICENSE_ID,
+            clientId = BuildConfig.CLIENT_ID,
+        )
+    }
+
+    fun onSetIdentityGrant(identityGrant: IdentityGrant?) {
+        LiveChat.getInstance().configureIdentityProvider(
+            settings.value!!.identitySettings!!.licenseId!!,
+            settings.value!!.identitySettings!!.clientId!!,
+        ) { _ -> //Handle callback
+        }
+        LiveChat.getInstance().logInCustomer(identityGrant)
+        LiveChat.getInstance().destroyLiveChatView()
     }
 }

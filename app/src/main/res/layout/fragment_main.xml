@@ -20,19 +20,22 @@
             android:id="@+id/license_number"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="HomeFragment" />
+            android:text="HomeFragment"
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/sdk_version"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="SDK Version: " />
+            android:text="SDK Version: "
+            android:textIsSelectable="true" />
 
         <TextView
             android:id="@+id/customer_info_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Customer Info: "
+            android:textIsSelectable="true"
             android:visibility="gone" />
     </LinearLayout>
 
