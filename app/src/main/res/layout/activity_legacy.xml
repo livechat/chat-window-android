@@ -74,22 +74,6 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="startKotlinVersion"
-                android:text="Kotlin" />
-
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="48dp" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="startFromSingleton"
-                android:text="LiveChat SDK" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:onClick="clearChatSession"
                 android:text="Clear chat session" />
 

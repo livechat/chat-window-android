@@ -3,11 +3,8 @@ package com.livechatinc.livechatwidgetexample;
 import static com.livechatinc.inappchat.ChatWindowConfiguration.KEY_CHAT_WINDOW_CONFIG;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -18,14 +15,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 
 import com.google.gson.Gson;
-import com.livechatinc.chatsdk.LiveChat;
-import com.livechatinc.chatsdk.src.domain.models.IdentityGrant;
 import com.livechatinc.inappchat.ChatWindowActivity;
 import com.livechatinc.inappchat.ChatWindowConfiguration;
-
-import java.util.Collections;
-
-import kotlin.Unit;
+import com.livechatinc.inappchat.ChatWindowUtils;
 
 public class LegacyActivity extends AppCompatActivity {
     private final Gson gson = new Gson();
@@ -58,44 +50,6 @@ public class LegacyActivity extends AppCompatActivity {
                         licenseInfoTv.setText(windowConfig.toString());
                     }
                 });
-
-        LiveChat.getInstance().setErrorListener(
-                error -> {
-                    Log.e("MainActivity", "### LiveChat error: " + error, error);
-                }
-        );
-
-        LiveChat.getInstance().setNewMessageListener(
-                (newMessage, isChatShown) -> {
-                    Log.i("MainActivity", "### new message: " + newMessage.getText());
-                }
-        );
-    }
-
-    private void enableCIP() {
-        LiveChat.getInstance().configureIdentityProvider(
-                BuildConfig.LICENSE_ID,
-                BuildConfig.CLIENT_ID,
-                identityGrant -> {
-//                    saveCookieGrantToPreferences(cookieGrant);
-                    Log.i("UsingKotlinActivity", "### new cookie grant: " + identityGrant);
-                    return Unit.INSTANCE;
-                }
-        );
-        final IdentityGrant identityRestorationGrant = readTokenCookiesFromPreferences();
-
-        LiveChat.getInstance().logInCustomer(identityRestorationGrant);
-    }
-
-    private IdentityGrant readTokenCookiesFromPreferences() {
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
-
-        final String cookieGrant = sharedPreferences.getString("cookieGrant", null);
-        if (cookieGrant == null) {
-            return null;
-        }
-
-        return gson.fromJson(cookieGrant, IdentityGrant.class);
     }
 
     private void startChatActivity() {
@@ -149,23 +103,7 @@ public class LegacyActivity extends AppCompatActivity {
     }
 
     public void clearChatSession(View view) {
-        LiveChat.getInstance().signOutCustomer();
-    }
-
-    public void startKotlinVersion(View view) {
-        final Intent intent = new Intent(this, UsingKotlinActivity.class);
-        startActivity(intent);
-    }
-
-    public void startFromSingleton(View view) {
-        LiveChat.getInstance().setCustomerInfo(
-                "Joe",
-                "joe@mail.com",
-                "0",
-                Collections.singletonMap("internalId", "ABC123")
-        );
-
-        LiveChat.getInstance().show(this);
+        ChatWindowUtils.clearSession();
     }
 
     public interface OnBackPressedListener {
