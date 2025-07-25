@@ -9,8 +9,6 @@ import com.livechatinc.chatsdk.src.domain.interfaces.managers.AppScopedLiveChatV
 import com.livechatinc.chatsdk.src.domain.interfaces.FileChooserActivityNotFoundListener
 import com.livechatinc.chatsdk.src.core.managers.AppScopedLiveChatViewManagerImpl
 import com.livechatinc.chatsdk.src.domain.interfaces.managers.SessionManager
-import com.livechatinc.chatsdk.src.domain.interfaces.managers.TokenManager
-import com.livechatinc.chatsdk.src.core.managers.TokenManagerImpl
 import com.livechatinc.chatsdk.src.domain.models.BuildInfo
 import com.livechatinc.chatsdk.src.utils.JsonProvider
 import com.livechatinc.chatsdk.src.presentation.LiveChatActivity
@@ -21,10 +19,7 @@ import com.livechatinc.chatsdk.src.domain.interfaces.UrlHandler
 import com.livechatinc.chatsdk.src.core.managers.SessionManagerImpl
 import com.livechatinc.chatsdk.src.domain.interfaces.NewMessageListener
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
-import com.livechatinc.chatsdk.src.domain.models.ChatWidgetToken
 import com.livechatinc.chatsdk.src.domain.models.CustomerInfo
-import com.livechatinc.chatsdk.src.domain.models.IdentityGrant
-import com.livechatinc.chatsdk.src.domain.models.CustomIdentityConfig
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
 
 class LiveChat private constructor(
@@ -34,19 +29,11 @@ class LiveChat private constructor(
         BuildInfo(
             mobileConfigHost = "https://cdn.livechatinc.com/",
             mobileConfigPath = "app/mobile/urls.json",
-            accountsApiUrl = "https://accounts.livechat.com/v2/customer/token",
         ),
     ),
-    private val tokenManagerProvider: (() -> TokenManager)? = null,
     private val viewManagerProvider: (() -> AppScopedLiveChatViewManager),
     private val sessionManager: SessionManager = SessionManagerImpl()
-) : LiveChatInterface() {
-    private val tokenManager: TokenManager by lazy {
-        tokenManagerProvider?.invoke() ?: TokenManagerImpl(networkClient) {
-            identityCallback(it)
-        }
-    }
-
+){
     private val viewManager: AppScopedLiveChatViewManager by lazy {
         viewManagerProvider.invoke()
     }
@@ -54,12 +41,6 @@ class LiveChat private constructor(
     private var groupId: String? = null
 
     private var customerInfo: CustomerInfo? = null
-
-    // Custom Identity Provider
-    private var licenseId: String? = null
-    private var clientId: String? = null
-    private var identityGrant: IdentityGrant? = null
-    internal var identityCallback: (IdentityGrant) -> Unit = { }
 
     internal var errorListener: ErrorListener? = null
     fun setErrorListener(listener: ErrorListener?) {
@@ -121,21 +102,19 @@ class LiveChat private constructor(
         internal fun createForTesting(
             license: String,
             networkClient: NetworkClient,
-            tokenManager: TokenManager,
             viewManager: AppScopedLiveChatViewManager,
             sessionManager: SessionManager,
         ): LiveChat {
             return LiveChat(
                 license,
                 networkClient,
-                { tokenManager },
                 { viewManager },
                 sessionManager,
             )
         }
     }
 
-    override fun setCustomerInfo(
+    fun setCustomerInfo(
         name: String?,
         email: String?,
         groupId: String?,
@@ -149,7 +128,7 @@ class LiveChat private constructor(
         this.groupId = groupId
     }
 
-    override fun show(context: Context) {
+    fun show(context: Context) {
         startChatActivity(context)
     }
 
@@ -157,7 +136,7 @@ class LiveChat private constructor(
      * Clears cookies and web storage discarding user's chat session
      * Removes [LiveChatView] when created in [LiveChatViewLifecycleScope.APP] scope
      */
-    override fun signOutCustomer() {
+    fun signOutCustomer() {
         sessionManager.clearSession()
         destroyLiveChatView()
     }
@@ -178,55 +157,15 @@ class LiveChat private constructor(
         viewManager.destroyLiveChatView()
     }
 
-    override fun configureIdentityProvider(
-        licenseId: String,
-        clientId: String,
-        onIdentityGrantChange: (IdentityGrant) -> Unit,
-    ) {
-        this.licenseId = licenseId
-        this.clientId = clientId
-        identityCallback = onIdentityGrantChange
-    }
-
-    override fun logInCustomer(identityGrant: IdentityGrant?) {
-        //TODO: consider having identityGrant a suspend callback
-        this.identityGrant = identityGrant
-    }
-
     internal fun createLiveChatConfig(): LiveChatConfig {
         return LiveChatConfig(
             license = requireNotNull(license),
             groupId = groupId ?: LiveChatConfig.DEFAULT_GROUP_ID,
             customerInfo = customerInfo,
-            customIdentityConfig = createIdentityProvider(),
-        )
-    }
-
-    private fun createIdentityProvider(): CustomIdentityConfig? {
-        if (licenseId.isNullOrEmpty() || clientId.isNullOrEmpty()) {
-            return null
-        }
-
-        return CustomIdentityConfig(
-            licenseId = requireNotNull(licenseId),
-            clientId = requireNotNull(clientId),
-            identityGrant = identityGrant,
         )
     }
 
     private fun startChatActivity(context: Context) {
         LiveChatActivity.start(context)
-    }
-
-    internal fun hasToken(): Boolean {
-        return tokenManager.hasToken()
-    }
-
-    internal suspend fun getToken(): ChatWidgetToken? {
-        return tokenManager.getToken(createLiveChatConfig())
-    }
-
-    internal suspend fun getFreshToken(): ChatWidgetToken? {
-        return tokenManager.getFreshToken(createLiveChatConfig())
     }
 }

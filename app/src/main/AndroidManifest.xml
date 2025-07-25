@@ -44,10 +44,6 @@
             android:name="com.livechatinc.inappchat.ChatWindowActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false" />
-        <activity
-            android:name=".UsingKotlinActivity"
-            android:exported="false"
-            android:launchMode="singleTop" />
     </application>
 
 </manifest>

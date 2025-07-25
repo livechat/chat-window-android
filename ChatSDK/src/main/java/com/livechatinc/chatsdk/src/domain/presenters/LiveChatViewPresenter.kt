@@ -19,8 +19,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 internal class LiveChatViewPresenter internal constructor(
     private var view: LiveChatViewInternal,
@@ -29,7 +27,6 @@ internal class LiveChatViewPresenter internal constructor(
     private lateinit var config: LiveChatConfig
     internal var uiReady: Boolean = false
 
-    // Init callback listener
     private var initListener: LiveChatViewInitListener? = null
     fun setInitListener(callbackListener: LiveChatViewInitListener?) {
         initListener = callbackListener
@@ -118,34 +115,5 @@ internal class LiveChatViewPresenter internal constructor(
         view.launchExternalBrowser(uri)
 
         return true
-    }
-
-    fun hasToken(callback: String) {
-        val hasToken = LiveChat.getInstance().hasToken()
-
-        view.postWebViewMessage(callback, (hasToken).toString())
-    }
-
-    fun getToken(callback: String?) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val token = LiveChat.getInstance().getToken()
-
-            //TODO: deal with a case where token is returned after view/webView was destroyed
-            view.postWebViewMessage(
-                callback,
-                Json.encodeToString(token)
-            )
-        }
-    }
-
-    fun getFreshToken(callback: String?) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val token = LiveChat.getInstance().getFreshToken()
-
-            view.postWebViewMessage(
-                callback,
-                Json.encodeToString(token)
-            )
-        }
     }
 }

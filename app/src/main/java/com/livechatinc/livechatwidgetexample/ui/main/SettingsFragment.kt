@@ -1,7 +1,6 @@
 package com.livechatinc.livechatwidgetexample.ui.main
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,8 @@ import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.google.android.material.textfield.TextInputEditText
-import com.google.gson.Gson
 import com.livechatinc.chatsdk.LiveChat
 import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
-import com.livechatinc.chatsdk.src.domain.models.IdentityGrant
 import com.livechatinc.livechatwidgetexample.BuildConfig
 import com.livechatinc.livechatwidgetexample.R
 import com.livechatinc.livechatwidgetexample.databinding.FragmentSettingsBinding
@@ -23,7 +20,6 @@ import com.livechatinc.livechatwidgetexample.databinding.FragmentSettingsBinding
 class SettingsFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
 
-    private val gson = Gson()
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     private val customParamViews = mutableListOf<View>()
@@ -39,18 +35,10 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.checkIdentityProviderConfig()
         viewModel.settings.observe(viewLifecycleOwner) { settings ->
             binding.customerName.setText(settings?.customerName)
             binding.customerEmail.setText(settings?.customerEmail)
             binding.groupId.setText(settings?.groupId)
-
-            binding.identityContainer.visibility = if (settings.hasIdentityRelatedIds) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-            binding.identitySettings.text = settings.identitySettings?.configIds
 
             clearCustomParamRows()
 
@@ -62,18 +50,6 @@ class SettingsFragment : Fragment() {
         binding.updateInfoButton.setOnClickListener { button ->
             updateCustomerInfo()
             hideKeyboard(button)
-        }
-
-        binding.loadIdentityGrantButton.setOnClickListener { button ->
-            val identityGrant: IdentityGrant? = readTokenCookiesFromPreferences()
-            binding.identityGrant.setText(gson.toJson(identityGrant))
-        }
-
-        binding.setIdentityGrantButton.setOnClickListener { _ ->
-            val identityGrantJson = binding.identityGrant.text.toString()
-            val identityGrant = gson.fromJson(identityGrantJson, IdentityGrant::class.java)
-
-            viewModel.onSetIdentityGrant(identityGrant)
         }
 
         binding.customerEmail.setOnEditorActionListener { editView, actionId, _ ->
@@ -177,25 +153,6 @@ class SettingsFragment : Fragment() {
         }
 
         return params
-    }
-
-    private fun saveCookieGrantToPreferences(identityGrant: IdentityGrant) {
-        val sharedPreferences: SharedPreferences =
-            requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("cookieGrant", gson.toJson(identityGrant))
-        editor.apply()
-
-        return Unit
-    }
-
-    private fun readTokenCookiesFromPreferences(): IdentityGrant? {
-        val sharedPreferences: SharedPreferences =
-            requireContext().getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-
-        val cookieGrant = sharedPreferences.getString("cookieGrant", null) ?: return null
-
-        return gson.fromJson(cookieGrant, IdentityGrant::class.java)
     }
 
     override fun onDestroyView() {
