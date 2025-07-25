@@ -15,7 +15,6 @@ import com.livechatinc.chatsdk.src.utils.extensions.fileChooserMode
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.domain.models.ChatMessage
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
-import com.livechatinc.chatsdk.src.domain.models.IdentityGrant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,7 +26,6 @@ internal class LiveChatViewPresenter internal constructor(
     private var view: LiveChatViewInternal,
     private val networkClient: NetworkClient,
 ) {
-    private var identityGrant: IdentityGrant? = null
     private lateinit var config: LiveChatConfig
     internal var uiReady: Boolean = false
 
@@ -38,9 +36,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     fun init(config: LiveChatConfig) {
-        Logger.d("### LiveChatViewPresenter.init()")
         this.config = config
-        this.identityGrant = config.customIdentityConfig?.identityGrant
 
         if (!uiReady) {
             CoroutineScope(Dispatchers.IO).launch {
