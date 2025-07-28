@@ -7,9 +7,6 @@ plugins {
     id("maven-publish")
 }
 
-extra["name"]  = "chatsdk"
-extra["version"] = "3.0.0-rc1"
-
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
@@ -48,6 +45,14 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+}
+
+configure<PublishingExtension> {
+    publications.create<MavenPublication>("release") {
+        groupId = "com.github.livechat"
+        artifactId = "chatsdk"
+        version = "3.0.0-rc1"
     }
 }
 

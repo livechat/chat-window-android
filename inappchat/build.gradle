@@ -3,9 +3,6 @@ plugins {
     id 'maven-publish'
 }
 
-ext.name = 'inappchat'
-ext.version = libraryVersion
-
 android {
     namespace 'com.livechatinc.inappchat'
     compileSdk 34
