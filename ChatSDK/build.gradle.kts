@@ -3,12 +3,12 @@ import java.util.Properties
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
-    id("maven-publish")
     kotlin("plugin.serialization").version("2.0.21")
+    id("maven-publish")
 }
 
-group = "com.github.livechat"
-version = "0.1.0"
+val group = "com.github.livechat"
+val libraryVersion = "0.1.0"
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
@@ -28,9 +28,12 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "CHAT_URL", localProperties["chatUrl"].toString())
-        buildConfigField("String", "VERSION_NAME", "\"${version}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${libraryVersion}\"")
     }
     buildTypes {
+        debug {
+            isMinifyEnabled = false
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -46,21 +49,13 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    publishing {
-        singleVariant("release")
-    }
 }
 
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.findByName("release")
-                groupId = "com.github.livechat"
-                artifactId = "chatsdk"
-                version = libraryVersion
-            }
-        }
+configure<PublishingExtension> {
+    publications.create<MavenPublication>("release") {
+        groupId = "com.github.livechat"
+        artifactId = "chatsdk"
+        version = libraryVersion
     }
 }
 
