@@ -55,9 +55,9 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.findByName('release')
-                groupId = 'com.github.livechat'
-                artifactId = 'chatsdk'
+                from components.findByName("release")
+                groupId = "com.github.livechat"
+                artifactId = "chatsdk"
                 version = libraryVersion
             }
         }
