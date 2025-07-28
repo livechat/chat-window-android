@@ -48,6 +48,19 @@ android {
     }
 }
 
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.findByName('release')
+                groupId = 'com.github.livechat'
+                artifactId = 'chatsdk'
+                version = libraryVersion
+            }
+        }
+    }
+}
+
 val ktor_version = "3.0.1"
 
 dependencies {
