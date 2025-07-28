@@ -11,7 +11,7 @@ import com.livechatinc.chatsdk.src.domain.common.WebResourceException
 import com.livechatinc.chatsdk.src.data.domain.NetworkClient
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInternal
 import com.livechatinc.chatsdk.src.utils.extensions.buildChatUrl
-import com.livechatinc.chatsdk.src.utils.extensions.fileChooserMode
+import com.livechatinc.chatsdk.src.utils.extensions.filePickerMode
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.domain.models.ChatMessage
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
@@ -82,17 +82,17 @@ internal class LiveChatViewPresenter internal constructor(
         LiveChat.getInstance().newMessageListener?.onNewMessage(message, view.isChatShown())
     }
 
-    internal fun onShowFileChooser(
+    internal fun onShowFilePicker(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: WebChromeClient.FileChooserParams?
     ): Boolean {
-        view.startFilePicker(filePathCallback, fileChooserParams.fileChooserMode())
+        view.startFilePicker(filePathCallback, fileChooserParams.filePickerMode())
 
         return true
     }
 
     internal fun onFileChooserActivityNotFound() {
-        LiveChat.getInstance().fileChooserNotFoundListener?.onFileChooserActivityNotFound()
+        LiveChat.getInstance().filePickerNotFoundListener?.onFilePickerActivityNotFound()
     }
 
     internal fun onWebResourceError(code: Int, description: String, failingUrl: String) {

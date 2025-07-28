@@ -28,7 +28,7 @@ import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewWebViewClient
 import com.livechatinc.chatsdk.src.utils.FileSharing
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.utils.Logger
-import com.livechatinc.chatsdk.src.domain.models.FileChooserMode
+import com.livechatinc.chatsdk.src.domain.models.FilePickerMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -157,17 +157,17 @@ class LiveChatView(
 
     override fun startFilePicker(
         filePathCallback: ValueCallback<Array<Uri>>?,
-        fileChooserMode: FileChooserMode,
+        filePickerMode: FilePickerMode,
     ) {
         if (fileSharing == null) {
-            Logger.e("File sharing is not set up. Call supportFileSharing() first.")
+            Logger.e("File sharing is not set up. Call attachTo() to set it up")
 
             return
         }
 
-        when (fileChooserMode) {
-            FileChooserMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
-            FileChooserMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
+        when (filePickerMode) {
+            FilePickerMode.SINGLE -> fileSharing?.selectFile(filePathCallback)
+            FilePickerMode.MULTIPLE -> fileSharing?.selectFiles(filePathCallback)
         }
     }
 

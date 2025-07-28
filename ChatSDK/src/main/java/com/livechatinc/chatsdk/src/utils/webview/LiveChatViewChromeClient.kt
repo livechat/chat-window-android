@@ -15,7 +15,7 @@ internal class LiveChatViewChromeClient(
         webView: WebView?,
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: FileChooserParams?
-    ): Boolean = presenter.onShowFileChooser(filePathCallback, fileChooserParams)
+    ): Boolean = presenter.onShowFilePicker(filePathCallback, fileChooserParams)
 
     override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
         Logger.v("onConsoleMessage: ${consoleMessage?.message()}")

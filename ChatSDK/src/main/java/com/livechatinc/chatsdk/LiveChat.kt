@@ -6,7 +6,7 @@ import android.webkit.ValueCallback
 import androidx.annotation.VisibleForTesting
 import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
 import com.livechatinc.chatsdk.src.domain.interfaces.managers.AppScopedLiveChatViewManager
-import com.livechatinc.chatsdk.src.domain.interfaces.FileChooserActivityNotFoundListener
+import com.livechatinc.chatsdk.src.domain.interfaces.FilePickerActivityNotFoundListener
 import com.livechatinc.chatsdk.src.core.managers.AppScopedLiveChatViewManagerImpl
 import com.livechatinc.chatsdk.src.domain.interfaces.managers.SessionManager
 import com.livechatinc.chatsdk.src.domain.models.BuildInfo
@@ -52,9 +52,9 @@ class LiveChat private constructor(
         newMessageListener = listener
     }
 
-    internal var fileChooserNotFoundListener: FileChooserActivityNotFoundListener? = null
-    fun setFileChooserNotFoundListener(listener: FileChooserActivityNotFoundListener?) {
-        fileChooserNotFoundListener = listener
+    internal var filePickerNotFoundListener: FilePickerActivityNotFoundListener? = null
+    fun setFilePickerNotFoundListener(listener: FilePickerActivityNotFoundListener?) {
+        filePickerNotFoundListener = listener
     }
 
     internal var urlHandler: UrlHandler? = null

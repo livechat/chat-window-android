@@ -2,7 +2,7 @@ package com.livechatinc.chatsdk.src.domain.interfaces
 
 import androidx.annotation.MainThread
 
-fun interface FileChooserActivityNotFoundListener {
+fun interface FilePickerActivityNotFoundListener {
     @MainThread
-    fun onFileChooserActivityNotFound()
+    fun onFilePickerActivityNotFound()
 }
