@@ -3,8 +3,12 @@ import java.util.Properties
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("maven-publish")
     kotlin("plugin.serialization").version("2.0.21")
 }
+
+group = "com.github.livechat"
+version = "0.1.0"
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
@@ -13,8 +17,6 @@ if (localPropertiesFile.exists()) {
         localProperties.load(inputStream)
     }
 }
-
-version = "0.1.0"
 
 android {
     namespace = "com.livechatinc.chatsdk"
