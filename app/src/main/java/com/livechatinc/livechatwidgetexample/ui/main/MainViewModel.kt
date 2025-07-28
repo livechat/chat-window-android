@@ -1,5 +1,6 @@
 package com.livechatinc.livechatwidgetexample.ui.main
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.livechatinc.chatsdk.LiveChat
@@ -13,6 +14,12 @@ class MainViewModel : ViewModel() {
             if (!isChatShown) {
                 messageCounter.value = (messageCounter.value ?: 0) + 1
             }
+        }
+        LiveChat.getInstance().setFilePickerNotFoundListener {
+            Log.e("Example", "File picker not found. Please check your configuration.")
+        }
+        LiveChat.getInstance().setErrorListener { error ->
+            Log.e("Example", "Error occurred: ${error.message}")
         }
     }
 
@@ -41,6 +48,8 @@ class MainViewModel : ViewModel() {
 
     override fun onCleared() {
         LiveChat.getInstance().setNewMessageListener(null)
+        LiveChat.getInstance().setFilePickerNotFoundListener(null)
+        LiveChat.getInstance().setErrorListener(null)
         super.onCleared()
     }
 }

@@ -162,13 +162,10 @@ To monitor and handle issues related to loading the chat view, you can set an er
 Common use cases include reporting errors to analytics platforms or implementing custom error handling logic.
 
 ```kotlin
-LiveChat.getInstance().setErrorListener(object : ErrorListener {
-    override fun onError(error: Error) {
-        // Handle the error
-    }
-})
+LiveChat.getInstance().setErrorListener { error ->
+   // Handle the error
+}
 ```
-
 
 ### Logger
 
@@ -180,6 +177,16 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 ```
 
 > Note: Network calls require at least `INFO`. `DEBUG` and `VERBOSE` provide maximum level of detail
+
+### File picker activity not found
+
+In case you want to react or track instances where activity for file picking on user device is not found, you can set a listener for this event:
+
+```kotlin
+LiveChat.getInstance().setFileChooserNotFoundListener {
+   Log.e("Example", "File chooser not found. Please check your configuration.")
+}
+```
 
 ## Advanced usage
 
@@ -225,6 +232,43 @@ Provide `LiveChatViewInitListener` when initializing the view
 ```kotlin
 liveChatView.init(initCallbackListener)
 ```
+
+## Migrating from 2.x.x to 3.x.x
+
+### Key Changes
+* Kotlin-based SDK
+* Streamlined API for easier integration
+* Package name changed from com.livechatinc.inappchat to com.livechatinc.chatsdk
+* Updated API for initializing and configuring the chat
+* Edge-to-edge display support
+* Enhanced error handling
+
+### Migration Steps
+
+Update your dependency:  
+```kotlin
+dependencies {
+    implementation 'com.github.livechat:chat-window-android:com.livechatinc.chatsdk:3.0.0'
+}
+```
+
+#### Update Configuration 
+The new API uses LiveChat singleton instead of ChatWindowConfiguration and it's split into two parts: [initialization](#initialize) and [customer information setup](#customer-information).
+
+Update [activity declaration](#customizing-activity) if needed
+
+#### Update event listeners
+
+The old `ChatWindowEventsListener` has removed. Some of the callbacks are no longer needed, the rest has been split into individual callbacks
+`onWindowInitialized()` -> removed for [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
+`onChatWindowVisibilityChanged` -> removed [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
+`onNewMessage` -> replaced with [NewMessageListener](#unread-message-counter)
+`onRequestAudioPermissions` -> removed
+`onError` -> replaced with [ErrorListener](#react-to-errors)
+`handleUri` -> replaced with [UriHandler](#handling-links)
+`onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#file-picker-activity-not-found)
+
+For a complete example of implementation, please refer to the example app included in the repository.
 
 ## Legacy version
 
