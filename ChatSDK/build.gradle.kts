@@ -28,9 +28,6 @@ android {
         buildConfigField("String", "VERSION_NAME", "\"${version}\"")
     }
     buildTypes {
-        debug {
-            isMinifyEnabled = false
-        }
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -46,13 +43,21 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    publishing {
+        singleVariant("release")
+    }
 }
 
-configure<PublishingExtension> {
-    publications.create<MavenPublication>("release") {
-        groupId = "com.github.livechat"
-        artifactId = "chatsdk"
-        version = "3.0.0-rc1"
+publishing {
+    publications {
+        create<MavenPublication>("release") {
+            groupId = "com.github.livechat"
+            artifactId = "chatsdk"
+            version = "3.0.0-rc1"
+            afterEvaluate {
+                from(components["release"])
+            }
+        }
     }
 }
 
