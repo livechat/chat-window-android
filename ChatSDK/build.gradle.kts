@@ -7,8 +7,8 @@ plugins {
     id("maven-publish")
 }
 
-val group = "com.github.livechat"
-val libraryVersion = "0.1.0"
+extra["name"]  = "chatsdk"
+extra["version"] = "3.0.0-rc1"
 
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
@@ -28,7 +28,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "CHAT_URL", localProperties["chatUrl"].toString())
-        buildConfigField("String", "VERSION_NAME", "\"${libraryVersion}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${version}\"")
     }
     buildTypes {
         debug {
@@ -48,14 +48,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-}
-
-configure<PublishingExtension> {
-    publications.create<MavenPublication>("release") {
-        groupId = "com.github.livechat"
-        artifactId = "chatsdk"
-        version = libraryVersion
     }
 }
 

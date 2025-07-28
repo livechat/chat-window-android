@@ -3,8 +3,8 @@ plugins {
     id 'maven-publish'
 }
 
-group = 'com.github.livechat'
-version = libraryVersion
+ext.name = 'inappchat'
+ext.version = libraryVersion
 
 android {
     namespace 'com.livechatinc.inappchat'
