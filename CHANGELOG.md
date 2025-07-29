@@ -1,5 +1,10 @@
 # Android ChangeLog
 
+## Version 3.0.0
+
+Major update of the SDK aiming to simplify the integration and prepare for future improvements.
+Migration guide is available in the README.md file
+
 ## Version 2.5.0
 
 * Update compileSdk and targetSdk to 34

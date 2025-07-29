@@ -29,7 +29,7 @@ A Android SDK for integrating LiveChat functionality into your mobile applicatio
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-modes)
    1. [Embedding LiveChatView](#embedding-livechatview)
-1. [Legacy version](#legacy-version)
+1. [Migrating from v2.5.0 to 3.0.0](#migrating-from-v250-to-300)
 
 
 
@@ -61,7 +61,7 @@ allprojects {
 Add dependency to your app's `build.gradle`:
 ```
 dependencies {
-    implementation 'com.github.livechat:com.livechatinc.chatsdk:3.0.0'
+    implementation 'com.github.livechat:chat-window-android:3.0.0'
 }
 ```
 
@@ -233,7 +233,7 @@ Provide `LiveChatViewInitListener` when initializing the view
 liveChatView.init(initCallbackListener)
 ```
 
-## Migrating from 2.x.x to 3.x.x
+## Migrating from v2.5.0 to 3.0.0
 
 ### Key Changes
 * Kotlin-based SDK
@@ -243,12 +243,12 @@ liveChatView.init(initCallbackListener)
 * Edge-to-edge display support
 * Enhanced error handling
 
-### Migration Steps
+### Steps
 
 Update your dependency:  
 ```kotlin
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:com.livechatinc.chatsdk:3.0.0'
+    implementation 'com.github.livechat:chat-window-android:3.0.0'
 }
 ```
 
@@ -270,6 +270,6 @@ The old `ChatWindowEventsListener` has removed. Some of the callbacks are no lon
 
 For a complete example of implementation, please refer to the example app included in the repository.
 
-## Legacy version
+#### v2.x.x
 
-v2 of the library is still available on JitPack. You can find documentation in the [README_legacy.md](README_legacy.md) file
+v2 of the library is still available on JitPack. You can find documentation by selecting v2.x.x tag in the repository
