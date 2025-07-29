@@ -14,6 +14,7 @@ if (localPropertiesFile.exists()) {
         localProperties.load(inputStream)
     }
 }
+val libraryVersion: String by project
 
 android {
     namespace = "com.livechatinc.chatsdk"
@@ -25,7 +26,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
         buildConfigField("String", "CHAT_URL", localProperties["chatUrl"].toString())
-        buildConfigField("String", "VERSION_NAME", "\"${version}\"")
+        buildConfigField("String", "VERSION_NAME", "\"${libraryVersion}\"")
     }
     buildTypes {
         release {
@@ -53,7 +54,7 @@ publishing {
         create<MavenPublication>("release") {
             groupId = "com.github.livechat"
             artifactId = "chatsdk"
-            version = "3.0.0-rc1"
+            version = libraryVersion
             afterEvaluate {
                 from(components["release"])
             }
