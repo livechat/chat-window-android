@@ -1,7 +1,6 @@
 package com.livechatinc.chatsdk
 
 import com.livechatinc.chatsdk.src.domain.interfaces.managers.AppScopedLiveChatViewManager
-import com.livechatinc.chatsdk.src.domain.interfaces.managers.TokenManager
 import com.livechatinc.chatsdk.src.data.domain.NetworkClient
 import com.livechatinc.chatsdk.src.domain.interfaces.managers.SessionManager
 import org.junit.Before
@@ -11,7 +10,6 @@ import org.mockito.Mockito.*
 class LiveChatTest {
 
     private lateinit var mockNetworkClient: NetworkClient
-    private lateinit var mockTokenManager: TokenManager
     private lateinit var mockViewManager: AppScopedLiveChatViewManager
     private lateinit var sessionManager: SessionManager
     private lateinit var liveChat: LiveChat
@@ -20,7 +18,6 @@ class LiveChatTest {
     fun setup() {
         // Create mocks
         mockNetworkClient = mock(NetworkClient::class.java)
-        mockTokenManager = mock(TokenManager::class.java)
         mockViewManager = mock(AppScopedLiveChatViewManager::class.java)
         sessionManager = mock(SessionManager::class.java)
 
@@ -28,7 +25,6 @@ class LiveChatTest {
         liveChat = LiveChat.createForTesting(
             "test-license",
             mockNetworkClient,
-            mockTokenManager,
             mockViewManager,
             sessionManager,
         )
