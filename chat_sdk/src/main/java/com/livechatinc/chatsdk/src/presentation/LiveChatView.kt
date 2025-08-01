@@ -45,9 +45,6 @@ class LiveChatView(
     private var activityContextRef: WeakReference<Context>? = null
     private var currentLifecycleOwner: LifecycleOwner? = null
 
-    val isUIReady: Boolean
-        get() = presenter.uiReady
-
     init {
         inflate(context, R.layout.live_chat_widget_internal, this)
         webView = findViewById(R.id.live_chat_webview)

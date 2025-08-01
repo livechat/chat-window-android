@@ -25,7 +25,7 @@ internal class LiveChatViewPresenter internal constructor(
     private val networkClient: NetworkClient,
 ) {
     private lateinit var config: LiveChatConfig
-    internal var uiReady: Boolean = false
+    private var uiReady: Boolean = false
 
     private var initListener: LiveChatView.InitListener? = null
     fun setInitListener(callbackListener: LiveChatView.InitListener?) {
@@ -79,6 +79,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     private fun onError(cause: Throwable) {
+        uiReady = false
         initListener?.onError(cause)
         LiveChat.getInstance().errorListener?.onError(cause)
 
