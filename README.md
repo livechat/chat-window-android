@@ -143,11 +143,11 @@ LiveChat.clearSession()
 ## Handling links
 
 By default, links sent between your Agents and Customers are opened in the default browser. 
-If you want to intercept the link and handle it in your app, provide your `UriHandler`
+If you want to intercept the link and handle it in your app, provide your `UrlHandler`
 
 ```kotlin
-LiveChat.getInstance().setUrlHandler(object : UriHandler {
-    override fun handleUri(uri: Uri): Boolean {
+LiveChat.getInstance().setUrlHandler(object : UrlHandler {
+    override fun handleUrl(uri: Uri): Boolean {
         // Return true if handled, false to open in default browser
         return false
     }
@@ -245,12 +245,15 @@ liveChatView.init(initCallbackListener)
 
 ### Steps
 
-Update your dependency:  
+#### Update your dependency
+
 ```kotlin
 dependencies {
     implementation 'com.github.livechat:chat-window-android:3.0.0'
 }
 ```
+
+> Note: With version 3 we no longer use "v" prefix
 
 #### Update Configuration 
 The new API uses LiveChat singleton instead of ChatWindowConfiguration and it's split into two parts: [initialization](#initialize) and [customer information setup](#customer-information).
@@ -260,13 +263,13 @@ Update [activity declaration](#customizing-activity) if needed
 #### Update event listeners
 
 The old `ChatWindowEventsListener` has removed. Some of the callbacks are no longer needed, the rest has been split into individual callbacks
-`onWindowInitialized()` -> removed for [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
-`onChatWindowVisibilityChanged` -> removed [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
-`onNewMessage` -> replaced with [NewMessageListener](#unread-message-counter)
-`onRequestAudioPermissions` -> removed
-`onError` -> replaced with [ErrorListener](#react-to-errors)
-`handleUri` -> replaced with [UriHandler](#handling-links)
-`onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#file-picker-activity-not-found)
+* `onWindowInitialized()` -> removed for [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
+* `onChatWindowVisibilityChanged` -> removed [recommended integration](#show-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
+* `onNewMessage` -> replaced with [NewMessageListener](#unread-message-counter)
+* `onRequestAudioPermissions` -> removed
+* `onError` -> replaced with [ErrorListener](#react-to-errors)
+* `handleUri` -> replaced with [UriHandler](#handling-links)
+* `onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#file-picker-activity-not-found)
 
 For a complete example of implementation, please refer to the example app included in the repository.
 
