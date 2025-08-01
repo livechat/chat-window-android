@@ -1,0 +1,4 @@
+<resources>
+    <public name="error_failed_to_load_chat" type="string" />
+    <public name="error_cant_share_files" type="string" />
+</resources>

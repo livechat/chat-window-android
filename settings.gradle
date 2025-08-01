@@ -1,1 +1,1 @@
-include ':chat-sdk'
+include ':inappchat'
