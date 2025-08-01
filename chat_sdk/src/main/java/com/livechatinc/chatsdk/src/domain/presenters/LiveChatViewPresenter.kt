@@ -32,9 +32,9 @@ internal class LiveChatViewPresenter internal constructor(
         initListener = callbackListener
     }
 
-    private var navigationListener: LiveChatView.NavigationListener? = null
-    fun setNavigationListener(navigationListener: LiveChatView.NavigationListener?) {
-        this.navigationListener = navigationListener
+    private var onHideListener: LiveChatView.OnHideListener? = null
+    fun setOnHideListener(onHideListener: LiveChatView.OnHideListener?) {
+        this.onHideListener = onHideListener
     }
 
     fun init(config: LiveChatConfig) {
@@ -75,7 +75,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     internal fun onHideLiveChat() {
-        navigationListener?.onHide()
+        onHideListener?.onHide()
     }
 
     private fun onError(cause: Throwable) {

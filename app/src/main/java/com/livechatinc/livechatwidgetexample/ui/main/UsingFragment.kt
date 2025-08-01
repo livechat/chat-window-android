@@ -76,7 +76,7 @@ class LiveChatFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        liveChatView.setNavigationListener { findNavController().navigateUp() }
+        liveChatView.setOnHideListener { findNavController().navigateUp() }
         liveChatView.init(initCallbackListener)
     }
 

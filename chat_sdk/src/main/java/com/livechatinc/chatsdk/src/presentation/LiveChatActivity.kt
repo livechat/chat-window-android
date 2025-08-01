@@ -40,12 +40,6 @@ class LiveChatActivity : AppCompatActivity() {
         }
     }
 
-    private val navigationCallbackListener = object : LiveChatView.NavigationListener {
-        override fun onHide() {
-            finish()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -78,7 +72,7 @@ class LiveChatActivity : AppCompatActivity() {
         setupReloadButton()
 
         liveChatView.attachTo(this)
-        liveChatView.setNavigationListener(navigationCallbackListener)
+        liveChatView.setOnHideListener { finish() }
         liveChatView.init(initCallbackListener)
     }
 
