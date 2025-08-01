@@ -13,6 +13,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.activity.ComponentActivity
+import androidx.annotation.MainThread
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.Lifecycle
@@ -151,6 +152,10 @@ class LiveChatView(
         presenter.init(config)
     }
 
+    fun setNavigationListener(navigationListener: NavigationListener?) {
+        presenter.setNavigationListener(navigationListener)
+    }
+
     override fun loadUrl(url: String) {
         webView.loadUrl(url)
     }
@@ -249,5 +254,10 @@ class LiveChatView(
         } else {
             super.onRestoreInstanceState(state)
         }
+    }
+
+    interface NavigationListener {
+        @MainThread
+        fun onHide()
     }
 }

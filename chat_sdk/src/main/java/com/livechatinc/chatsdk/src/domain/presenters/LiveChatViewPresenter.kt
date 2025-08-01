@@ -15,10 +15,12 @@ import com.livechatinc.chatsdk.src.utils.extensions.filePickerMode
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.domain.models.ChatMessage
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
+import com.livechatinc.chatsdk.src.presentation.LiveChatView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.lang.ref.WeakReference
 
 internal class LiveChatViewPresenter internal constructor(
     private var view: LiveChatViewInternal,
@@ -30,6 +32,15 @@ internal class LiveChatViewPresenter internal constructor(
     private var initListener: LiveChatViewInitListener? = null
     fun setInitListener(callbackListener: LiveChatViewInitListener?) {
         initListener = callbackListener
+    }
+
+    private var navigationListener: WeakReference<LiveChatView.NavigationListener>? = null
+    fun setNavigationListener(navigationListener: LiveChatView.NavigationListener?) {
+        this.navigationListener = if (navigationListener != null) {
+            WeakReference(navigationListener)
+        } else {
+            null
+        }
     }
 
     fun init(config: LiveChatConfig) {
@@ -51,6 +62,8 @@ internal class LiveChatViewPresenter internal constructor(
                     }
                 }
             }
+        } else {
+            onUiReady()
         }
     }
 
@@ -68,7 +81,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     internal fun onHideLiveChat() {
-        initListener?.onHide()
+        navigationListener?.get()?.onHide()
     }
 
     private fun onError(cause: Throwable) {

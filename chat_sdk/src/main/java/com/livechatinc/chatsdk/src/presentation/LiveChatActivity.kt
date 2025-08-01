@@ -32,10 +32,6 @@ class LiveChatActivity : AppCompatActivity() {
             )
         }
 
-        override fun onHide() {
-            finish()
-        }
-
         override fun onError(cause: Throwable) {
             updateViewVisibility(
                 loading = false,
@@ -45,12 +41,21 @@ class LiveChatActivity : AppCompatActivity() {
         }
     }
 
+    private val navigationCallbackListener = object : LiveChatView.NavigationListener {
+        override fun onHide() {
+            finish()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.live_chat_activity)
 
         container = findViewById(R.id.live_chat_activity_container)
+        errorView = findViewById(R.id.live_chat_error_view)
+        reloadButton = findViewById(R.id.live_chat_error_button)
+        loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
 
         if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
             liveChatView = LiveChat.getInstance().getLiveChatView()
@@ -58,7 +63,11 @@ class LiveChatActivity : AppCompatActivity() {
 
             container.addView(liveChatView)
             if (liveChatView.isUIReady) {
-                liveChatView.visibility = View.VISIBLE
+                updateViewVisibility(
+                    chatVisible = true,
+                    loading = false,
+                    errorVisible = false,
+                )
             }
         } else {
             liveChatView = LiveChatView(this, null).apply {
@@ -71,17 +80,14 @@ class LiveChatActivity : AppCompatActivity() {
             container.addView(liveChatView)
         }
 
-        liveChatView.attachTo(this)
-        liveChatView.init(initCallbackListener)
-
         insetManager = WindowInsetManager(container)
         insetManager.setupInsets()
 
-        errorView = findViewById(R.id.live_chat_error_view)
-        reloadButton = findViewById(R.id.live_chat_error_button)
-        loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
-
         setupReloadButton()
+
+        liveChatView.attachTo(this)
+        liveChatView.setNavigationListener(navigationCallbackListener)
+        liveChatView.init(initCallbackListener)
     }
 
     private fun setupReloadButton() {

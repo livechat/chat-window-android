@@ -7,8 +7,5 @@ interface LiveChatViewInitListener {
     fun onUIReady()
 
     @MainThread
-    fun onHide()
-
-    @MainThread
     fun onError(cause: Throwable)
 }
