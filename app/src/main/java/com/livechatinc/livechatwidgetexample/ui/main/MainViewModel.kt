@@ -4,12 +4,30 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 
 class MainViewModel : ViewModel() {
     private val repository = SettingsRepository.getInstance()
 
+    val settings = repository.data
+    val messageCounter = MutableLiveData(0)
+    val chatBubbleVisibility = MutableLiveData(false)
+
+    val keepLiveChatViewInMemory: Boolean
+        get() = settings.value?.keepLiveChatViewInMemory != false
+
     init {
+        LiveChat.getInstance().getLiveChatView().init(callbackListener = object :
+            LiveChatViewInitListener {
+            override fun onUIReady() {
+                chatBubbleVisibility.value = true
+            }
+
+            override fun onError(cause: Throwable) {
+                chatBubbleVisibility.value = false
+            }
+        })
         LiveChat.getInstance().setNewMessageListener { _, isChatShown ->
             if (!isChatShown) {
                 messageCounter.value = (messageCounter.value ?: 0) + 1
@@ -22,12 +40,6 @@ class MainViewModel : ViewModel() {
             Log.e("Example", "Error occurred: ${error.message}")
         }
     }
-
-    val settings = repository.data
-    val messageCounter = MutableLiveData(0)
-
-    val keepLiveChatViewInMemory: Boolean
-        get() = settings.value?.keepLiveChatViewInMemory != false
 
     fun updateCustomerInfo(
         groupId: String,

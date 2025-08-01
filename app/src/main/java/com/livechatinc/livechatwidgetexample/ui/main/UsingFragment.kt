@@ -31,17 +31,18 @@ class LiveChatFragment : Fragment() {
             )
         }
 
-        override fun onHide() {
-            findNavController().navigateUp()
-
-        }
-
         override fun onError(cause: Throwable) {
             updateViewVisibility(
                 loading = false,
                 chatVisible = false,
                 errorVisible = true
             )
+        }
+    }
+
+    private val navigationCallbackListener = object : LiveChatView.NavigationListener {
+        override fun onHide() {
+            findNavController().navigateUp()
         }
     }
 
@@ -87,6 +88,7 @@ class LiveChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        liveChatView.setNavigationListener(navigationCallbackListener)
         liveChatView.init(initCallbackListener)
     }
 
