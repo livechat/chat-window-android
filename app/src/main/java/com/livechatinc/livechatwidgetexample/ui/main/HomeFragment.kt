@@ -51,8 +51,14 @@ class HomeFragment : Fragment() {
 
         viewModel.messageCounter.observe(viewLifecycleOwner, ::updateBadgeCount)
         viewModel.chatBubbleVisibility.observe(viewLifecycleOwner) { visible ->
-            if (visible) binding.showChat.visibility = View.VISIBLE
-            else binding.showChat.visibility = View.INVISIBLE
+            val visibility = if (visible) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            binding.showChat.visibility = visibility
+            binding.showChatUsingFragment.visibility = visibility
         }
     }
 
