@@ -1,0 +1,138 @@
+package com.livechatinc.chatsdk.src.presentation
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
+import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
+import com.livechatinc.chatsdk.R
+import com.livechatinc.chatsdk.src.core.managers.WindowInsetManager
+
+class LiveChatActivity : AppCompatActivity() {
+    private lateinit var container: ViewGroup
+    private lateinit var liveChatView: LiveChatView
+    private lateinit var errorView: View
+    private lateinit var reloadButton: View
+    private lateinit var loadingIndicator: View
+    private lateinit var insetManager: WindowInsetManager
+
+    private val initCallbackListener = object : LiveChatView.InitListener {
+        override fun onUIReady() {
+            updateViewVisibility(
+                loading = false,
+                chatVisible = true,
+                errorVisible = false
+            )
+        }
+
+        override fun onError(cause: Throwable) {
+            updateViewVisibility(
+                loading = false,
+                chatVisible = false,
+                errorVisible = true
+            )
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContentView(R.layout.live_chat_activity)
+
+        container = findViewById(R.id.live_chat_activity_container)
+        errorView = findViewById(R.id.live_chat_error_view)
+        reloadButton = findViewById(R.id.live_chat_error_button)
+        loadingIndicator = findViewById(R.id.live_chat_loading_indicator)
+
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
+            liveChatView = LiveChat.getInstance().getLiveChatView()
+            (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
+
+            container.addView(liveChatView)
+        } else {
+            liveChatView = LiveChatView(this, null).apply {
+                visibility = View.GONE
+                layoutParams = FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            }
+            container.addView(liveChatView)
+        }
+
+        insetManager = WindowInsetManager(container)
+        insetManager.setupInsets()
+
+        setupReloadButton()
+
+        liveChatView.attachTo(this)
+        liveChatView.setOnHideListener { finish() }
+        liveChatView.init(initCallbackListener)
+    }
+
+    private fun setupReloadButton() {
+        reloadButton.setOnClickListener {
+            updateViewVisibility(
+                loading = true,
+                chatVisible = false,
+                errorVisible = false
+            )
+
+            liveChatView.init()
+        }
+    }
+
+    private fun updateViewVisibility(
+        loading: Boolean,
+        chatVisible: Boolean,
+        errorVisible: Boolean
+    ) {
+        loadingIndicator.isVisible = loading
+        liveChatView.isVisible = chatVisible
+        errorView.isVisible = errorVisible
+    }
+
+    override fun onDestroy() {
+        if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
+            liveChatView.clearCallbackListeners()
+            container.removeView(liveChatView)
+        }
+
+        super.onDestroy()
+    }
+
+    companion object {
+        fun start(context: Context) {
+            val intent = Intent(context, LiveChatActivity::class.java)
+
+            context.startActivity(intent)
+        }
+    }
+
+    private object Keys {
+        const val KEY_LOADING_INDICATOR_VISIBLE = "loadingIndicatorVisible"
+        const val KEY_LIVE_CHAT_VIEW_VISIBLE = "liveChatViewVisible"
+        const val KEY_ERROR_VIEW_VISIBLE = "errorViewVisible"
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(Keys.KEY_LOADING_INDICATOR_VISIBLE, loadingIndicator.isVisible)
+        outState.putBoolean(Keys.KEY_LIVE_CHAT_VIEW_VISIBLE, liveChatView.isVisible)
+        outState.putBoolean(Keys.KEY_ERROR_VIEW_VISIBLE, errorView.isVisible)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        loadingIndicator.isVisible =
+            savedInstanceState.getBoolean(Keys.KEY_LOADING_INDICATOR_VISIBLE)
+        liveChatView.isVisible = savedInstanceState.getBoolean(Keys.KEY_LIVE_CHAT_VIEW_VISIBLE)
+        errorView.isVisible = savedInstanceState.getBoolean(Keys.KEY_ERROR_VIEW_VISIBLE)
+    }
+}

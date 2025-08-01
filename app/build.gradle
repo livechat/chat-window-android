@@ -1,18 +1,47 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version '2.0.21'
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
 }
 
 android {
     namespace 'com.livechatinc.livechatwidgetexample'
-    compileSdk 34
+    compileSdk 35
+
     defaultConfig {
         applicationId "com.livechatinc.livechatwidgetexample"
         minSdkVersion 21
-        targetSdkVersion 33
+        //TODO: check compatibility
+        targetSdkVersion 35
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "LICENSE", localProperties['license'] ?: "null")
+        buildConfigField("String", "LICENSE_ID", localProperties['licenseId'] ?: "null")
+        buildConfigField("String", "CLIENT_ID", localProperties['clientId'] ?: "null")
     }
+
+    flavorDimensions = ["flavor-type"]
+    productFlavors {
+        prod {
+            dimension "flavor-type"
+        }
+        dev {
+            dimension "flavor-type"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = " Dev"
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled true
@@ -21,18 +50,33 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = '11'
+    }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
+    def nav_version = "2.9.1"
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation('androidx.test.espresso:espresso-core:3.6.1')
-    androidTestImplementation "androidx.test:runner:1.6.1"
-    androidTestImplementation "androidx.test:rules:1.6.1"
     implementation 'androidx.annotation:annotation:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation project(':inappchat')
-
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation project(':chat-sdk')
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1'
+    implementation 'androidx.fragment:fragment-ktx:1.8.8'
+    implementation "androidx.navigation:navigation-fragment:$nav_version"
+    implementation "androidx.navigation:navigation-ui:$nav_version"
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.14'
     testImplementation 'junit:junit:4.13.2'
 }

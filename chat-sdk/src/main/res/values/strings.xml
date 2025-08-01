@@ -1,0 +1,5 @@
+<resources>
+    <string name="live_chat_error_text">Unable to load chat. Please check your internet connection</string>
+    <string name="live_chat_error_reload_label">Try Again</string>
+    <string name="live_chat_file_chooser_not_found">No file picker app found on this device</string>
+</resources>
