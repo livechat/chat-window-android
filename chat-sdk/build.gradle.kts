@@ -53,7 +53,7 @@ publishing {
     publications {
         create<MavenPublication>("release") {
             groupId = "com.github.livechat"
-            artifactId = "chatsdk"
+            artifactId = "chat-sdk"
             version = libraryVersion
             afterEvaluate {
                 from(components["release"])
