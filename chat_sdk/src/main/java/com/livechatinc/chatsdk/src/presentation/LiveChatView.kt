@@ -27,7 +27,6 @@ import com.livechatinc.chatsdk.src.domain.presenters.LiveChatViewPresenter
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInternal
 import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewWebViewClient
 import com.livechatinc.chatsdk.src.utils.FileSharing
-import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.utils.Logger
 import com.livechatinc.chatsdk.src.domain.models.FilePickerMode
 import kotlinx.coroutines.CoroutineScope
@@ -143,9 +142,9 @@ class LiveChatView(
         webView.setBackgroundColor(backgroundColor)
     }
 
-    fun init(callbackListener: LiveChatViewInitListener? = null) {
-        if (callbackListener != null) {
-            presenter.setInitListener(callbackListener)
+    fun init(initListener: InitListener? = null) {
+        if (initListener != null) {
+            presenter.setInitListener(initListener)
         }
 
         val config = LiveChat.getInstance().createLiveChatConfig()
@@ -255,6 +254,14 @@ class LiveChatView(
         } else {
             super.onRestoreInstanceState(state)
         }
+    }
+
+    interface InitListener {
+        @MainThread
+        fun onUIReady()
+
+        @MainThread
+        fun onError(cause: Throwable)
     }
 
     fun interface NavigationListener {

@@ -13,7 +13,6 @@ import com.livechatinc.chatsdk.LiveChat
 import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
 import com.livechatinc.chatsdk.R
 import com.livechatinc.chatsdk.src.core.managers.WindowInsetManager
-import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 
 class LiveChatActivity : AppCompatActivity() {
     private lateinit var container: ViewGroup
@@ -23,7 +22,7 @@ class LiveChatActivity : AppCompatActivity() {
     private lateinit var loadingIndicator: View
     private lateinit var insetManager: WindowInsetManager
 
-    private val initCallbackListener = object : LiveChatViewInitListener {
+    private val initCallbackListener = object : LiveChatView.InitListener {
         override fun onUIReady() {
             updateViewVisibility(
                 loading = false,

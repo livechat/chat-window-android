@@ -12,7 +12,6 @@ import com.livechatinc.chatsdk.src.data.domain.NetworkClient
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInternal
 import com.livechatinc.chatsdk.src.utils.extensions.buildChatUrl
 import com.livechatinc.chatsdk.src.utils.extensions.filePickerMode
-import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.domain.models.ChatMessage
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
@@ -28,8 +27,8 @@ internal class LiveChatViewPresenter internal constructor(
     private lateinit var config: LiveChatConfig
     internal var uiReady: Boolean = false
 
-    private var initListener: LiveChatViewInitListener? = null
-    fun setInitListener(callbackListener: LiveChatViewInitListener?) {
+    private var initListener: LiveChatView.InitListener? = null
+    fun setInitListener(callbackListener: LiveChatView.InitListener?) {
         initListener = callbackListener
     }
 

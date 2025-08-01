@@ -11,7 +11,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.livechatinc.chatsdk.LiveChat
 import com.livechatinc.chatsdk.R
-import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
 
 class LiveChatFragment : Fragment() {
@@ -22,7 +21,7 @@ class LiveChatFragment : Fragment() {
     private lateinit var reloadButton: View
     private lateinit var loadingIndicator: View
 
-    private val initCallbackListener = object : LiveChatViewInitListener {
+    private val initCallbackListener = object : LiveChatView.InitListener {
         override fun onUIReady() {
             updateViewVisibility(
                 loading = false,
@@ -37,12 +36,6 @@ class LiveChatFragment : Fragment() {
                 chatVisible = false,
                 errorVisible = true
             )
-        }
-    }
-
-    private val navigationCallbackListener = object : LiveChatView.NavigationListener {
-        override fun onHide() {
-            findNavController().navigateUp()
         }
     }
 
@@ -62,12 +55,6 @@ class LiveChatFragment : Fragment() {
         liveChatView = if (viewModel.keepLiveChatViewInMemory) {
             LiveChat.getInstance().getLiveChatView().also {
                 (it.parent as? ViewGroup)?.removeView(it)
-
-                if (it.isUIReady) {
-                    it.visibility = View.VISIBLE
-                } else {
-                    it.visibility = View.GONE
-                }
             }
         } else {
             LiveChatView(requireContext(), null).apply {
@@ -88,7 +75,8 @@ class LiveChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        liveChatView.setNavigationListener(navigationCallbackListener)
+
+        liveChatView.setNavigationListener { findNavController().navigateUp() }
         liveChatView.init(initCallbackListener)
     }
 

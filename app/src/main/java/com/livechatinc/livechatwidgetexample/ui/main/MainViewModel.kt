@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.livechatinc.chatsdk.LiveChat
-import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInitListener
+import com.livechatinc.chatsdk.src.presentation.LiveChatView
 import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 
 class MainViewModel : ViewModel() {
@@ -18,8 +18,8 @@ class MainViewModel : ViewModel() {
         get() = settings.value?.keepLiveChatViewInMemory != false
 
     init {
-        LiveChat.getInstance().getLiveChatView().init(callbackListener = object :
-            LiveChatViewInitListener {
+        LiveChat.getInstance().getLiveChatView().init(initListener = object :
+            LiveChatView.InitListener {
             override fun onUIReady() {
                 chatBubbleVisibility.value = true
             }
