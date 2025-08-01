@@ -24,13 +24,7 @@ import com.livechatinc.chatsdk.src.presentation.LiveChatView
 
 class LiveChat private constructor(
     private val license: String,
-    internal val networkClient: NetworkClient = KtorNetworkClient(
-        JsonProvider.instance,
-        BuildInfo(
-            mobileConfigHost = "https://cdn.livechatinc.com/",
-            mobileConfigPath = "app/mobile/urls.json",
-        ),
-    ),
+    internal val networkClient: NetworkClient,
     private val viewManagerProvider: (() -> AppScopedLiveChatViewManager),
     private val sessionManager: SessionManager = SessionManagerImpl()
 ){
@@ -91,6 +85,14 @@ class LiveChat private constructor(
                 instance = LiveChat(
                     license = license,
                     viewManagerProvider = { AppScopedLiveChatViewManagerImpl(context) },
+                    networkClient = KtorNetworkClient(
+                        JsonProvider.instance,
+                        BuildInfo(
+                            mobileConfigHost = "https://cdn.livechatinc.com/",
+                            mobileConfigPath = "app/mobile/urls.json",
+                        ),
+                        context,
+                    )
                 ).apply {
                     this.liveChatViewLifecycleScope =
                         lifecycleScope ?: LiveChatViewLifecycleScope.APP

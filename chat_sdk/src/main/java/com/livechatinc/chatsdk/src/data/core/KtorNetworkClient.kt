@@ -9,6 +9,7 @@ import io.ktor.client.call.body
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.cache.HttpCache
+import io.ktor.client.plugins.cache.storage.FileStorage
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.plugins.logging.*
@@ -18,7 +19,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
-internal class KtorNetworkClient(private val json: Json, private val buildInfo: BuildInfo) :
+internal class KtorNetworkClient(
+    private val json: Json,
+    private val buildInfo: BuildInfo,
+    context: android.content.Context
+) :
     NetworkClient {
     private val client = HttpClient(CIO) {
         install(Logging) {
@@ -28,10 +33,17 @@ internal class KtorNetworkClient(private val json: Json, private val buildInfo: 
         install(ContentNegotiation) {
             json(json)
         }
-        install(HttpRequestRetry) {
-            //TODO: specify retry policy
-        }
+        install(HttpRequestRetry)
         install(HttpCache)
+        {
+            try {
+                val cacheFile = java.io.File(context.cacheDir, "lc_cache")
+                if (cacheFile.exists() || cacheFile.mkdirs()) {
+                    publicStorage(FileStorage(cacheFile))
+                }
+            } catch (_: Exception) {
+            }
+        }
     }
 
     override suspend fun fetchChatUrl(): String {
