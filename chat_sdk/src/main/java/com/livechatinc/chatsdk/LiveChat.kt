@@ -21,8 +21,6 @@ import com.livechatinc.chatsdk.src.domain.interfaces.NewMessageListener
 import com.livechatinc.chatsdk.src.domain.models.LiveChatConfig
 import com.livechatinc.chatsdk.src.domain.models.CustomerInfo
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
-import com.livechatinc.chatsdk.src.utils.extensions.toWeakReferenceOrNull
-import java.lang.ref.WeakReference
 
 class LiveChat private constructor(
     private val license: String,
@@ -35,50 +33,34 @@ class LiveChat private constructor(
     }
 
     private var groupId: String? = null
-
     private var customerInfo: CustomerInfo? = null
 
-    private var errorListenerRef: WeakReference<ErrorListener?>? = null
+    internal var errorListener: ErrorListener? = null
     fun setErrorListener(listener: ErrorListener?) {
-        errorListenerRef = listener.toWeakReferenceOrNull()
+        errorListener = listener
     }
 
-    internal val errorListener: ErrorListener?
-        get() = errorListenerRef?.get()
-
-    private var newMessageListenerRef: WeakReference<NewMessageListener?>? = null
+    internal var newMessageListener: NewMessageListener? = null
     fun setNewMessageListener(listener: NewMessageListener?) {
-        newMessageListenerRef = listener.toWeakReferenceOrNull()
+        newMessageListener = listener
     }
 
-    internal val newMessageListener: NewMessageListener?
-        get() = newMessageListenerRef?.get()
-
-    private var filePickerNotFoundListenerRef: WeakReference<FilePickerActivityNotFoundListener?>? =
+    internal var filePickerNotFoundListener: FilePickerActivityNotFoundListener? =
         null
 
     fun setFilePickerNotFoundListener(listener: FilePickerActivityNotFoundListener?) {
-        filePickerNotFoundListenerRef = listener.toWeakReferenceOrNull()
+        filePickerNotFoundListener = listener
     }
 
-    internal val filePickerNotFoundListener: FilePickerActivityNotFoundListener?
-        get() = filePickerNotFoundListenerRef?.get()
-
-    private var urlHandlerRef: WeakReference<UrlHandler?>? = null
+    internal var urlHandler: UrlHandler? = null
     fun setUrlHandler(handler: UrlHandler?) {
-        urlHandlerRef = handler.toWeakReferenceOrNull()
+        urlHandler = handler
     }
 
-    internal val urlHandler: UrlHandler?
-        get() = urlHandlerRef?.get()
-
-    private var filesUploadCallbackRef: WeakReference<ValueCallback<Array<Uri>>?>? = null
+    internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
     internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {
-        filesUploadCallbackRef = filePathCallback.toWeakReferenceOrNull()
+        filesUploadCallback = filePathCallback
     }
-
-    internal val filesUploadCallback: ValueCallback<Array<Uri>>?
-        get() = filesUploadCallbackRef?.get()
 
     internal lateinit var liveChatViewLifecycleScope: LiveChatViewLifecycleScope
 

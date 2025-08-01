@@ -152,7 +152,7 @@ class LiveChatView(
         presenter.init(config)
     }
 
-    fun setNavigationListener(navigationListener: NavigationListener?) {
+    fun setNavigationListener(navigationListener: NavigationListener) {
         presenter.setNavigationListener(navigationListener)
     }
 
@@ -195,6 +195,7 @@ class LiveChatView(
 
     fun clearCallbackListeners() {
         presenter.setInitListener(null)
+        presenter.setNavigationListener(null)
     }
 
     // Platform lifecycle methods
@@ -256,7 +257,7 @@ class LiveChatView(
         }
     }
 
-    interface NavigationListener {
+    fun interface NavigationListener {
         @MainThread
         fun onHide()
     }

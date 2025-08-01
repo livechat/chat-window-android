@@ -20,7 +20,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.lang.ref.WeakReference
 
 internal class LiveChatViewPresenter internal constructor(
     private var view: LiveChatViewInternal,
@@ -34,13 +33,9 @@ internal class LiveChatViewPresenter internal constructor(
         initListener = callbackListener
     }
 
-    private var navigationListener: WeakReference<LiveChatView.NavigationListener>? = null
+    private var navigationListener: LiveChatView.NavigationListener? = null
     fun setNavigationListener(navigationListener: LiveChatView.NavigationListener?) {
-        this.navigationListener = if (navigationListener != null) {
-            WeakReference(navigationListener)
-        } else {
-            null
-        }
+        this.navigationListener = navigationListener
     }
 
     fun init(config: LiveChatConfig) {
@@ -81,7 +76,7 @@ internal class LiveChatViewPresenter internal constructor(
     }
 
     internal fun onHideLiveChat() {
-        navigationListener?.get()?.onHide()
+        navigationListener?.onHide()
     }
 
     private fun onError(cause: Throwable) {

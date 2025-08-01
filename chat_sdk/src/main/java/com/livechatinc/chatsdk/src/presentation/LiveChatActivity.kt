@@ -62,13 +62,6 @@ class LiveChatActivity : AppCompatActivity() {
             (liveChatView.parent as? ViewGroup)?.removeView(liveChatView)
 
             container.addView(liveChatView)
-            if (liveChatView.isUIReady) {
-                updateViewVisibility(
-                    chatVisible = true,
-                    loading = false,
-                    errorVisible = false,
-                )
-            }
         } else {
             liveChatView = LiveChatView(this, null).apply {
                 visibility = View.GONE
