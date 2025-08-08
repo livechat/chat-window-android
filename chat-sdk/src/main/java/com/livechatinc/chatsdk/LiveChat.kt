@@ -41,7 +41,8 @@ class LiveChat private constructor(
     }
 
     private var _newMessageListener: NewMessageListener? = null
-    internal val newMessageListener: NewMessageListener?
+
+    internal val messageListener: NewMessageListener?
         get() = _newMessageListener
 
     fun setNewMessageListener(listener: NewMessageListener?) {
