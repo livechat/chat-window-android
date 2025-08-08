@@ -40,9 +40,12 @@ class LiveChat private constructor(
         errorListener = listener
     }
 
-    internal var newMessageListener: NewMessageListener? = null
+    private var _newMessageListener: NewMessageListener? = null
+    internal val newMessageListener: NewMessageListener?
+        get() = _newMessageListener
+
     fun setNewMessageListener(listener: NewMessageListener?) {
-        newMessageListener = listener
+        _newMessageListener = listener
     }
 
     internal var filePickerNotFoundListener: FilePickerActivityNotFoundListener? =
