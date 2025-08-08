@@ -59,6 +59,7 @@ android {
     }
     buildFeatures {
         viewBinding true
+        buildConfig true
     }
 }
 
@@ -71,6 +72,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation project(':chat-sdk')
+//    implementation 'com.github.livechat:chat-window-android:3.0.0-rc1'
     implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.1'
