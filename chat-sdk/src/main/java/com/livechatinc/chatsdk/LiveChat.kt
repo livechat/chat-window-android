@@ -41,24 +41,28 @@ class LiveChat private constructor(
     }
 
     private var _newMessageListener: NewMessageListener? = null
-
-    internal val messageListener: NewMessageListener?
+    internal val newMessageListener: NewMessageListener?
         get() = _newMessageListener
 
     fun setNewMessageListener(listener: NewMessageListener?) {
         _newMessageListener = listener
     }
 
-    internal var filePickerNotFoundListener: FilePickerActivityNotFoundListener? =
+    private var _filePickerNotFoundListener: FilePickerActivityNotFoundListener? =
         null
+    internal val filePickerNotFoundListener: FilePickerActivityNotFoundListener?
+        get() = _filePickerNotFoundListener
 
     fun setFilePickerNotFoundListener(listener: FilePickerActivityNotFoundListener?) {
-        filePickerNotFoundListener = listener
+        _filePickerNotFoundListener = listener
     }
 
-    internal var urlHandler: UrlHandler? = null
+    private var _urlHandler: UrlHandler? = null
+    internal val urlHandler: UrlHandler?
+        get() = _urlHandler
+
     fun setUrlHandler(handler: UrlHandler?) {
-        urlHandler = handler
+        _urlHandler = handler
     }
 
     internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
