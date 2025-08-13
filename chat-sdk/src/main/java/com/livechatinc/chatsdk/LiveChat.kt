@@ -38,7 +38,7 @@ class LiveChat private constructor(
     var errorListener: ErrorListener? = null
     var newMessageListener: NewMessageListener? = null
     var filePickerNotFoundListener: FilePickerActivityNotFoundListener? = null
-    var _urlHandler: UrlHandler? = null
+    var urlHandler: UrlHandler? = null
 
     internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
     internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {
