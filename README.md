@@ -61,7 +61,7 @@ allprojects {
 Add dependency to your app's `build.gradle`:
 ```kotlin
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:3.0.0-rc1'
+    implementation 'com.github.livechat:chat-window-android:3.0.0-rc2'
 }
 ```
 
