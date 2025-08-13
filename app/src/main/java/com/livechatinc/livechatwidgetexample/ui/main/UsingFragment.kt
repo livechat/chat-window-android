@@ -10,8 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.livechatinc.chatsdk.LiveChat
-import com.livechatinc.chatsdk.R
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
+import com.livechatinc.livechatwidgetexample.R
 
 class LiveChatFragment : Fragment() {
     private val viewModel: MainViewModel by activityViewModels()
@@ -44,13 +44,12 @@ class LiveChatFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.live_chat_activity, container, false)
+        val view = inflater.inflate(R.layout.fragment_chat, container, false)
 
-        //TODO: use example's layout
-        mainContainer = view.findViewById(R.id.live_chat_activity_container)
-        errorView = view.findViewById(R.id.live_chat_error_view)
-        reloadButton = view.findViewById(R.id.live_chat_error_button)
-        loadingIndicator = view.findViewById(R.id.live_chat_loading_indicator)
+        mainContainer = view.findViewById(R.id.fragment_chat_main_container)
+        errorView = view.findViewById(R.id.fragment_chat_error_view)
+        reloadButton = view.findViewById(R.id.fragment_chat_error_button)
+        loadingIndicator = view.findViewById(R.id.fragment_chat_loading_indicator)
 
         liveChatView = if (viewModel.keepLiveChatViewInMemory) {
             LiveChat.getInstance().getLiveChatView().also {
