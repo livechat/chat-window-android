@@ -59,7 +59,7 @@ allprojects {
 ```
 
 Add dependency to your app's `build.gradle`:
-```
+```kotlin
 dependencies {
     implementation 'com.github.livechat:chat-window-android:3.0.0-rc1'
 }
@@ -111,7 +111,10 @@ Use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](ChatSDK/
 Set it wherever you want to react on new message, like increase badge count
 
 ```kotlin
-LiveChat.getInstance().setNewMessageListener()
+LiveChat.getInstance().newMessageListener =
+   NewMessageListener { message, isChatShown ->
+      // Handle new message
+   }
 ```
 
 ## UI Customization
@@ -137,7 +140,7 @@ Activity will follow your activity's theme. To change activity configuration you
 Chat window uses WebView's cookies to store the session. To clear the chat session, you can call:
 
 ```kotlin
-LiveChat.clearSession()
+LiveChat.getInstance().signOutCustomer()
 ```
 
 ## Handling links
@@ -146,12 +149,11 @@ By default, links sent between your Agents and Customers are opened in the defau
 If you want to intercept the link and handle it in your app, provide your `UrlHandler`
 
 ```kotlin
-LiveChat.getInstance().setUrlHandler(object : UrlHandler {
-    override fun handleUrl(uri: Uri): Boolean {
-        // Return true if handled, false to open in default browser
-        return false
-    }
-})
+LiveChat.getInstance().urlHandler = 
+   UrlHandler { url ->
+       // Handle the URL in your app and return true if handled 
+       return@UrlHandler false
+   }
 ```
 
 ## Troubleshooting
@@ -162,7 +164,7 @@ To monitor and handle issues related to loading the chat view, you can set an er
 Common use cases include reporting errors to analytics platforms or implementing custom error handling logic.
 
 ```kotlin
-LiveChat.getInstance().setErrorListener { error ->
+LiveChat.getInstance().errorListener = ErrorListener { error ->
    // Handle the error
 }
 ```
@@ -183,8 +185,8 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 In case you want to react or track instances where activity for file picking on user device is not found, you can set a listener for this event:
 
 ```kotlin
-LiveChat.getInstance().setFileChooserNotFoundListener {
-   Log.e("Example", "File chooser not found. Please check your configuration.")
+LiveChat.getInstance().filePickerNotFoundListener = FilePickerActivityNotFoundListener {
+   // Handle the case when file picker activity is not found
 }
 ```
 
@@ -195,25 +197,25 @@ If you need to use the following usage, please let us know about your use case. 
 
 ### LiveChatView lifecycle modes
 
-By default, after `LiveChat.show()` the view is inflated and kept in memory. This allows reacting to new messages as described in [Unread message counter](#unread-message-counter).
-If you don't need that feature and want to free up memory once chat is no longer visible, you can use `LiveChatViewLifecycleMode` to control the lifecycle of the view. 
+By default, after `LiveChat.getInstance().show()` the view is inflated and kept in memory. This allows reacting to new messages as described in [Unread message counter](#unread-message-counter).
+If you don't need that feature and want to free up memory once chat is no longer visible, you can use `LiveChatViewLifecycleScope` to control the lifecycle of the view. 
 You should specify the mode when initializing.
 
 ```kotlin
-LiveChat.initialize("<LICENSE>", this, LiveChatViewLifecycleMode.WHEN_SHOWN)
+LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleScope.ACTIVITY)
 ```
 
 > **Note:** Using WHEN_SHOWN mode will disable the `NewMessageListener` no longer works when chat is not visible.
 
 ### Embedding LiveChatView
 
-You can directly embed `LiveChatView` in your layout, instead of showing it in activity (`LiveChat.show()`). This allows you to have more control over the chat window and its placement in your app.
+You can directly embed `LiveChatView` in your layout, instead of showing it in activity (`LiveChat.getInstance().show()`). This allows you to have more control over the chat window and its placement in your app.
 There are additional steps and requirements you need to follow to take full advantage of chat window.
 Generally you can refer to `LiveChatActivity` for the implementation details, but here is a quick overview of the steps you need to take.
 
 #### Embed in your layout
 
-Add `<com.livechatinc.chatsdk.LiveChatView />` your layout XML file
+Add `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` your layout XML file
 
 #### Provide activity or fragment context
 
@@ -227,7 +229,7 @@ liveChatView.attachTo(this)
 
 #### React to visibility events
 
-Provide `LiveChatViewInitListener` when initializing the view
+Provide `LiveChatView.InitListener` when initializing the view
 
 ```kotlin
 liveChatView.init(initCallbackListener)
