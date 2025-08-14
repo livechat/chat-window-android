@@ -4,6 +4,9 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.domain.interfaces.ErrorListener
+import com.livechatinc.chatsdk.src.domain.interfaces.FilePickerActivityNotFoundListener
+import com.livechatinc.chatsdk.src.domain.interfaces.NewMessageListener
 import com.livechatinc.chatsdk.src.presentation.LiveChatView
 import com.livechatinc.livechatwidgetexample.data.SettingsRepository
 
@@ -28,15 +31,16 @@ class MainViewModel : ViewModel() {
                 chatBubbleVisibility.value = false
             }
         })
-        LiveChat.getInstance().setNewMessageListener { _, isChatShown ->
-            if (!isChatShown) {
-                messageCounter.value = (messageCounter.value ?: 0) + 1
+        LiveChat.getInstance().newMessageListener =
+            NewMessageListener { _, isChatShown ->
+                if (!isChatShown) {
+                    messageCounter.value = (messageCounter.value ?: 0) + 1
+                }
             }
-        }
-        LiveChat.getInstance().setFilePickerNotFoundListener {
+        LiveChat.getInstance().filePickerNotFoundListener = FilePickerActivityNotFoundListener {
             Log.e("Example", "File picker not found. Please check your configuration.")
         }
-        LiveChat.getInstance().setErrorListener { error ->
+        LiveChat.getInstance().errorListener = ErrorListener { error ->
             Log.e("Example", "Error occurred: ${error.message}")
         }
     }
@@ -59,9 +63,9 @@ class MainViewModel : ViewModel() {
     }
 
     override fun onCleared() {
-        LiveChat.getInstance().setNewMessageListener(null)
-        LiveChat.getInstance().setFilePickerNotFoundListener(null)
-        LiveChat.getInstance().setErrorListener(null)
+        LiveChat.getInstance().newMessageListener = null
+        LiveChat.getInstance().filePickerNotFoundListener = null
+        LiveChat.getInstance().errorListener = null
         super.onCleared()
     }
 }

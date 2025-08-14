@@ -35,27 +35,10 @@ class LiveChat private constructor(
     private var groupId: String? = null
     private var customerInfo: CustomerInfo? = null
 
-    internal var errorListener: ErrorListener? = null
-    fun setErrorListener(listener: ErrorListener?) {
-        errorListener = listener
-    }
-
-    internal var newMessageListener: NewMessageListener? = null
-    fun setNewMessageListener(listener: NewMessageListener?) {
-        newMessageListener = listener
-    }
-
-    internal var filePickerNotFoundListener: FilePickerActivityNotFoundListener? =
-        null
-
-    fun setFilePickerNotFoundListener(listener: FilePickerActivityNotFoundListener?) {
-        filePickerNotFoundListener = listener
-    }
-
-    internal var urlHandler: UrlHandler? = null
-    fun setUrlHandler(handler: UrlHandler?) {
-        urlHandler = handler
-    }
+    var errorListener: ErrorListener? = null
+    var newMessageListener: NewMessageListener? = null
+    var filePickerNotFoundListener: FilePickerActivityNotFoundListener? = null
+    var urlHandler: UrlHandler? = null
 
     internal var filesUploadCallback: ValueCallback<Array<Uri>>? = null
     internal fun setFileUploadCallback(filePathCallback: ValueCallback<Array<Uri>>?) {

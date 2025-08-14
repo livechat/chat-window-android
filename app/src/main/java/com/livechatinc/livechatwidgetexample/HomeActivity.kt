@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.navigation.findNavController
 import com.livechatinc.chatsdk.LiveChat
+import com.livechatinc.chatsdk.src.domain.interfaces.UrlHandler
 
 class HomeActivity : AppCompatActivity() {
 
@@ -15,29 +16,29 @@ class HomeActivity : AppCompatActivity() {
 
         restoreShowChatMode(savedInstanceState)
 
-        LiveChat.getInstance().setUrlHandler { url ->
-            if (url.host.equals("app.settings.example.com")) {
-                when (showChatMode) {
-                    ShowChatMode.ACTIVITY -> {
-                        // Show desired Activity
-                        return@setUrlHandler true
-                    }
+        LiveChat.getInstance().urlHandler =
+            UrlHandler { url ->
+                if (url.host.equals("app.settings.example.com")) {
+                    when (showChatMode) {
+                        ShowChatMode.ACTIVITY -> {
+                            // Show desired Activity
+                            return@UrlHandler true
+                        }
 
-                    ShowChatMode.FRAGMENT -> {
-                        findNavController(R.id.main_content).navigate(R.id.navigate_from_live_chat_to_settings)
-                        return@setUrlHandler true
-                    }
+                        ShowChatMode.FRAGMENT -> {
+                            findNavController(R.id.main_content).navigate(R.id.navigate_from_live_chat_to_settings)
+                            return@UrlHandler true
+                        }
 
-                    else -> {
-                        return@setUrlHandler false
+                        else -> {
+                            return@UrlHandler false
+                        }
                     }
                 }
+
+                return@UrlHandler false
             }
-
-            return@setUrlHandler false
-        }
     }
-
 
     fun showChat() {
         showChatMode = ShowChatMode.ACTIVITY
@@ -50,7 +51,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        LiveChat.getInstance().setUrlHandler(null)
+        LiveChat.getInstance().urlHandler = null
 
         super.onDestroy()
     }
