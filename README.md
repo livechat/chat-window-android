@@ -3,50 +3,49 @@ LiveChat SDK for Android
 
 [![Release](https://jitpack.io/v/livechat/chat-window-android.svg)](https://jitpack.io/#livechat/chat-window-android)
 
-A Android SDK for integrating LiveChat functionality into your mobile application.
+An Android SDK for integrating LiveChat functionality into your mobile application.
 
 **LiveChat:** https://developers.livechat.com/docs/getting-started/installing-livechat/android-widget/
 
-## Table of contents
+# Table of contents
 
 1.  [Getting started](#getting-started)
     1. [Requirements](#requirements)
-    1. [Add dependency](#add-dependency)
-    1. [Initialize](#initialize)
-    1. [Show the Chat](#show-the-chat)
+    1. [Installation](#installation)
+    1. [Initialization](#initialization)
+    1. [Displaying the chat window](#displaying-the-chat-window)
 1. [Customer information](#customer-information)
 1. [Unread message counter](#unread-message-counter)
 1. [UI Customization](#ui-customization)
-   1. [Localizing text](#localizing-text)
-   1. [Custom error view](#custom-error-view)
-   1. [Customizing Activity](#customizing-activity)
+   1. [Error view](#error-view)
+   1. [Activity](#activity)
 1. [Clearing chat session](#clearing-chat-session)
-1. [Handling links](#handling-links)
+1. [Link handling](#link-handling)
 1. [Troubleshooting](#troubleshooting)
-   1. [Reacting to errors](#react-to-errors)
+   1. [Error handling](#error-handling)
    1. [Logger](#logger)
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-scope)
-   1. [Embedding LiveChatView](#embedding-livechatview)
+   1. [Embedding LiveChatView](#embed-livechatview-in-your-layout)
 1. [Migrating from v2.5.0 to 3.0.0](#migrating-from-v250-to-300)
 
 
 
-## Getting started
+# Getting started
 
 Add real-time customer support to your Android application with LiveChat's SDK. This guide covers installation, basic setup, and advanced features.
 
 > **Note:** 💡 The SDK is now Kotlin-based and uses the new package `com.livechatinc.chatsdk`. See migration notes if you are upgrading from v2.x.x.
 
-### Requirements
+## Requirements
 
-SDK is compatible with:
+The Android SDK is compatible with:
 - `Android 5.0 (API level 21) or higher`
 - `Java 8 or higher`
 
-### Add dependency
+## Installation
 
-Add the JitPack repository to your root `build.gradle`
+To install the SDK, first add the JitPack repository to your root `build.gradle`:
 ```kotlin
 allprojects {
    repositories {
@@ -55,7 +54,7 @@ allprojects {
 }
 ```
 
-Add dependency to your app's `build.gradle`:
+Next, add dependency to your app's `build.gradle`:
 
 ```kotlin
 dependencies {
@@ -63,33 +62,33 @@ dependencies {
 }
 ```
 
-Add Internet permission to AndroidManifest.xml:
+Then, add Internet permission to `AndroidManifest.xml`:
 
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 ```
 
-### Initialize
+## Initialization
 
-Initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance
+You can initialize the SDK in the `onCreate()` method of your [`Application`](https://developer.android.com/reference/android/app/Application) instance:
 
 ```kotlin
 LiveChat.initialize("<LICENSE>", this)
 ```
 
-### Show the Chat
+## Displaying the chat window
 
-Show the chat to a customer
+The function below allows you to display a chat to a customer:
 
 ```kotlin
 LiveChat.getInstance().show()
 ```
-That's it! Your customer can already start chatting with you.
+That's it! Your customer can start chatting with you now.
 
-## Customer information
+# Customer information
 
-Pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and provide customer details to your agents by setting customer information.
-All information is optional. Group ID defaults to 0 if not provided.
+You can pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and set customer information to provide customer details to your agents.
+All information is optional. Group ID defaults to `0` if not provided.
 
 ```kotlin
 LiveChat.getInstance().setCustomerInfo(
@@ -100,13 +99,13 @@ LiveChat.getInstance().setCustomerInfo(
         )
 ```
 
-> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` before showing it again
+> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` before showing it again.
 
-## Unread message counter
+# Unread message counter
 
-Use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/domain/interfaces/NewMessageListener.kt) to get notified about new messages in the chat
+To get notified about new messages in the chat, use [`com.livechatinc.chatsdk.src.domain.listeners.NewMessageListener`](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/domain/interfaces/NewMessageListener.kt).
 
-Set it wherever you want to react on new message, like increase badge count
+Set it wherever you want to react to a new message, for example, to increase the badge count.
 
 ```kotlin
 LiveChat.getInstance().newMessageListener =
@@ -115,36 +114,33 @@ LiveChat.getInstance().newMessageListener =
    }
 ```
 
-## UI customization
+# UI customization
 
-While chat appearance and language settings are managed through the Agent App, you can customize error view when chat cannot be loaded.
+While chat appearance and language settings are managed through the LiveChat App, you can customize the error view when chat cannot be loaded.
 
-### Localizing text
+## Error view
 
-You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`.
-All strings can be found [here](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/res/values/strings.xml)
+You can localize and change the text displayed in the error view by overriding string resources in your app's `strings.xml`. All strings can be found in the [GitHub repository](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/res/values/strings.xml).
 
-### Custom error view
+You can also entirely override the default error view by including `live_chat_error_layout.xml` in your app's layout resources.
 
-To completely change the error view, you can also override the default one by including `live_chat_error_layout.xml` in your app's layout resources.
-> **Note:** Your custom view must contain a `View` with `live_chat_error_button` id when using `LiveChat.getInstance().show()` 
+> **Note:** Your custom error view must contain a `View` with `live_chat_error_button` id when using `LiveChat.getInstance().show()`.
 
-### Customizing Activity
+## Activity
 
-Activity will follow your activity's theme. To change activity configuration you can just override the activity declaration in your app `AndroidManifest.xml`
+By default, activity will follow your activity's theme. To change the activity configuration, you can override the activity declaration in your app's `AndroidManifest.xml` file.
 
-## Clearing chat session
+# Clearing chat session
 
-Chat window uses WebView's cookies to store the session. To clear the chat session, you can call:
+The chat window uses WebView's cookies to store the session. To clear the chat session, call:
 
 ```kotlin
 LiveChat.getInstance().signOutCustomer()
 ```
 
-## Handling links
+# Link handling
 
-By default, links in the chat are opened in the customer's default browser.
-If you want to intercept the link and handle it in your app, provide your `UrlHandler`
+By default, links in the chat are opened in the customer's default browser. If you want to intercept the link and handle it in your app, provide your `UrlHandler`.
 
 ```kotlin
 LiveChat.getInstance().urlHandler = 
@@ -154,12 +150,11 @@ LiveChat.getInstance().urlHandler =
    }
 ```
 
-## Troubleshooting
+# Troubleshooting
 
-### React to errors
+## Error handling
 
-To monitor and handle issues related to loading the chat view, you can set an error listener. This allows you to capture and respond to errors in a centralized way. 
-Common use cases include reporting errors to analytics platforms or implementing custom error handling logic.
+You can set an error listener to monitor and handle issues related to loading the chat view. This allows you to capture and respond to errors in a centralized way. Common use cases include reporting errors to analytics platforms or implementing custom error-handling logic.
 
 ```kotlin
 LiveChat.getInstance().errorListener = ErrorListener { error ->
@@ -167,16 +162,16 @@ LiveChat.getInstance().errorListener = ErrorListener { error ->
 }
 ```
 
-### Logger
+## Logger
 
 Configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
-Refer to [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for available log levels.
 
 ```kotlin
 Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 ```
 
-> Note: Network calls require at least `INFO`. `DEBUG` and `VERBOSE` provide maximum level of detail
+Refer to the [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for all available log levels.
+> **Note**: Network calls require at least the `INFO` level. `DEBUG` and `VERBOSE` levels are more detailed.
 
 ### File picker Activity not found
 
@@ -188,64 +183,62 @@ LiveChat.getInstance().filePickerNotFoundListener = FilePickerActivityNotFoundLi
 }
 ```
 
-## Advanced usage
+# Advanced usage
 
-For more control over the SDK integration, consider these advanced options. Note that they require additional implementation steps:
-If you need to use the following usage, please let us know about your use case. We would love to hear from you!
+The following features give you more control over the SDK integration. Note that they require additional implementation steps. If you decide to use any of these, please let us know about your use case — we would love to hear about it!
 
-### LiveChatView lifecycle scope
+## LiveChatView lifecycle scope
 
-By default, after `LiveChat.getInstance().show()` the view is inflated and kept in memory. This allows reacting to new messages as described in [Unread message counter](#unread-message-counter).
-If you don't need that feature and want to free up memory once chat is no longer visible, you can use `LiveChatViewLifecycleScope` to control the lifecycle of the view. 
-You should specify the scope when initializing.
+By default, after the `LiveChat.getInstance().show()` view is initialized, it's kept in the application memory. This allows you to react to new messages, for example, display a [counter for unread messages](#unread-message-counter). If you don't want to keep the chat window in the background once the chat is no longer visible and free up memory, you can use `LiveChatViewLifecycleScope` to control the view's lifecycle.
+
+You should specify the scope when initializing the SDK:
 
 ```kotlin
 LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleScope.ACTIVITY)
 ```
 
-> **Note:** Using `ACTIVITY` scope will disable the `NewMessageListener` no longer works when chat is not visible.
+> **Note:** If you use the `ACTIVITY` scope, the `NewMessageListener` only works while the chat is visible.
 
-### Embedding LiveChatView
+## Embed LiveChatView in your layout
 
-You can directly embed `LiveChatView` in your layout, instead of showing it in activity (`LiveChat.getInstance().show()`). This allows you to have more control over the chat window and its placement in your app.
-There are additional steps and requirements you need to follow to take full advantage of chat window.
-Generally you can refer to `LiveChatActivity` for the implementation details, but here is a quick overview of the steps you need to take.
+You can embed the `LiveChatView` directly in your layout instead of showing it in activity (`LiveChat.getInstance().show()`). This gives you more control over the chat window and its placement in your app. To take full advantage of that, there are additional steps and requirements you need to follow. For full implementation details, refer to the [LiveChatActivity](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/presentation/LiveChatActivity.kt).
+Here is a short overview of the steps to embed the `LiveChatView` in your layout:
 
-#### Embed in your layout
+### 1. Add LiveChatView to your layout
 
-Add `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` to your layout XML file
+Begin with adding `<com.livechatinc.chatsdk.src.presentation.LiveChatView />` to your layout XML file.
 
-#### Provide activity or fragment context
+### 2. Provide activity or fragment context
 
-During `onCreate` of your `Activity` or `Fragment` call
+During `onCreate` of your `Activity` or `Fragment`, call:
 
 ```kotlin
 liveChatView.attachTo(this)
 ```
 
-> **Note:** this is required to properly handle the lifecycle of the view, support file sharing and launch links in default external browser
+This is required to properly handle the view's lifecycle, support file sharing, and launch links in the default external browser.
 
-#### React to visibility events
+### 3. React to visibility events
 
-Provide `LiveChatView.InitListener` when initializing the view
+Provide `LiveChatView.InitListener` when initializing the view:
 
 ```kotlin
 liveChatView.init(initCallbackListener)
 ```
 
-## Migrating from v2.5.0 to 3.0.0
+# Migrating from v2.5.0 to 3.0.0
 
-### Key Changes
-* Kotlin-based SDK
-* Streamlined API for easier integration
-* Package name changed from com.livechatinc.inappchat to com.livechatinc.chatsdk
+## Key Changes
+* The SDK is now Kotlin-based.
+* The API is now streamlined and uses the `LiveChat` singleton.
+* The package changed to `com.livechatinc.chatsdk`.
 * Updated API for initializing and configuring the chat
 * Edge-to-edge display support
 * Enhanced error handling
 
-### Steps
+## Steps
 
-#### Update your dependency
+### Update your dependency
 
 ```kotlin
 dependencies {
@@ -255,24 +248,24 @@ dependencies {
 
 > Note: With version 3 we no longer use "v" prefix
 
-#### Update configuration 
-The new API uses LiveChat singleton instead of ChatWindowConfiguration and it's split into two parts: [initialization](#initialize) and [customer information setup](#customer-information).
+### Update configuration 
+The new API uses LiveChat singleton instead of ChatWindowConfiguration and it's split into two parts: [initialization](#initialization) and [customer information setup](#customer-information).
 
-Update [activity declaration](#customizing-activity) if needed
+Update [activity declaration](#activity) if needed
 
-#### Update event listeners
+### Update event listeners
 
 The old `ChatWindowEventsListener` has removed. Some of the callbacks are no longer needed, the rest has been split into individual callbacks
-* `onWindowInitialized()` -> removed for [recommended integration](#show-the-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
-* `onChatWindowVisibilityChanged` -> removed [recommended integration](#show-the-chat). If you're embedding the view directly see [Embedding LiveChatView](#embedding-livechatview) for details
+* `onWindowInitialized()` -> removed for [recommended integration](#displaying-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
+* `onChatWindowVisibilityChanged` -> removed [recommended integration](#displaying-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
 * `onNewMessage` -> replaced with [NewMessageListener](#unread-message-counter)
 * `onRequestAudioPermissions` -> removed
-* `onError` -> replaced with [ErrorListener](#react-to-errors)
-* `handleUri` -> replaced with [UriHandler](#handling-links)
+* `onError` -> replaced with [ErrorListener](#error-handling)
+* `handleUri` -> replaced with [UriHandler](#link-handling)
 * `onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#file-picker-activity-not-found)
 
 For a complete example of implementation, please refer to the example app included in the repository.
 
-#### v2.x.x
+### v2.x.x
 
 v2 of the library is still available on JitPack. You can find documentation by selecting v2.x.x tag in the repository
