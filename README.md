@@ -101,7 +101,7 @@ LiveChat.getInstance().setCustomerInfo(
         )
 ```
 
-> **Note:** You should call the `setCustomerInfo()` before `LiveChat.getInstance().show()`. To update customer properties when chat has already loaded, recreate it with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`.
+> **Note:** You should call the `setCustomerInfo()` before `LiveChat.getInstance().show()`. To update customer properties when the chat has already loaded, recreate it with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`.
 
 # Unread message counter
 
@@ -118,7 +118,7 @@ LiveChat.getInstance().newMessageListener =
 
 # UI customization
 
-While chat appearance and language are managed through the application settings, you can customize the error view when chat cannot be loaded.
+While the chat appearance and language are managed through the application settings, you can customize the error view when chat cannot be loaded.
 
 ## Error view
 
@@ -173,6 +173,7 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 ```
 
 Refer to the [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for all available log levels.
+
 > **Note**: Network calls require at least the `INFO` level. `DEBUG` and `VERBOSE` levels are more detailed.
 
 ## Missing file picker activity
@@ -199,7 +200,7 @@ You should specify the scope when initializing the SDK:
 LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleScope.ACTIVITY)
 ```
 
-> **Note:** If you use the `ACTIVITY` scope, the `NewMessageListener` only works while the chat is visible.
+> **Note:** With the `ACTIVITY` scope, the `NewMessageListener` only works while the chat is visible.
 
 ## Embed LiveChatView in your layout
 
