@@ -13,7 +13,7 @@ An Android SDK for integrating LiveChat functionality into your mobile applicati
     1. [Requirements](#requirements)
     1. [Installation](#installation)
     1. [Initialization](#initialization)
-    1. [Displaying the chat window](#displaying-the-chat-window)
+    1. [Display the chat window](#display-the-chat-window)
 1. [Customer information](#customer-information)
 1. [Unread message counter](#unread-message-counter)
 1. [UI Customization](#ui-customization)
@@ -24,6 +24,7 @@ An Android SDK for integrating LiveChat functionality into your mobile applicati
 1. [Troubleshooting](#troubleshooting)
    1. [Error handling](#error-handling)
    1. [Logger](#logger)
+   1. [Missing file picker activity](#missing-file-picker-activity)
 1. [Advanced usage](#advanced-usage)
    1. [LiveChatView lifecycle modes](#livechatview-lifecycle-scope)
    1. [Embedding LiveChatView](#embed-livechatview-in-your-layout)
@@ -76,19 +77,20 @@ You can initialize the SDK in the `onCreate()` method of your [`Application`](ht
 LiveChat.initialize("<LICENSE>", this)
 ```
 
-## Displaying the chat window
+## Display the chat window
 
 The function below allows you to display a chat to a customer:
 
 ```kotlin
 LiveChat.getInstance().show()
 ```
-That's it! Your customer can start chatting with you now.
+That's it! Your customers can start chatting with you now.
 
 # Customer information
 
-You can pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) and set customer information to provide customer details to your agents.
-All information is optional. Group ID defaults to `0` if not provided.
+You can pre-fill the [pre-chat form](https://my.livechatinc.com/settings/pre-chat-form) fields with customer information to provide your agents with more details about the customer. All information is optional.
+
+The group ID defaults to `0` if not provided.
 
 ```kotlin
 LiveChat.getInstance().setCustomerInfo(
@@ -99,7 +101,7 @@ LiveChat.getInstance().setCustomerInfo(
         )
 ```
 
-> **Note:** Call this before `LiveChat.getInstance().show()` or recreate a chat view with `LiveChat.getInstance().destroyLiveChatView()` before showing it again.
+> **Note:** You should call the `setCustomerInfo()` before `LiveChat.getInstance().show()`. To update customer properties when chat was already loaded, recreate it with `LiveChat.getInstance().destroyLiveChatView()` and `LiveChat.getInstance().getLiveChatView()`.
 
 # Unread message counter
 
@@ -128,7 +130,7 @@ You can also entirely override the default error view by including `live_chat_er
 
 ## Activity
 
-By default, activity will follow your activity's theme. To change the activity configuration, you can override the activity declaration in your app's `AndroidManifest.xml` file.
+By default, activity will follow your activity's theme. To change configuration, you can override the activity declaration in your app's `AndroidManifest.xml` file.
 
 # Clearing chat session
 
@@ -164,7 +166,7 @@ LiveChat.getInstance().errorListener = ErrorListener { error ->
 
 ## Logger
 
-Configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
+You can configure the logging level to help with debugging and troubleshooting. Set the desired level before initializing LiveChat:
 
 ```kotlin
 Logger.setLogLevel(Logger.LogLevel.VERBOSE);
@@ -173,9 +175,9 @@ Logger.setLogLevel(Logger.LogLevel.VERBOSE);
 Refer to the [Logger](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/utils/Logger.kt) for all available log levels.
 > **Note**: Network calls require at least the `INFO` level. `DEBUG` and `VERBOSE` levels are more detailed.
 
-### File picker Activity not found
+## Missing file picker activity
 
-In case you want to react or track instances where activity for file picking on user device is not found, you can set a listener for this event:
+If you want to react or track instances where the activity for file picking on the user device is not found, you can set a listener for this event:
 
 ```kotlin
 LiveChat.getInstance().filePickerNotFoundListener = FilePickerActivityNotFoundListener {
@@ -189,7 +191,7 @@ The following features give you more control over the SDK integration. Note that
 
 ## LiveChatView lifecycle scope
 
-By default, after the `LiveChat.getInstance().show()` view is initialized, it's kept in the application memory. This allows you to react to new messages, for example, display a [counter for unread messages](#unread-message-counter). If you don't want to keep the chat window in the background once the chat is no longer visible and free up memory, you can use `LiveChatViewLifecycleScope` to control the view's lifecycle.
+By default, after the `LiveChat.getInstance().show()` view is initialized, it's kept in the application memory. This allows you to react to new messages, for example, display a [counter for unread messages](#unread-message-counter). To automatically free up memory when the chat is no longer visible, you can use `LiveChatViewLifecycleScope` to control its lifecycle.
 
 You should specify the scope when initializing the SDK:
 
@@ -201,7 +203,8 @@ LiveChat.initialize("<LICENSE>", this, lifecycleScope = LiveChatViewLifecycleSco
 
 ## Embed LiveChatView in your layout
 
-You can embed the `LiveChatView` directly in your layout instead of showing it in activity (`LiveChat.getInstance().show()`). This gives you more control over the chat window and its placement in your app. To take full advantage of that, there are additional steps and requirements you need to follow. For full implementation details, refer to the [LiveChatActivity](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/presentation/LiveChatActivity.kt).
+You can embed the `LiveChatView` directly in your layout for more control over the chat window and its placement, instead of using `LiveChat.getInstance().show()`. For full implementation details, refer to the [LiveChatActivity](https://github.com/livechat/chat-window-android/blob/master/chat-sdk/src/main/java/com/livechatinc/chatsdk/src/presentation/LiveChatActivity.kt).
+
 Here is a short overview of the steps to embed the `LiveChatView` in your layout:
 
 ### 1. Add LiveChatView to your layout
@@ -256,13 +259,13 @@ Update [activity declaration](#activity) if needed
 ### Update event listeners
 
 The old `ChatWindowEventsListener` has removed. Some of the callbacks are no longer needed, the rest has been split into individual callbacks
-* `onWindowInitialized()` -> removed for [recommended integration](#displaying-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
-* `onChatWindowVisibilityChanged` -> removed [recommended integration](#displaying-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
+* `onWindowInitialized()` -> removed for [recommended integration](#display-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
+* `onChatWindowVisibilityChanged` -> removed [recommended integration](#display-the-chat-window). If you're embedding the view directly see [Embed LiveChatView in your layout](#embed-livechatview-in-your-layout) for details
 * `onNewMessage` -> replaced with [NewMessageListener](#unread-message-counter)
 * `onRequestAudioPermissions` -> removed
 * `onError` -> replaced with [ErrorListener](#error-handling)
 * `handleUri` -> replaced with [UriHandler](#link-handling)
-* `onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#file-picker-activity-not-found)
+* `onFilePickerActivityNotFound` -> [FileChooserActivityNotFoundListener](#missing-file-picker-activity)
 
 For a complete example of implementation, please refer to the example app included in the repository.
 
