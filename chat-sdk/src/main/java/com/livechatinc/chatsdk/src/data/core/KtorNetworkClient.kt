@@ -6,7 +6,7 @@ import com.livechatinc.chatsdk.src.domain.models.ChatWidgetUrls
 import com.livechatinc.chatsdk.src.utils.Logger as InternalLogger
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
+import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.HttpRequestRetry
 import io.ktor.client.plugins.cache.HttpCache
 import io.ktor.client.plugins.cache.storage.FileStorage
@@ -22,10 +22,9 @@ import kotlinx.serialization.json.Json
 internal class KtorNetworkClient(
     private val json: Json,
     private val buildInfo: BuildInfo,
-    context: android.content.Context
-) :
-    NetworkClient {
-    private val client = HttpClient(CIO) {
+    context: android.content.Context,
+) : NetworkClient {
+    private val client = HttpClient(OkHttp) {
         install(Logging) {
             logger = Logger.ANDROID
             level = InternalLogger.getLogLevel().toKtorLogLevel
@@ -34,8 +33,7 @@ internal class KtorNetworkClient(
             json(json)
         }
         install(HttpRequestRetry)
-        install(HttpCache)
-        {
+        install(HttpCache) {
             try {
                 val cacheFile = java.io.File(context.cacheDir, "lc_cache")
                 if (cacheFile.exists() || cacheFile.mkdirs()) {
