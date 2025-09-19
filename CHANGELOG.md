@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 3.0.1
+
+* Use `okhttp` client engine by default, instead of `cio`
+
 ## Version 3.0.0
 
 This release introduces a major restructuring of the SDK to streamline integration and improve long-term maintainability. The update lays the groundwork for upcoming features.
