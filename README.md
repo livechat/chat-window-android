@@ -42,7 +42,7 @@ Add real-time customer support to your Android application with LiveChat's SDK. 
 
 The Android SDK is compatible with:
 - `Android 5.0 (API level 21) or higher`
-- `enabled Java 8 API desugaring when running on devices with API level < 24`
+- `enabled Java 8 API desugaring when supporting Android API levels < 24`
 - `Java 8 or higher`
 
 ## Installation
@@ -247,7 +247,7 @@ liveChatView.init(initCallbackListener)
 
 ```kotlin
 dependencies {
-    implementation 'com.github.livechat:chat-window-android:<latest-version>'
+    implementation 'com.github.livechat:chat-window-android:3.0.0'
 }
 ```
 
