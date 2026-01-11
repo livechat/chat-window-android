@@ -100,7 +100,6 @@ class LiveChatActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         if (LiveChat.getInstance().liveChatViewLifecycleScope == LiveChatViewLifecycleScope.APP) {
-            liveChatView.detachFrom(this)
             liveChatView.clearCallbackListeners()
             container.removeView(liveChatView)
         }

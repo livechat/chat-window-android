@@ -103,7 +103,7 @@ class LiveChatView(
 
         activityContextRef = WeakReference(activity)
         currentLifecycleOwner = fragment
-        activity.lifecycle.addObserver(this)
+        fragment.lifecycle.addObserver(this)
 
         setupFileSharing(activity, fragment.lifecycle)
         setWebViewBackgroundColor(fragment.requireContext())
@@ -117,10 +117,6 @@ class LiveChatView(
         if (webViewContext is MutableContextWrapper) {
             webViewContext.baseContext = context
         }
-    }
-
-    fun detachFrom(activity: ComponentActivity) {
-        updateWebViewContext(activity.applicationContext)
     }
 
     private fun detachCurrentLifecycleOwner() {
@@ -228,6 +224,7 @@ class LiveChatView(
         if (owner == currentLifecycleOwner) {
             detachCurrentLifecycleOwner()
         }
+        updateWebViewContext(context.applicationContext)
 
         super.onStop(owner)
     }
