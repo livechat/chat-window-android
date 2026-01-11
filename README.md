@@ -221,12 +221,6 @@ During `onCreate` of your `Activity` or `Fragment`, call:
 liveChatView.attachTo(this)
 ```
 
-and detach context in `onDestroy`:
-
-```kotlin
-liveChatView.detachFrom(this)
-```
-
 This is required to properly handle the view's lifecycle, support file sharing, and launch links in the default external browser.
 
 ### 3. React to visibility events
