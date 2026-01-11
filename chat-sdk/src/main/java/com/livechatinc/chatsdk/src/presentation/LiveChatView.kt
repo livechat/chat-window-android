@@ -3,6 +3,7 @@ package com.livechatinc.chatsdk.src.presentation
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.MutableContextWrapper
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -20,15 +21,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.livechatinc.chatsdk.LiveChat
 import com.livechatinc.chatsdk.src.core.LiveChatViewLifecycleScope
-import com.livechatinc.chatsdk.R
-import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewChromeClient
-import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewJSBridge
-import com.livechatinc.chatsdk.src.domain.presenters.LiveChatViewPresenter
 import com.livechatinc.chatsdk.src.domain.interfaces.LiveChatViewInternal
-import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewWebViewClient
+import com.livechatinc.chatsdk.src.domain.models.FilePickerMode
+import com.livechatinc.chatsdk.src.domain.presenters.LiveChatViewPresenter
 import com.livechatinc.chatsdk.src.utils.FileSharing
 import com.livechatinc.chatsdk.src.utils.Logger
-import com.livechatinc.chatsdk.src.domain.models.FilePickerMode
+import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewChromeClient
+import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewJSBridge
+import com.livechatinc.chatsdk.src.utils.webview.LiveChatViewWebViewClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,14 +40,13 @@ class LiveChatView(
     attrs: AttributeSet?
 ) : FrameLayout(context, attrs), LiveChatViewInternal, DefaultLifecycleObserver {
     private var fileSharing: FileSharing? = null
-    private var webView: WebView
+    private var webView: WebView = WebView(context, attrs)
     private var presenter: LiveChatViewPresenter
     private var activityContextRef: WeakReference<Context>? = null
     private var currentLifecycleOwner: LifecycleOwner? = null
 
     init {
-        inflate(context, R.layout.live_chat_widget_internal, this)
-        webView = findViewById(R.id.live_chat_webview)
+        this.addView(webView)
         presenter = LiveChatViewPresenter(this, LiveChat.getInstance().networkClient)
 
         configureWebView()
@@ -87,6 +86,8 @@ class LiveChatView(
 
         setupFileSharing(activity, activity.lifecycle)
         setWebViewBackgroundColor(activity)
+
+        updateWebViewContext(activity)
     }
 
     /**
@@ -106,6 +107,20 @@ class LiveChatView(
 
         setupFileSharing(activity, fragment.lifecycle)
         setWebViewBackgroundColor(fragment.requireContext())
+
+        updateWebViewContext(activity)
+    }
+
+    private fun updateWebViewContext(context: Context) {
+        val webViewContext = webView.context
+
+        if (webViewContext is MutableContextWrapper) {
+            webViewContext.baseContext = context
+        }
+    }
+
+    fun detachFrom(activity: ComponentActivity) {
+        updateWebViewContext(activity.applicationContext)
     }
 
     private fun detachCurrentLifecycleOwner() {
