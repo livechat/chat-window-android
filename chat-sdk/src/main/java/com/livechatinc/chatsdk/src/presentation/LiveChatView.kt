@@ -75,19 +75,11 @@ class LiveChatView(
      * - file sharing
      * - showing external browser on link clicks
      * - setting the WebView background color
+     * - drop down menu support
      * Must be called in the Activity's `onCreate`
      */
     fun attachTo(activity: ComponentActivity) {
-        detachCurrentLifecycleOwner()
-
-        activityContextRef = WeakReference(activity)
-        currentLifecycleOwner = activity
-        activity.lifecycle.addObserver(this)
-
-        setupFileSharing(activity, activity.lifecycle)
-        setWebViewBackgroundColor(activity)
-
-        updateWebViewContext(activity)
+        attachTo(activity, activity)
     }
 
     /**
@@ -99,14 +91,18 @@ class LiveChatView(
         val activity = fragment.requireActivity() as? ComponentActivity
             ?: throw IllegalArgumentException("Fragment must be attached to a ComponentActivity")
 
+        attachTo(activity, fragment)
+    }
+
+    private fun attachTo(activity: ComponentActivity, lifecycleOwner: LifecycleOwner ){
         detachCurrentLifecycleOwner()
 
         activityContextRef = WeakReference(activity)
-        currentLifecycleOwner = fragment
-        fragment.lifecycle.addObserver(this)
+        currentLifecycleOwner = lifecycleOwner
+        lifecycleOwner.lifecycle.addObserver(this)
 
-        setupFileSharing(activity, fragment.lifecycle)
-        setWebViewBackgroundColor(fragment.requireContext())
+        setupFileSharing(activity, lifecycleOwner.lifecycle)
+        setWebViewBackgroundColor(activity)
 
         updateWebViewContext(activity)
     }
