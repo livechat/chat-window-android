@@ -1,5 +1,12 @@
 # Android ChangeLog
 
+## Version 3.0.3
+
+* Fix dropdown menu not working with AppScope LiveChatView integration #112
+
+**Breaking Change**
+Custom integration - directly using `LiveChatView`, with `LiveChatViewLifecycleScope.APP` in an Activity or Fragment, now requires to also detach context using `LiveChatView.detachFrom()` during `onDestroy` lifecycle event
+
 ## Version 3.0.1
 
 * Use `okhttp` client engine by default, instead of `cio`
