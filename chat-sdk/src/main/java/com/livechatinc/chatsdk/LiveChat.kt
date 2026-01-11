@@ -128,7 +128,7 @@ class LiveChat private constructor(
     }
 
     /**
-     * Should be used with [LiveChatViewLifecycleScope.APP] scope
+     * Should be used only with [LiveChatViewLifecycleScope.APP] scope
      * Creates [LiveChatView] instance or returns existing one
      * */
     fun getLiveChatView(): LiveChatView {
@@ -136,7 +136,7 @@ class LiveChat private constructor(
     }
 
     /**
-     * Should be used with [LiveChatViewLifecycleScope.APP] scope
+     * Should be used only with [LiveChatViewLifecycleScope.APP] scope
      * Removes [LiveChatView] from parent and destroys it
      * */
     fun destroyLiveChatView() {
