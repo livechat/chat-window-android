@@ -94,7 +94,7 @@ class LiveChatView(
         attachTo(activity, fragment)
     }
 
-    private fun attachTo(activity: ComponentActivity, lifecycleOwner: LifecycleOwner ){
+    private fun attachTo(activity: ComponentActivity, lifecycleOwner: LifecycleOwner) {
         detachCurrentLifecycleOwner()
 
         activityContextRef = WeakReference(activity)
