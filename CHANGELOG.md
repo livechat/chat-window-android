@@ -1,5 +1,9 @@
 # Android ChangeLog
 
+## Version 3.0.3
+
+* Fix dropdown menus not showing in `LiveChatViewLifecycleScope.APP` mode #112
+
 ## Version 3.0.1
 
 * Use `okhttp` client engine by default, instead of `cio`

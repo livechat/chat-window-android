@@ -1,6 +1,7 @@
 package com.livechatinc.chatsdk.src.core.managers
 
 import android.content.Context
+import android.content.MutableContextWrapper
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -12,7 +13,7 @@ internal class AppScopedLiveChatViewManagerImpl(private val applicationContext: 
     private var liveChatView: LiveChatView? = null
 
     override fun getLiveChatView(): LiveChatView {
-        return liveChatView ?: inflate(applicationContext).also {
+        return liveChatView ?: inflate(MutableContextWrapper(applicationContext)).also {
             liveChatView = it
         }
     }
